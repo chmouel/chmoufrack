@@ -20,7 +20,7 @@ func print_separator(s string) {
 }
 
 // print_repeat ...
-func print_repeat(repetion, percentage, track_laps, meters float64, repos string) {
+func print_text_repeat(repetion, percentage, track_laps, meters float64, repos string) {
 	header := fmt.Sprintf("%d * %dm at %d%% / Total laps %d\n",
 		int(repetion), int(meters), int(percentage), int(track_laps))
 
@@ -51,6 +51,38 @@ func print_repeat(repetion, percentage, track_laps, meters float64, repos string
 	fmt.Println("")
 }
 
+func print_text(rounds [][]string) error {
+	for i := range rounds {
+		repetition, err := strconv.ParseFloat(rounds[i][0], 64)
+		if err != nil {
+			return err
+		}
+
+		percentage, err := strconv.ParseFloat(rounds[i][1], 64)
+		if err != nil {
+			return err
+		}
+
+		meters, err := strconv.ParseFloat(rounds[i][2], 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
+		if err != nil {
+			return err
+		}
+		track_laps := meters / track_length
+
+		repos := rounds[i][3]
+
+		print_text_repeat(repetition, percentage, track_laps, meters, repos)
+	}
+	return nil
+}
+
+func print_html(repetion, percentage, track_laps, meters float64, repos string) {
+}
+
 func main() {
 	// converting to float
 
@@ -61,29 +93,8 @@ func main() {
 		[]string{"1", "110", "400", "3mn de repos"},
 		[]string{"1", "120", "200", "3mn de repos"},
 	}
-	for i := range rounds {
-		repetition, err := strconv.ParseFloat(rounds[i][0], 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		percentage, err := strconv.ParseFloat(rounds[i][1], 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		meters, err := strconv.ParseFloat(rounds[i][2], 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-		track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-		track_laps := meters / track_length
-
-		repos := rounds[i][3]
-
-		print_repeat(repetition, percentage, track_laps, meters, repos)
+	err := print_text(rounds)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
