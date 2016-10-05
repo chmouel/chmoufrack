@@ -19,7 +19,7 @@ func round(val float64) float64 {
 }
 
 // calcul vma of a distance, you give a vma and a percent for a distance
-func calcul_vma_distance(vma, percent, distance float64) (result string) {
+func calcul_vma_distance(vma, percent, distance float64) (result string, err error) {
 	vma_ms := vma * 1000 / 3600
 	vma_100 := 100 / vma_ms
 	calcul := vma_100 / percent * distance
@@ -31,11 +31,17 @@ func calcul_vma_distance(vma, percent, distance float64) (result string) {
 	if minute > 0 {
 		result += strconv.Itoa(minute) + "'"
 	}
-	if second > 0 {
-		result += strconv.Itoa(second) + "\""
+	result += fmt.Sprintf("%.2d", second)
+	if minute == 0 {
+		result += "s"
 	}
 
 	return
+}
+
+// calcul_vma_vitesse ...
+func calcul_vma_speed(vma, percent float64) float64 {
+	return (vma * percent) / 100
 }
 
 // calcul_pace from a speed (kmh)
@@ -64,9 +70,4 @@ func calcul_pace(vitesse float64) (ret string) {
 	ret += fmt.Sprintf("%0.f", r)
 
 	return
-}
-
-// calcul_vma_vitesse ...
-func calcul_vma_vitesse(vma, percent int) string {
-	return fmt.Sprintf("%d", (vma*percent)/100)
 }

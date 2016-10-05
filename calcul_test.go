@@ -1,25 +1,34 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestVMADistance(t *testing.T) {
-	c := calcul_vma_distance(12, 100, 1000)
-	result := "5'"
+	c, err := calcul_vma_distance(12, 100, 1000)
+	if err != nil {
+		t.Error(err)
+	}
+	result := "5'00"
 	if c != result {
 		t.Error(c + " should equal" + result)
 	}
 
-	result = calcul_vma_distance(11, 100, 1000)
-	if result != "5'27\"" {
+	result, err = calcul_vma_distance(11, 100, 1000)
+	if err != nil {
+		t.Error(err)
+	}
+	if result != "5'27" {
 		t.Error(c + " should equal" + result)
 	}
 }
 
 func TestVMAVitesse(t *testing.T) {
-	c := calcul_vma_vitesse(20, 50)
-	result := "10"
+	c := calcul_vma_speed(20, 50)
+	result := 10.0
 	if c != result {
-		t.Error(c + " should equal " + result)
+		t.Error(fmt.Sprintf("%.0f should equal %s", result, c))
 	}
 }
 
