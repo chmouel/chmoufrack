@@ -37,11 +37,11 @@ func print_repeat(repetion, percentage, track_laps, meters float64, repos string
 
 		fmt.Printf("VMA: %0.f => Total: %s", vma, total_time)
 		if int(meters) >= TRACK_LENGTH {
-			time_400, err := calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
+			time_track, err := calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf(" / %d: %s", TRACK_LENGTH, time_400)
+			fmt.Printf(" / %d: %s", TRACK_LENGTH, time_track)
 		}
 
 		speed := calcul_vma_speed(vma, percentage)
