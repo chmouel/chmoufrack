@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 var (
 	TRACK_LENGTH = 400
@@ -24,13 +27,17 @@ func main() {
 	// 	[]string{"6", "100", "200", "1mn30"},
 	// 	[]string{"4", "90", "400", "1mn30"},
 	// }
+	//err := generate_html(rounds)
 
-	err := generate_html(rounds)
+	db, err := createTable()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println(db)
+	fmt.Println(rounds)
 }
 
 // Local Variables:
-// compile-command: "go run main.go generate_html.go calcul.go";
+// compile-command: "go run main.go generate_html.go calcul.go sql.go";
 // End:

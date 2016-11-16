@@ -10,28 +10,6 @@ import (
 	"text/template"
 )
 
-type WorkoutProgram struct {
-	Repetition  string
-	Meters      string
-	Percentage  string
-	TrackLaps   string
-	TrackLength int
-	Repos       string
-}
-
-type WorkoutVMA struct {
-	VMA       string
-	TotalTime string
-	TimeTrack string
-	Speed     string
-	Pace      string
-}
-
-type TemplateStruct struct {
-	WP   WorkoutProgram
-	VMAs map[string]WorkoutVMA
-}
-
 func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	fmt.Println(ts.WP.Repetition)
 	t, err := template.ParseFiles("templates/content.tmpl")
@@ -67,7 +45,7 @@ func generate_html(rounds [][]string) error {
 	var content bytes.Buffer
 
 	for i := range rounds {
-		w := WorkoutProgram{}
+		w := Workout{}
 		w.TrackLength = TRACK_LENGTH
 
 		repetition, err := strconv.ParseFloat(rounds[i][0], 64)
