@@ -17,7 +17,6 @@ type WorkoutProgram struct {
 	TrackLaps   string
 	TrackLength int
 	Repos       string
-	VMAS        map[string]WorkoutVMA
 }
 
 type WorkoutVMA struct {
@@ -28,13 +27,19 @@ type WorkoutVMA struct {
 	Pace      string
 }
 
-func generate_content(w WorkoutProgram, content *bytes.Buffer) (err error) {
+type TemplateStruct struct {
+	WP   WorkoutProgram
+	VMAs map[string]WorkoutVMA
+}
+
+func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
+	fmt.Println(ts.WP.Repetition)
 	t, err := template.ParseFiles("templates/content.tmpl")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	err = t.Execute(content, w)
+	err = t.Execute(content, ts)
 	if err != nil {
 		return
 	}
@@ -124,8 +129,12 @@ func generate_html(rounds [][]string) error {
 
 			vmas[wt.VMA] = wt
 		}
-		w.VMAS = vmas
-		err = generate_content(w, &content)
+		ts := TemplateStruct{
+			VMAs: vmas,
+			WP:   w,
+		}
+
+		err = generate_content(ts, &content)
 		if err != nil {
 			return err
 		}

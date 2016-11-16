@@ -2,7 +2,7 @@
   <div class="blog-post">
     <div>
       <div style="background-color: #def0fc;text-align: center; font-weight: bold; font-size: 150%; line-height: 100px; width: 100%;height: 100px;">
-        {{.Repetition}} * {{.Meters}}m at {{.Percentage}}% Laps: {{.TrackLaps}}
+        {{.WP.Repetition}} * {{.WP.Meters}}m at {{.WP.Percentage}}% Laps: {{.WP.TrackLaps}}
       </div>
     </div>
     <table width="100%">
@@ -14,7 +14,7 @@
           Total time
         </th>
         <th>
-          {{.TrackLength}}m time
+          {{.WP.TrackLength}}m time
         </th>
         <th>
           Speed
@@ -23,7 +23,7 @@
           Pace
         </th>
       </tr>
-    {{range .VMAS}}
+    {{range .VMAs}}
       <tr>
         <td>
           <b>{{.VMA}}</b>
@@ -44,7 +44,7 @@
     {{end}}
     </table>
     <div style="text-align: right; font-weight: bold; background-color: #ffffe6;font-size: 110%; width: 100%">
-      Rest: {{.Repos}}
+      Rest: {{.WP.Repos}}
     </div>
     <p/>
 
