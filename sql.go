@@ -26,25 +26,7 @@ CREATE TABLE IF NOT EXISTS ProgramWorkout (
 	ProgramID integer,
     WorkoutID integer);`
 
-var sqlSamples = `
-INSERT INTO Program(name) VALUES("Pyramidal");
-INSERT INTO Program(name) VALUES("3x100");
-
-INSERT INTO Workout(repetition, percentage, meters, repos) VALUES(3, 90, 1500, "1.5 minutes");
-INSERT INTO Workout(repetition, percentage, meters, repos) VALUES(3, 95, 1000, "1.5 minutes");
-
-INSERT INTO Workout(repetition, percentage, meters, repos) VALUES(3, 100, 100, "3 minutes");
-
-INSERT INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(1, 1);
-INSERT INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(1, 2);
-
-INSERT INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(2, 3);
-
-SELECT W.id FROM Program P, Workout W, ProgramWorkout PW WHERE P.name = 'Pyramidal' AND PW.WorkoutID == W.ID AND PW.ProgramID == P.id;
-SELECT W.id FROM Program P, Workout W, ProgramWorkout PW WHERE P.name = '3x100' AND PW.WorkoutID == W.ID AND PW.ProgramID == P.id;
-`
-
-func createTable() (db *sql.DB, err error) {
+func createSchema() (db *sql.DB, err error) {
 	// TODO: proper sqlite location
 	db, err = sql.Open("sqlite3", "/tmp/test.db")
 	if err != nil {
@@ -56,8 +38,79 @@ func createTable() (db *sql.DB, err error) {
 		return
 	}
 
-	// TODO: remove samples
-	_, err = db.Exec(sqlSamples)
+	err = createSample(db)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func createSample(db *sql.DB) (err error) {
+	var res sql.Result
+	res, err = createProgram("Pyramidal", db)
+	if err != nil {
+		return
+	}
+	pyramidID, err := res.LastInsertId()
+	if err != nil {
+		return
+	}
+
+	res, err = createProgram("3x100", db)
+	if err != nil {
+		return
+	}
+
+	troiscentID, err := res.LastInsertId()
+	if err != nil {
+		return
+	}
+	res, err = createWorkout(3, 90, 800, "1.5 minutes", db)
+	if err != nil {
+		return
+	}
+
+	lastinsertid, err := res.LastInsertId()
+	if err != nil {
+		return
+	}
+
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
+	if err != nil {
+		return
+	}
+
+	_, err = associateWorkoutProgram(troiscentID, lastinsertid, db)
+	if err != nil {
+		return
+	}
+
+	res, err = createWorkout(3, 95, 1000, "5 minutes", db)
+	if err != nil {
+		return
+	}
+
+	lastinsertid, err = res.LastInsertId()
+	if err != nil {
+		return
+	}
+
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
+	if err != nil {
+		return
+	}
+
+	res, err = createWorkout(3, 100, 100, "3 minutes", db)
+	if err != nil {
+		return
+	}
+
+	lastinsertid, err = res.LastInsertId()
+	if err != nil {
+		return
+	}
+
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
 	if err != nil {
 		return
 	}
@@ -65,14 +118,53 @@ func createTable() (db *sql.DB, err error) {
 	return
 }
 
-var getWorkoutSQL = `
-SELECT W.repetition, W.meters, W.percentage, W.repos
-       FROM Program P, Workout W, ProgramWorkout PW
-       WHERE P.name = $1 AND PW.WorkoutID == W.ID
-       AND PW.ProgramID == P.id
-`
+func sqlTX(db *sql.DB, query string, args ...interface{}) (res sql.Result, err error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return
+	}
+	defer tx.Rollback()
+	stmt, err := tx.Prepare(query)
+	if err != nil {
+		return
+
+	}
+	defer stmt.Close()
+
+	res, err = stmt.Exec(args...)
+	if err != nil {
+		return
+	}
+	err = tx.Commit()
+	return
+}
+
+// createPrograms ...
+func createProgram(name string, db *sql.DB) (res sql.Result, err error) {
+	var createProgramSQL = `INSERT INTO Program(name) VALUES(?);`
+	res, err = sqlTX(db, createProgramSQL, name)
+	return
+}
+
+func createWorkout(repetition int, percentage int, meters int, repos string, db *sql.DB) (res sql.Result, err error) {
+	var createWorkoutSQL = `INSERT INTO Workout(repetition, percentage, meters, repos) VALUES(?, ?, ?, ?);`
+	res, err = sqlTX(db, createWorkoutSQL, repetition, percentage, meters, repos)
+	return
+}
+
+func associateWorkoutProgram(programid int64, workoutid int64, db *sql.DB) (res sql.Result, err error) {
+	var associateWorkoutProgramSQL = `INSERT INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
+	res, err = sqlTX(db, associateWorkoutProgramSQL, programid, workoutid)
+	return
+}
 
 func getWorkouts(name string, db *sql.DB) (rounds []Workout, err error) {
+	var getWorkoutSQL = `
+    SELECT W.repetition, W.meters, W.percentage, W.repos
+       FROM Program P, Workout W, ProgramWorkout PW
+       WHERE P.name = $1 AND PW.WorkoutID == W.ID
+       AND PW.ProgramID == P.id`
+
 	rows, err := db.Query(getWorkoutSQL, name)
 	for rows.Next() {
 		var w Workout
