@@ -7,7 +7,7 @@ var VMA = []int{13, 14, 15, 16, 17, 18, 19}
 func main() {
 	var rounds = []Workout{}
 
-	db, err := createTable()
+	db, err := createSchema()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,6 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// fmt.Println(rounds)
 	err = generate_html(rounds)
 	if err != nil {
 		log.Fatal(err)
