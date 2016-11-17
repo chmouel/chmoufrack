@@ -64,3 +64,23 @@ func createTable() (db *sql.DB, err error) {
 
 	return
 }
+
+var getWorkoutSQL = `
+SELECT W.repetition, W.meters, W.percentage, W.repos
+       FROM Program P, Workout W, ProgramWorkout PW
+       WHERE P.name = $1 AND PW.WorkoutID == W.ID
+       AND PW.ProgramID == P.id
+`
+
+func getWorkouts(name string, db *sql.DB) (rounds []Workout, err error) {
+	rows, err := db.Query(getWorkoutSQL, name)
+	for rows.Next() {
+		var w Workout
+		err = rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
+		if err != nil {
+			return
+		}
+		rounds = append(rounds, w)
+	}
+	return
+}

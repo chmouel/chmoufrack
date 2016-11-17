@@ -13,21 +13,15 @@ func main() {
 	}
 
 	program_name := "Pyramidal"
-	rows, err := db.Query("SELECT W.repetition, W.meters, W.percentage, W.repos FROM Program P, Workout W, ProgramWorkout PW WHERE P.name = $1 AND PW.WorkoutID == W.ID AND PW.ProgramID == P.id", program_name)
-
-	for rows.Next() {
-		var w Workout
-		err := rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
-		if err != nil {
-			log.Fatal(err)
-		}
-		rounds = append(rounds, w)
-	}
-	err = generate_html(rounds)
+	rounds, err = getWorkouts(program_name, db)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	err = generate_html(rounds)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Local Variables:
