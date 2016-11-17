@@ -2,8 +2,6 @@ package main
 
 import "log"
 
-var VMA = []int{13, 14, 15, 16, 17, 18, 19}
-
 func main() {
 	var rounds = []Workout{}
 

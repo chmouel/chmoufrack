@@ -40,6 +40,17 @@ func generate_template(content string) (err error) {
 	return
 }
 
+func getVMA(value []int) (vmas []int) {
+	if len(value) == 1 || len(value) > 2 {
+		return VMA
+	}
+
+	for i := value[0]; i <= value[1]; i++ {
+		vmas = append(vmas, i)
+	}
+	return
+}
+
 func generate_html(rounds []Workout) error {
 	var content bytes.Buffer
 
@@ -78,7 +89,7 @@ func generate_html(rounds []Workout) error {
 		w.TrackLaps = laps
 
 		vmas := map[string]WorkoutVMA{}
-		for _, vmad := range VMA {
+		for _, vmad := range getVMA(VMA) {
 			wt := WorkoutVMA{}
 			vma := float64(vmad)
 			total_time, err := calcul_vma_distance(vma, percentage, meters)
