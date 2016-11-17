@@ -12,24 +12,50 @@ var (
 var VMA = []int{13, 14, 15, 16, 17, 18, 19}
 
 func main() {
-	// converting to float
-
-	var rounds = [][]string{
-		[]string{"1", "90", "1000", "200m active"},
-		[]string{"1", "95", "800", "200m active"},
-		[]string{"1", "100", "600", "2mn"},
-		[]string{"1", "110", "400", "2mn"},
-		[]string{"1", "120", "200", "2mn"},
+	var rounds = []Workout{
+		Workout{
+			Repetition:  "1",
+			Meters:      "1000",
+			Percentage:  "90",
+			TrackLength: TRACK_LENGTH,
+			Repos:       "200m active",
+		},
+		Workout{
+			Repetition:  "1",
+			Meters:      "800",
+			Percentage:  "95",
+			TrackLength: TRACK_LENGTH,
+			Repos:       "200m active",
+		},
+		Workout{
+			Repetition:  "1",
+			Meters:      "600",
+			Percentage:  "100",
+			TrackLength: TRACK_LENGTH,
+			Repos:       "2mn arret",
+		},
+		Workout{
+			Repetition:  "1",
+			Meters:      "400",
+			Percentage:  "105",
+			TrackLength: TRACK_LENGTH,
+			Repos:       "200m active",
+		},
+		Workout{
+			Repetition:  "1",
+			Meters:      "200",
+			Percentage:  "110",
+			TrackLength: TRACK_LENGTH,
+			Repos:       "200m active",
+		},
 	}
 
-	// rounds = [][]string{
-	// 	[]string{"8", "110", "100", "1mn30"},
-	// 	[]string{"6", "100", "200", "1mn30"},
-	// 	[]string{"4", "90", "400", "1mn30"},
-	// }
-	//err := generate_html(rounds)
-
 	db, err := createTable()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = generate_html(rounds)
 	if err != nil {
 		log.Fatal(err)
 	}

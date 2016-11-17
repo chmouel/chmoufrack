@@ -40,31 +40,27 @@ func generate_template(content string) (err error) {
 	return
 }
 
-func generate_html(rounds [][]string) error {
+func generate_html(rounds []Workout) error {
 	var content bytes.Buffer
 
 	for i := range rounds {
-		w := Workout{}
-		w.TrackLength = TRACK_LENGTH
-
-		repetition, err := strconv.ParseFloat(rounds[i][0], 64)
+		w := rounds[i]
+		repetition, err := strconv.ParseFloat(w.Repetition, 64)
 		if err != nil {
 			return err
 		}
 		w.Repetition = fmt.Sprintf("%.f", repetition)
 
-		percentage, err := strconv.ParseFloat(rounds[i][1], 64)
+		percentage, err := strconv.ParseFloat(w.Percentage, 64)
 		if err != nil {
 			return err
 		}
 		w.Percentage = fmt.Sprintf("%.f", percentage)
-		meters, err := strconv.ParseFloat(rounds[i][2], 64)
+		meters, err := strconv.ParseFloat(w.Meters, 64)
 		if err != nil {
 			log.Fatal(err)
 		}
 		w.Meters = fmt.Sprintf("%.f", meters)
-
-		w.Repos = rounds[i][3]
 
 		track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
 		if err != nil {
