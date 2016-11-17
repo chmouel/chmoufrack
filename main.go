@@ -1,67 +1,33 @@
 package main
 
-import (
-	"fmt"
-	"log"
-)
-
-var (
-	TRACK_LENGTH = 400
-)
+import "log"
 
 var VMA = []int{13, 14, 15, 16, 17, 18, 19}
 
 func main() {
-	var rounds = []Workout{
-		Workout{
-			Repetition:  "1",
-			Meters:      "1000",
-			Percentage:  "90",
-			TrackLength: TRACK_LENGTH,
-			Repos:       "200m active",
-		},
-		Workout{
-			Repetition:  "1",
-			Meters:      "800",
-			Percentage:  "95",
-			TrackLength: TRACK_LENGTH,
-			Repos:       "200m active",
-		},
-		Workout{
-			Repetition:  "1",
-			Meters:      "600",
-			Percentage:  "100",
-			TrackLength: TRACK_LENGTH,
-			Repos:       "2mn arret",
-		},
-		Workout{
-			Repetition:  "1",
-			Meters:      "400",
-			Percentage:  "105",
-			TrackLength: TRACK_LENGTH,
-			Repos:       "200m active",
-		},
-		Workout{
-			Repetition:  "1",
-			Meters:      "200",
-			Percentage:  "110",
-			TrackLength: TRACK_LENGTH,
-			Repos:       "200m active",
-		},
-	}
+	var rounds = []Workout{}
 
 	db, err := createTable()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	program_name := "Pyramidal"
+	rows, err := db.Query("SELECT W.repetition, W.meters, W.percentage, W.repos FROM Program P, Workout W, ProgramWorkout PW WHERE P.name = $1 AND PW.WorkoutID == W.ID AND PW.ProgramID == P.id", program_name)
+
+	for rows.Next() {
+		var w Workout
+		err := rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
+		if err != nil {
+			log.Fatal(err)
+		}
+		rounds = append(rounds, w)
+	}
 	err = generate_html(rounds)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(db)
-	fmt.Println(rounds)
 }
 
 // Local Variables:

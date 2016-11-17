@@ -1,5 +1,9 @@
 package main
 
+var (
+	TRACK_LENGTH = 400
+)
+
 type Workout struct {
 	Repetition  string
 	Meters      string
