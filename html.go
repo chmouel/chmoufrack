@@ -11,7 +11,6 @@ import (
 )
 
 func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
-	fmt.Println(ts.WP.Repetition)
 	t, err := template.ParseFiles("templates/content.tmpl")
 	if err != nil {
 		fmt.Println(err)
