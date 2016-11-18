@@ -25,7 +25,7 @@ func main() {
 	}
 
 	program_name := "Pyramidal"
-	rounds, err = getWorkouts(program_name, db)
+	rounds, err = getWorkoutsforProgram(program_name, db)
 	if err != nil {
 		log.Fatal(err)
 	}

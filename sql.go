@@ -160,7 +160,7 @@ func associateWorkoutProgram(programid int64, workoutid int64, db *sql.DB) (res 
 }
 
 // getWorkouts: get a workout for a
-func getWorkouts(name string, db *sql.DB) (rounds []Workout, err error) {
+func getWorkoutsforProgram(name string, db *sql.DB) (rounds []Workout, err error) {
 	var getWorkoutSQL = `
     SELECT W.repetition, W.meters, W.percentage, W.repos
        FROM Program P, Workout W, ProgramWorkout PW

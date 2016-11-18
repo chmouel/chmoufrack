@@ -14,7 +14,7 @@ func ListAllPrograms(db *sql.DB) (err error) {
 	for p := range programs {
 		var rounds []Workout
 		t := programs[p]
-		rounds, err = getWorkouts(t.Name, db)
+		rounds, err = getWorkoutsforProgram(t.Name, db)
 		if err != nil {
 			return
 		}
