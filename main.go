@@ -10,8 +10,9 @@ import (
 func main() {
 	var rounds = []Workout{}
 
-	listP := flag.Bool("listp", false, "list all programs")
-	listW := flag.Bool("listw", false, "list all workouts")
+	listP := flag.Bool("listp", false, "List all programs")
+	listW := flag.Bool("listw", false, "List all workouts")
+	outputFile := flag.String("output", "", "Output file for the generated HTML")
 	flag.Parse()
 
 	db, err := createSchema()
@@ -33,8 +34,17 @@ func main() {
 		return
 	}
 
+	outputWriter := os.Stdout
+	if *outputFile != "" {
+		fo, err := os.Create(*outputFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		outputWriter = fo
+	}
+
 	if flag.Arg(0) == "" {
-		fmt.Println("I need a program name to generate for use -listp to list them.")
+		fmt.Println("I need a workout program name to generate for use -listp to list them.")
 		os.Exit(1)
 	}
 
@@ -51,7 +61,7 @@ func main() {
 	}
 
 	// fmt.Println(rounds)
-	err = generate_html(rounds)
+	err = generate_html(rounds, outputWriter)
 	if err != nil {
 		log.Fatal(err)
 	}

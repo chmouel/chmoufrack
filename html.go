@@ -13,7 +13,6 @@ import (
 func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	t, err := template.ParseFiles("templates/content.tmpl")
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	err = t.Execute(content, ts)
@@ -23,17 +22,16 @@ func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	return
 }
 
-func generate_template(content string) (err error) {
+func generate_template(content string, outputWriter *os.File) (err error) {
 	dico := map[string]string{
 		"Content": content,
 	}
 
 	t, err := template.ParseFiles("templates/template.tmpl")
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
-	err = t.Execute(os.Stdout, dico)
+	err = t.Execute(outputWriter, dico)
 	if err != nil {
 		return
 	}
@@ -51,7 +49,7 @@ func getVMA(value []int) (vmas []int) {
 	return
 }
 
-func generate_html(rounds []Workout) error {
+func generate_html(rounds []Workout, outputWriter *os.File) error {
 	var content bytes.Buffer
 
 	for i := range rounds {
@@ -122,9 +120,8 @@ func generate_html(rounds []Workout) error {
 		if err != nil {
 			return err
 		}
-		//spew.Dump(w)
 	}
-	err := generate_template(content.String())
+	err := generate_template(content.String(), outputWriter)
 	if err != nil {
 		return err
 	}
