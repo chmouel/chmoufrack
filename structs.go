@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 var (
 	TRACK_LENGTH = 400
 	VMA          = []int{13, 17}
@@ -20,6 +22,12 @@ type WorkoutVMA struct {
 	TimeTrack string
 	Speed     string
 	Pace      string
+}
+
+type Program struct {
+	Name    string
+	Date    time.Time
+	Comment string
 }
 
 type TemplateStruct struct {
