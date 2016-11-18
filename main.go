@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
@@ -31,7 +33,13 @@ func main() {
 		return
 	}
 
-	program_name := "Pyramidal"
+	if flag.Arg(0) == "" {
+		fmt.Println("I need a program name to generate for use -listp to list them.")
+		os.Exit(1)
+	}
+
+	program_name := flag.Arg(0)
+
 	rounds, err = getWorkoutsforProgram(program_name, db)
 	if err != nil {
 		log.Fatal(err)
