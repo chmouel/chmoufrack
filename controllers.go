@@ -4,19 +4,19 @@ import "database/sql"
 
 // createPrograms ...
 func createProgram(name string, db *sql.DB) (res sql.Result, err error) {
-	var createProgramSQL = `INSERT INTO Program(name) VALUES(?);`
+	var createProgramSQL = `INSERT OR REPLACE INTO Program(name) VALUES(?);`
 	res, err = sqlTX(db, createProgramSQL, name)
 	return
 }
 
 func createWorkout(repetition int, percentage int, meters int, repos string, db *sql.DB) (res sql.Result, err error) {
-	var createWorkoutSQL = `INSERT INTO Workout(repetition, percentage, meters, repos) VALUES(?, ?, ?, ?);`
+	var createWorkoutSQL = `INSERT OR REPLACE INTO Workout(repetition, percentage, meters, repos) VALUES(?, ?, ?, ?);`
 	res, err = sqlTX(db, createWorkoutSQL, repetition, percentage, meters, repos)
 	return
 }
 
 func associateWorkoutProgram(programid int64, workoutid int64, db *sql.DB) (res sql.Result, err error) {
-	var associateWorkoutProgramSQL = `INSERT INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
+	var associateWorkoutProgramSQL = `INSERT OR REPLACE INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
 	res, err = sqlTX(db, associateWorkoutProgramSQL, programid, workoutid)
 	return
 }

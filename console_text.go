@@ -18,7 +18,7 @@ func ListAllPrograms(db *sql.DB) (err error) {
 		if err != nil {
 			return
 		}
-		fmt.Printf("%s -- %d workouts\n", t.Name, len(rounds))
+		fmt.Printf("%-25s | %d workouts\n", t.Name, len(rounds))
 	}
 	return
 }
