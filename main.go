@@ -45,6 +45,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if len(rounds) == 0 {
+		fmt.Println("No program or workouts associated with this program", program_name)
+		os.Exit(1)
+	}
+
 	// fmt.Println(rounds)
 	err = generate_html(rounds)
 	if err != nil {
