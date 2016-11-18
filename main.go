@@ -8,7 +8,8 @@ import (
 func main() {
 	var rounds = []Workout{}
 
-	listP := flag.Bool("list", false, "list all programs")
+	listP := flag.Bool("listp", false, "list all programs")
+	listW := flag.Bool("listw", false, "list all workouts")
 	flag.Parse()
 
 	db, err := createSchema()
@@ -18,6 +19,12 @@ func main() {
 
 	if *listP {
 		err := ListAllPrograms(db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *listW {
+		err := ListAllWorkouts(db)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -58,3 +58,21 @@ func getPrograms(db *sql.DB) (programs []Program, err error) {
 	}
 	return
 }
+
+// getWorkout ...
+func getWorkouts(db *sql.DB) (workouts []Workout, err error) {
+	var getProgramsSQL = `SELECT repetition, meters, percentage, repos from Workout`
+	rows, err := db.Query(getProgramsSQL)
+	if err != nil {
+		return
+	}
+	for rows.Next() {
+		var w Workout
+		err = rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
+		if err != nil {
+			return
+		}
+		workouts = append(workouts, w)
+	}
+	return
+}

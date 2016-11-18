@@ -18,7 +18,24 @@ func ListAllPrograms(db *sql.DB) (err error) {
 		if err != nil {
 			return
 		}
-		fmt.Printf("%-25s | %d workouts\n", t.Name, len(rounds))
+		fmt.Printf("%-15s | ", t.Name)
+		for w := range rounds {
+			tt := rounds[w]
+			fmt.Printf("%sx%s@%s ", tt.Repetition, tt.Meters, tt.Percentage)
+		}
+		fmt.Printf("\n")
+	}
+	return
+}
+
+func ListAllWorkouts(db *sql.DB) (err error) {
+	workouts, err := getWorkouts(db)
+	if err != nil {
+		return
+	}
+	for p := range workouts {
+		t := workouts[p]
+		fmt.Printf("%sx%s@%s -- rest %s \n", t.Repetition, t.Meters, t.Percentage, t.Repos)
 	}
 	return
 }
