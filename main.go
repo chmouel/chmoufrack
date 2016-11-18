@@ -60,7 +60,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// fmt.Println(rounds)
 	err = generate_html(rounds, outputWriter)
 	if err != nil {
 		log.Fatal(err)
