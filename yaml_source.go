@@ -6,7 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// Nested struct and marshall is not working
+// Nested struct and yaml is not working
 type yamlProgram struct {
 	Name     string
 	Comment  string
