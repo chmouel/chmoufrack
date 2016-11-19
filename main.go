@@ -26,6 +26,7 @@ func main() {
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
+	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of frack: PROGRAM\n\n")
@@ -33,6 +34,8 @@ func main() {
 	}
 
 	flag.Parse()
+
+	TRACK_LENGTH = *trackLength
 
 	CONFIG_DIR = *configDir
 	if _, err := os.Stat(*configDir); os.IsNotExist(err) {
