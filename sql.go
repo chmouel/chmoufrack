@@ -48,7 +48,7 @@ func createSchema() (db *sql.DB, err error) {
 
 func createSample(db *sql.DB) (err error) {
 	var res sql.Result
-	res, err = createProgram("Pyramidal", db)
+	res, err = createProgram("Pyramidal", "Pyramidial Workout going string and stronger by the strongess", db)
 	if err != nil {
 		return
 	}
@@ -57,7 +57,7 @@ func createSample(db *sql.DB) (err error) {
 		return
 	}
 
-	res, err = createProgram("3x100", db)
+	res, err = createProgram("3x100", "3x100 is the best!", db)
 	if err != nil {
 		return
 	}
@@ -66,7 +66,7 @@ func createSample(db *sql.DB) (err error) {
 	if err != nil {
 		return
 	}
-	res, err = createWorkout(3, 90, 800, "1.5 minutes", db)
+	res, err = createWorkout(3, 800, 90, "1.5 minutes", db)
 	if err != nil {
 		return
 	}
@@ -86,7 +86,7 @@ func createSample(db *sql.DB) (err error) {
 		return
 	}
 
-	res, err = createWorkout(3, 95, 1000, "5 minutes", db)
+	res, err = createWorkout(3, 1000, 95, "5 minutes", db)
 	if err != nil {
 		return
 	}

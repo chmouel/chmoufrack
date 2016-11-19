@@ -9,7 +9,7 @@ func createProgram(name string, comment string, db *sql.DB) (res sql.Result, err
 	return
 }
 
-func createWorkout(repetition int, percentage int, meters int, repos string, db *sql.DB) (res sql.Result, err error) {
+func createWorkout(repetition int, meters int, percentage int, repos string, db *sql.DB) (res sql.Result, err error) {
 	var createWorkoutSQL = `INSERT OR REPLACE INTO Workout(repetition, percentage, meters, repos) VALUES(?, ?, ?, ?);`
 	res, err = sqlTX(db, createWorkoutSQL, repetition, percentage, meters, repos)
 	return

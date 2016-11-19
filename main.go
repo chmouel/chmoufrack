@@ -5,14 +5,23 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
 	var rounds = []Workout{}
 
-	listP := flag.Bool("listp", false, "List all programs")
-	listW := flag.Bool("listw", false, "List all workouts")
-	outputFile := flag.String("output", "", "Output file for the generated HTML")
+	listP := flag.Bool("listP", false, "List all programs")
+	listW := flag.Bool("listW", false, "List all workouts")
+	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
+	createW := flag.Bool("createW", false, "Create workout: REPETITION METERS PERCENTAGE REPOS")
+	outputFile := flag.String("o", "", "Output file for the generated HTML")
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of frack: PROGRAM\n\n")
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 
 	db, err := createSchema()
@@ -32,19 +41,54 @@ func main() {
 			log.Fatal(err)
 		}
 		return
+	} else if *createP {
+		if flag.Arg(0) == "" {
+			log.Fatal("createP take at least one argument")
+		}
+		program := flag.Arg(0)
+		comment := flag.Arg(1)
+
+		_, err := createProgram(program, comment, db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *createW {
+		if flag.Arg(0) == "" {
+			log.Fatal("createW take at least one argument")
+		}
+		repetition, err := strconv.Atoi(flag.Arg(0))
+		if err != nil {
+			log.Fatal(err)
+		}
+		meters, err := strconv.Atoi(flag.Arg(1))
+		if err != nil {
+			log.Fatal(err)
+		}
+		percentage, err := strconv.Atoi(flag.Arg(2))
+		if err != nil {
+			log.Fatal(err)
+		}
+		repos := flag.Arg(3)
+
+		_, err = createWorkout(repetition, meters, percentage, repos, db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	}
 
 	outputWriter := os.Stdout
 	if *outputFile != "" {
-		fo, err := os.Create(*outputFile)
+		fileOutput, err := os.Create(*outputFile)
 		if err != nil {
 			log.Fatal(err)
 		}
-		outputWriter = fo
+		outputWriter = fileOutput
 	}
 
 	if flag.Arg(0) == "" {
-		fmt.Println("I need a workout program name to generate for use -listp to list them.")
+		fmt.Println("I need a workout program name to generate for use -listP to list them.")
 		os.Exit(1)
 	}
 
@@ -65,7 +109,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-// Local Variables:
-// compile-command: "go run main.go generate_html.go calcul.go sql.go";
-// End:
