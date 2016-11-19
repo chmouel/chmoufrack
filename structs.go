@@ -8,6 +8,7 @@ var (
 )
 
 type Workout struct {
+	ID          int64
 	Repetition  string
 	Meters      string
 	Percentage  string
@@ -25,6 +26,7 @@ type WorkoutVMA struct {
 }
 
 type Program struct {
+	ID      int64
 	Name    string
 	Date    time.Time
 	Comment string

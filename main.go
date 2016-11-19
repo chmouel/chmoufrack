@@ -15,6 +15,7 @@ func main() {
 	listW := flag.Bool("listW", false, "List all workouts")
 	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
 	createW := flag.Bool("createW", false, "Create workout: REPETITION METERS PERCENTAGE REPOS")
+	assignWP := flag.Bool("assignWP", false, "Assign: WORKOUT PROGRAM")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 
 	flag.Usage = func() {
@@ -72,6 +73,15 @@ func main() {
 		repos := flag.Arg(3)
 
 		_, err = createWorkout(repetition, meters, percentage, repos, db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *assignWP {
+		if flag.Arg(0) == "" || flag.Arg(1) == "" {
+			log.Fatal("assignWP take at least two arguments")
+		}
+		_, err = associateWorkoutProgramByName(flag.Arg(0), flag.Arg(1), db)
 		if err != nil {
 			log.Fatal(err)
 		}
