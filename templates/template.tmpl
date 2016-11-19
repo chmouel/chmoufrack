@@ -8,35 +8,9 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
-    @media (min-width: 768px) {
-        .container-small {
-            width: 300px;
-        }
-        .container-large {
-            width: 970px;
-        }
+    .container-fluid {
+        max-width: 780px;
     }
-    @media (min-width: 992px) {
-        .container-small {
-            width: 500px;
-        }
-        .container-large {
-            width: 1170px;
-        }
-    }
-    @media (min-width: 1200px) {
-        .container-small {
-            width: 800px;
-        }
-        .container-large {
-            width: 1500px;
-        }
-    }
-
-    .container-small, .container-large {
-        max-width: 100%;
-    }
-
     .img-responsive {
         margin: 0 auto;
     }
@@ -55,7 +29,7 @@
   <img class="img-responsive img-rounded" alt="banner" src="http://chmouel.com/frac/banner.jpg">
 </div>
 </div>
-<div class="container container-small">
+<div class="container-fluid">
   {{.Content}}
 </div>
 
