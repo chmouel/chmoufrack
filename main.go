@@ -162,7 +162,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = generate_html(rounds, outputWriter)
+	err = generate_html(program_name, rounds, outputWriter)
 	if err != nil {
 		log.Fatal(err)
 	}

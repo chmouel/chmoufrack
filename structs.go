@@ -34,6 +34,7 @@ type Program struct {
 }
 
 type TemplateStruct struct {
-	WP   Workout
-	VMAs map[string]WorkoutVMA
+	ProgramName string
+	WP          Workout
+	VMAs        map[string]WorkoutVMA
 }

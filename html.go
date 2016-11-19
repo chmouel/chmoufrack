@@ -22,9 +22,10 @@ func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	return
 }
 
-func generate_template(content string, outputWriter *os.File) (err error) {
+func generate_template(program_name, content string, outputWriter *os.File) (err error) {
 	dico := map[string]string{
-		"Content": content,
+		"Content":     content,
+		"ProgramName": program_name,
 	}
 
 	t, err := template.ParseFiles("templates/template.tmpl")
@@ -49,7 +50,7 @@ func getVMA(value []int) (vmas []int) {
 	return
 }
 
-func generate_html(rounds []Workout, outputWriter *os.File) error {
+func generate_html(program_name string, rounds []Workout, outputWriter *os.File) error {
 	var content bytes.Buffer
 
 	for i := range rounds {
@@ -122,7 +123,8 @@ func generate_html(rounds []Workout, outputWriter *os.File) error {
 			return err
 		}
 	}
-	err := generate_template(content.String(), outputWriter)
+
+	err := generate_template(program_name, content.String(), outputWriter)
 	if err != nil {
 		return err
 	}
