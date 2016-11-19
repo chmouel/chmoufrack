@@ -5,18 +5,25 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strconv"
 )
 
 func main() {
 	var rounds = []Workout{}
-
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
 	listP := flag.Bool("listP", false, "List all programs")
 	listW := flag.Bool("listW", false, "List all workouts")
 	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
 	createW := flag.Bool("createW", false, "Create workout: REPETITION METERS PERCENTAGE REPOS")
 	assignWP := flag.Bool("assignWP", false, "Assign: WORKOUT PROGRAM")
+	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
+	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of frack: PROGRAM\n\n")
@@ -24,6 +31,14 @@ func main() {
 	}
 
 	flag.Parse()
+
+	CONFIG_DIR = *configDir
+	if _, err := os.Stat(*configDir); os.IsNotExist(err) {
+		err := os.MkdirAll(*configDir, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	db, err := createSchema()
 	if err != nil {
@@ -82,6 +97,12 @@ func main() {
 			log.Fatal("assignWP take at least two arguments")
 		}
 		_, err = associateWorkoutProgramByName(flag.Arg(0), flag.Arg(1), db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *populateSample {
+		err = createSample(db)
 		if err != nil {
 			log.Fatal(err)
 		}

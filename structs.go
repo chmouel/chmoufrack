@@ -5,6 +5,7 @@ import "time"
 var (
 	TRACK_LENGTH = 400
 	VMA          = []int{13, 17}
+	CONFIG_DIR   = ""
 )
 
 type Workout struct {
