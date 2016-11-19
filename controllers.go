@@ -3,9 +3,9 @@ package main
 import "database/sql"
 
 // createPrograms ...
-func createProgram(name string, db *sql.DB) (res sql.Result, err error) {
-	var createProgramSQL = `INSERT OR REPLACE INTO Program(name) VALUES(?);`
-	res, err = sqlTX(db, createProgramSQL, name)
+func createProgram(name string, comment string, db *sql.DB) (res sql.Result, err error) {
+	var createProgramSQL = `INSERT OR REPLACE INTO Program(name, comment) VALUES(?, ?);`
+	res, err = sqlTX(db, createProgramSQL, name, comment)
 	return
 }
 
