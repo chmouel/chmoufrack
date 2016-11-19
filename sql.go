@@ -35,14 +35,6 @@ func createSchema() (db *sql.DB, err error) {
 	}
 
 	_, err = db.Exec(sqlTable)
-	if err != nil {
-		return
-	}
-
-	err = createSample(db)
-	if err != nil {
-		return
-	}
 	return
 }
 
