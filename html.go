@@ -85,6 +85,7 @@ func generate_html(rounds []Workout, outputWriter *os.File) error {
 			laps = strings.Replace(laps, ".5", "½", -1)
 		}
 		w.TrackLaps = laps
+		w.TrackLength = TRACK_LENGTH
 
 		vmas := map[string]WorkoutVMA{}
 		for _, vmad := range getVMA(VMA) {
