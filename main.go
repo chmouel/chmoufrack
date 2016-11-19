@@ -27,6 +27,7 @@ func main() {
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
 	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
+	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of frack: PROGRAM\n\n")
@@ -152,11 +153,14 @@ func main() {
 
 	program_name := flag.Arg(0)
 
-	rounds, err = getWorkoutsforProgram(program_name, db)
+	if *yamlSource != "" {
+		rounds, err = yamlImport(program_name, *yamlSource)
+	} else {
+		rounds, err = getWorkoutsforProgram(program_name, db)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	if len(rounds) == 0 {
 		fmt.Println("No program or workouts associated with this program", program_name)
 		os.Exit(1)

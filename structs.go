@@ -10,12 +10,12 @@ var (
 
 type Workout struct {
 	ID          int64
-	Repetition  string
-	Meters      string
-	Percentage  string
+	Repetition  string `yaml:"laps"`
+	Meters      string `yaml:"length"`
+	Percentage  string `yaml:"percentage"`
 	TrackLaps   string
 	TrackLength int
-	Repos       string
+	Repos       string `yaml:"rest"`
 }
 
 type WorkoutVMA struct {
