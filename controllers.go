@@ -19,6 +19,28 @@ func createWorkout(repetition int, meters int, percentage int, repos string, db 
 	return
 }
 
+func deleteProgram(name string, db *sql.DB) (res sql.Result, err error) {
+	p, err := getProgram(name, db)
+	if err != nil {
+		log.Fatalf("No results for Program %s", name)
+	}
+	var deletePWSQL = `DELETE FROM ProgramWorkout WHERE ProgramID == ?`
+	res, err = sqlTX(db, deletePWSQL, p.ID)
+
+	var deleteProgramSQL = `DELETE FROM Program WHERE name=?`
+	res, err = sqlTX(db, deleteProgramSQL, name)
+	return
+}
+
+func deleteWorkout(id int64, db *sql.DB) (res sql.Result, err error) {
+	var deleteWorkoutSQL = `DELETE FROM ProgramWorkout WHERE WorkoutID == ?`
+	res, err = sqlTX(db, deleteWorkoutSQL, id)
+
+	deleteWorkoutSQL = `DELETE FROM Workout WHERE id=?`
+	res, err = sqlTX(db, deleteWorkoutSQL, id)
+	return
+}
+
 func associateWorkoutProgram(programid int64, workoutid int64, db *sql.DB) (res sql.Result, err error) {
 	var associateWorkoutProgramSQL = `INSERT OR REPLACE INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
 	res, err = sqlTX(db, associateWorkoutProgramSQL, programid, workoutid)

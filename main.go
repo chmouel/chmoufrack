@@ -21,6 +21,8 @@ func main() {
 	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
 	createW := flag.Bool("createW", false, "Create workout: REPETITION METERS PERCENTAGE REPOS")
 	assignWP := flag.Bool("assignWP", false, "Assign: WORKOUT PROGRAM")
+	deleteP := flag.Bool("deleteP", false, "Create Program: PROGRAM_NAME")
+	deleteW := flag.Bool("deleteW", false, "Delete workout: WORKOUT_NAME")
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
@@ -103,6 +105,28 @@ func main() {
 		return
 	} else if *populateSample {
 		err = createSample(db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *deleteP {
+		if flag.Arg(0) == "" {
+			log.Fatal("deleteP take at least one argument")
+		}
+		_, err = deleteProgram(flag.Arg(0), db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	} else if *deleteW {
+		if flag.Arg(0) == "" {
+			log.Fatal("deleteW take at least one argument")
+		}
+		w, err := getWorkoutByName(flag.Arg(0), db)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = deleteWorkout(w.ID, db)
 		if err != nil {
 			log.Fatal(err)
 		}
