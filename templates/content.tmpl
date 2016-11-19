@@ -1,52 +1,33 @@
-<div class="row medium-8 large-7 columns">
-  <div class="blog-post">
-    <div>
-      <div style="background-color: #def0fc;text-align: center; font-weight: bold; font-size: 150%; line-height: 100px; width: 100%;height: 100px;">
-        {{.WP.Repetition}} * {{.WP.Meters}}m at {{.WP.Percentage}}% Laps: {{.WP.TrackLaps}}
-      </div>
-    </div>
-    <table width="100%">
-      <tr align="left">
-        <th>
-          VMA
-        </th>
-        <th>
-          Total time
-        </th>
-        <th>
-          {{.WP.TrackLength}}m time
-        </th>
-        <th>
-          Speed
-        </th>
-        <th>
-          Pace
-        </th>
-      </tr>
-    {{range .VMAs}}
+<div class="container container-small">
+  <div class="well-sm">
+    <h2 class="text-primary text-center">{{.WP.Repetition}} * {{.WP.Meters}}m @ {{.WP.Percentage}}%</h2>
+  </div>
+  <div class="table-responsive">
+  <table summary="Frac" class="table table-striped">
+    <thead>
       <tr>
-        <td>
-          <b>{{.VMA}}</b>
-        </td>
-        <td>
-          {{.TotalTime}}
-        </td>
-        <td>
-          {{.TimeTrack}}
-        </td>
-        <td>
-          {{.Speed}}
-        </td>
-        <td>
-          {{.Pace}}
-        </td>
+        <th>VMA
+        </th>
+        <th>Total time</th>
+        <th>{{.WP.TrackLength}}m time</th>
+        <th>Speed</th>
+        <th>Pace</th>
       </tr>
-    {{end}}
+    </thead>
+    <tbody>
+      {{range .VMAs}}
+      <tr>
+        <td><b>{{.VMA}}</b></td>
+        <td>{{.TotalTime}}</td>
+        <td>{{.TimeTrack}}</td>
+        <td>{{.Speed}}</td>
+        <td>{{.Pace}}</td>
+      </tr>
+      {{end}}
+    </tbody>
     </table>
-    <div style="text-align: right; font-weight: bold; background-color: #ffffe6;font-size: 110%; width: 100%">
-      Rest: {{.WP.Repos}}
-    </div>
-    <p/>
-
+  </div>
+  <div>
+    <p class="text-right text-warning" >Repos: {{.WP.Repos}} </p>
   </div>
 </div>
