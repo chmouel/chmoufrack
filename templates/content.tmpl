@@ -1,5 +1,5 @@
-  <div class="well-sm">
-    <h3 class="text-primary text-center">{{.WP.Repetition}} * {{.WP.Meters}}m @ {{.WP.Percentage}}%</h3>
+  <div class="well-sm program">
+    <h3 class="text-center"><strong>{{.WP.Repetition}} * {{.WP.Meters}}m @ {{.WP.Percentage}}%</strong></h3>
   </div>
   <div class="table-responsive">
   <table summary="Frac" class="table table-bordered table-striped">
@@ -16,7 +16,7 @@
     <tbody>
       {{range .VMAs}}
       <tr>
-        <td><b>{{.VMA}}</b></td>
+        <td><strong>{{.VMA}}</strong></td>
         <td>{{.TotalTime}}</td>
         <td>{{.TimeTrack}}</td>
         <td>{{.Speed}}</td>
