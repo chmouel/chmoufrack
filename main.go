@@ -46,19 +46,19 @@ func main() {
 		}
 	}
 
-	db, err := createSchema()
+	err = createSchema()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *listP {
-		err := ListAllPrograms(db)
+		err = ListAllPrograms()
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	} else if *listW {
-		err := ListAllWorkouts(db)
+		err = ListAllWorkouts()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -70,7 +70,7 @@ func main() {
 		program := flag.Arg(0)
 		comment := flag.Arg(1)
 
-		_, err := createProgram(program, comment, db)
+		_, err := createProgram(program, comment)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -93,7 +93,7 @@ func main() {
 		}
 		repos := flag.Arg(3)
 
-		_, err = createWorkout(repetition, meters, percentage, repos, db)
+		_, err = createWorkout(repetition, meters, percentage, repos)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -102,13 +102,13 @@ func main() {
 		if flag.Arg(0) == "" || flag.Arg(1) == "" {
 			log.Fatal("assignWP take at least two arguments")
 		}
-		_, err = associateWorkoutProgramByName(flag.Arg(0), flag.Arg(1), db)
+		_, err = associateWorkoutProgramByName(flag.Arg(0), flag.Arg(1))
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	} else if *populateSample {
-		err = createSample(db)
+		err = createSample()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -117,7 +117,7 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteP take at least one argument")
 		}
-		_, err = deleteProgram(flag.Arg(0), db)
+		_, err = deleteProgram(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -126,11 +126,11 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteW take at least one argument")
 		}
-		w, err := getWorkoutByName(flag.Arg(0), db)
+		w, err := getWorkoutByName(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = deleteWorkout(w.ID, db)
+		_, err = deleteWorkout(w.ID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -156,7 +156,7 @@ func main() {
 	if *yamlSource != "" {
 		rounds, err = yamlImport(program_name, *yamlSource)
 	} else {
-		rounds, err = getWorkoutsforProgram(program_name, db)
+		rounds, err = getWorkoutsforProgram(program_name)
 	}
 	if err != nil {
 		log.Fatal(err)

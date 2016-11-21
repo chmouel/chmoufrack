@@ -1,20 +1,17 @@
 package main
 
-import (
-	"database/sql"
-	"fmt"
-)
+import "fmt"
 
 // ListAllPrograms ...
-func ListAllPrograms(db *sql.DB) (err error) {
-	programs, err := getPrograms(db)
+func ListAllPrograms() (err error) {
+	programs, err := getPrograms()
 	if err != nil {
 		return
 	}
 	for p := range programs {
 		var rounds []Workout
 		t := programs[p]
-		rounds, err = getWorkoutsforProgram(t.Name, db)
+		rounds, err = getWorkoutsforProgram(t.Name)
 		if err != nil {
 			return
 		}
@@ -28,8 +25,8 @@ func ListAllPrograms(db *sql.DB) (err error) {
 	return
 }
 
-func ListAllWorkouts(db *sql.DB) (err error) {
-	workouts, err := getWorkouts(db)
+func ListAllWorkouts() (err error) {
+	workouts, err := getWorkouts()
 	if err != nil {
 		return
 	}

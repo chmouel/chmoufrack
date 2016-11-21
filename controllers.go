@@ -7,48 +7,48 @@ import (
 )
 
 // createPrograms ...
-func createProgram(name string, comment string, db *sql.DB) (res sql.Result, err error) {
+func createProgram(name string, comment string) (res sql.Result, err error) {
 	var createProgramSQL = `INSERT OR REPLACE INTO Program(name, comment) VALUES(?, ?);`
-	res, err = sqlTX(db, createProgramSQL, name, comment)
+	res, err = sqlTX(createProgramSQL, name, comment)
 	return
 }
 
-func createWorkout(repetition int, meters int, percentage int, repos string, db *sql.DB) (res sql.Result, err error) {
+func createWorkout(repetition int, meters int, percentage int, repos string) (res sql.Result, err error) {
 	var createWorkoutSQL = `INSERT OR REPLACE INTO Workout(repetition, percentage, meters, repos) VALUES(?, ?, ?, ?);`
-	res, err = sqlTX(db, createWorkoutSQL, repetition, percentage, meters, repos)
+	res, err = sqlTX(createWorkoutSQL, repetition, percentage, meters, repos)
 	return
 }
 
-func deleteProgram(name string, db *sql.DB) (res sql.Result, err error) {
-	p, err := getProgram(name, db)
+func deleteProgram(name string) (res sql.Result, err error) {
+	p, err := getProgram(name)
 	if err != nil {
 		log.Fatalf("No results for Program %s", name)
 	}
 	var deletePWSQL = `DELETE FROM ProgramWorkout WHERE ProgramID == ?`
-	res, err = sqlTX(db, deletePWSQL, p.ID)
+	res, err = sqlTX(deletePWSQL, p.ID)
 
 	var deleteProgramSQL = `DELETE FROM Program WHERE name=?`
-	res, err = sqlTX(db, deleteProgramSQL, name)
+	res, err = sqlTX(deleteProgramSQL, name)
 	return
 }
 
-func deleteWorkout(id int64, db *sql.DB) (res sql.Result, err error) {
+func deleteWorkout(id int64) (res sql.Result, err error) {
 	var deleteWorkoutSQL = `DELETE FROM ProgramWorkout WHERE WorkoutID == ?`
-	res, err = sqlTX(db, deleteWorkoutSQL, id)
+	res, err = sqlTX(deleteWorkoutSQL, id)
 
 	deleteWorkoutSQL = `DELETE FROM Workout WHERE id=?`
-	res, err = sqlTX(db, deleteWorkoutSQL, id)
+	res, err = sqlTX(deleteWorkoutSQL, id)
 	return
 }
 
-func associateWorkoutProgram(programid int64, workoutid int64, db *sql.DB) (res sql.Result, err error) {
+func associateWorkoutProgram(programid int64, workoutid int64) (res sql.Result, err error) {
 	var associateWorkoutProgramSQL = `INSERT OR REPLACE INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
-	res, err = sqlTX(db, associateWorkoutProgramSQL, programid, workoutid)
+	res, err = sqlTX(associateWorkoutProgramSQL, programid, workoutid)
 	return
 }
 
-func associateWorkoutProgramByName(workoutName string, programName string, db *sql.DB) (res sql.Result, err error) {
-	w, err := getWorkoutByName(workoutName, db)
+func associateWorkoutProgramByName(workoutName string, programName string) (res sql.Result, err error) {
+	w, err := getWorkoutByName(workoutName)
 	if err != nil {
 		return
 	}
@@ -57,23 +57,23 @@ func associateWorkoutProgramByName(workoutName string, programName string, db *s
 		log.Fatalf("No results for workout %s", workoutName)
 	}
 
-	p, err := getProgram(programName, db)
+	p, err := getProgram(programName)
 	if err != nil {
 		log.Fatalf("No results for program %s", programName)
 	}
-	_, err = associateWorkoutProgram(w.ID, p.ID, db)
+	_, err = associateWorkoutProgram(w.ID, p.ID)
 	return
 }
 
 // getWorkouts: get a workout for a
-func getWorkoutsforProgram(name string, db *sql.DB) (rounds []Workout, err error) {
+func getWorkoutsforProgram(name string) (rounds []Workout, err error) {
 	var getWorkoutSQL = `
     SELECT W.id, W.repetition, W.meters, W.percentage, W.repos
        FROM Program P, Workout W, ProgramWorkout PW
        WHERE P.name = $1 AND PW.WorkoutID == W.ID
        AND PW.ProgramID == P.id`
 
-	rows, err := db.Query(getWorkoutSQL, name)
+	rows, err := DB.Query(getWorkoutSQL, name)
 	for rows.Next() {
 		var w Workout
 		err = rows.Scan(&w.ID, &w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
@@ -86,9 +86,9 @@ func getWorkoutsforProgram(name string, db *sql.DB) (rounds []Workout, err error
 }
 
 // getPrograms ...
-func getPrograms(db *sql.DB) (programs []Program, err error) {
+func getPrograms() (programs []Program, err error) {
 	var getProgramsSQL = `SELECT id, name, date, comment from Program`
-	rows, err := db.Query(getProgramsSQL)
+	rows, err := DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}
@@ -103,9 +103,9 @@ func getPrograms(db *sql.DB) (programs []Program, err error) {
 	return
 }
 
-func getProgram(programName string, db *sql.DB) (program Program, err error) {
+func getProgram(programName string) (program Program, err error) {
 	var getProgramsSQL = `SELECT id, name, date, comment from Program where name = $1`
-	err = db.QueryRow(getProgramsSQL, programName).Scan(
+	err = DB.QueryRow(getProgramsSQL, programName).Scan(
 		&program.ID, &program.Name,
 		&program.Date, &program.Comment)
 	if err != nil {
@@ -115,9 +115,9 @@ func getProgram(programName string, db *sql.DB) (program Program, err error) {
 }
 
 // getWorkout ...
-func getWorkouts(db *sql.DB) (workouts []Workout, err error) {
+func getWorkouts() (workouts []Workout, err error) {
 	var getProgramsSQL = `SELECT repetition, meters, percentage, repos from Workout`
-	rows, err := db.Query(getProgramsSQL)
+	rows, err := DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}
@@ -132,9 +132,9 @@ func getWorkouts(db *sql.DB) (workouts []Workout, err error) {
 	return
 }
 
-func getWorkoutByName(workoutName string, db *sql.DB) (workout Workout, err error) {
+func getWorkoutByName(workoutName string) (workout Workout, err error) {
 	var getProgramsSQL = `SELECT id, repetition, meters, percentage, repos from Workout`
-	rows, err := db.Query(getProgramsSQL)
+	rows, err := DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}

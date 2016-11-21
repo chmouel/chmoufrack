@@ -27,20 +27,20 @@ CREATE TABLE IF NOT EXISTS ProgramWorkout (
 	ProgramID integer,
     WorkoutID integer);`
 
-func createSchema() (db *sql.DB, err error) {
+func createSchema() (err error) {
 	// TODO: proper sqlite location
-	db, err = sql.Open("sqlite3", CONFIG_DIR+"/test.db")
+	DB, err = sql.Open("sqlite3", CONFIG_DIR+"/test.db")
 	if err != nil {
 		return
 	}
 
-	_, err = db.Exec(sqlTable)
+	_, err = DB.Exec(sqlTable)
 	return
 }
 
-func createSample(db *sql.DB) (err error) {
+func createSample() (err error) {
 	var res sql.Result
-	res, err = createProgram("Pyramidal", "Pyramidial Workout going string and stronger by the strongess", db)
+	res, err = createProgram("Pyramidal", "Pyramidial Workout going string and stronger by the strongess")
 	if err != nil {
 		return
 	}
@@ -49,7 +49,7 @@ func createSample(db *sql.DB) (err error) {
 		return
 	}
 
-	res, err = createProgram("3x100", "3x100 is the best!", db)
+	res, err = createProgram("3x100", "3x100 is the best!")
 	if err != nil {
 		return
 	}
@@ -58,7 +58,7 @@ func createSample(db *sql.DB) (err error) {
 	if err != nil {
 		return
 	}
-	res, err = createWorkout(3, 800, 90, "1.5 minutes", db)
+	res, err = createWorkout(3, 800, 90, "1.5 minutes")
 	if err != nil {
 		return
 	}
@@ -68,32 +68,17 @@ func createSample(db *sql.DB) (err error) {
 		return
 	}
 
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
 	if err != nil {
 		return
 	}
 
-	_, err = associateWorkoutProgram(troiscentID, lastinsertid, db)
+	_, err = associateWorkoutProgram(troiscentID, lastinsertid)
 	if err != nil {
 		return
 	}
 
-	res, err = createWorkout(3, 1000, 95, "5 minutes", db)
-	if err != nil {
-		return
-	}
-
-	lastinsertid, err = res.LastInsertId()
-	if err != nil {
-		return
-	}
-
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
-	if err != nil {
-		return
-	}
-
-	res, err = createWorkout(3, 100, 100, "3 minutes", db)
+	res, err = createWorkout(3, 1000, 95, "5 minutes")
 	if err != nil {
 		return
 	}
@@ -103,7 +88,22 @@ func createSample(db *sql.DB) (err error) {
 		return
 	}
 
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid, db)
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
+	if err != nil {
+		return
+	}
+
+	res, err = createWorkout(3, 100, 100, "3 minutes")
+	if err != nil {
+		return
+	}
+
+	lastinsertid, err = res.LastInsertId()
+	if err != nil {
+		return
+	}
+
+	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
 	if err != nil {
 		return
 	}
@@ -111,8 +111,8 @@ func createSample(db *sql.DB) (err error) {
 	return
 }
 
-func sqlTX(db *sql.DB, query string, args ...interface{}) (res sql.Result, err error) {
-	tx, err := db.Begin()
+func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
+	tx, err := DB.Begin()
 	if err != nil {
 		return
 	}

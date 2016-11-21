@@ -1,11 +1,15 @@
 package main
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 var (
 	TRACK_LENGTH = 400
 	VMA          = []int{13, 17}
 	CONFIG_DIR   = ""
+	DB           *sql.DB
 )
 
 type Workout struct {
