@@ -6,15 +6,16 @@ import (
 	"log"
 )
 
+// TODO: Inserting comments is not working, figure this out!
 // createPrograms ...
 func createProgram(name, comment string) (res sql.Result, err error) {
-	var createProgramSQL = `INSERT OR REPLACE INTO Program(name, comment) VALUES(?, ?);`
+	var createProgramSQL = `INSERT INTO Program(name, comment) VALUES(?, ?)`
 	res, err = sqlTX(createProgramSQL, name, comment)
 	return
 }
 
 func createWorkout(repetition, meters, percentage int, repos string, programID int) (res sql.Result, err error) {
-	var createWorkoutSQL = `INSERT OR REPLACE INTO Workout(repetition, percentage, meters, repos, programID) VALUES(?, ?, ?, ?, ?);`
+	var createWorkoutSQL = `INSERT INTO Workout(repetition, percentage, meters, repos, programID) VALUES(?, ?, ?, ?, ?);`
 	res, err = sqlTX(createWorkoutSQL, repetition, percentage, meters, repos, programID)
 	return
 }

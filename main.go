@@ -28,6 +28,7 @@ func main() {
 	vmas := flag.String("v", VMA, "Set VMAS with a colon as delimter in between")
 	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
 	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
+	rest := flag.Bool("rest", false, "Start the REST server")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of frack: PROGRAM\n\n")
@@ -52,7 +53,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *listP {
+	if *rest {
+		servRest()
+		return
+	} else if *listP {
 		err = ListAllPrograms()
 		if err != nil {
 			log.Fatal(err)

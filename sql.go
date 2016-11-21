@@ -91,7 +91,6 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 
 	}
 	defer stmt.Close()
-
 	res, err = stmt.Exec(args...)
 	if err != nil {
 		return
