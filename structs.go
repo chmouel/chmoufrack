@@ -17,8 +17,9 @@ type Workout struct {
 	Repetition  string `yaml:"laps"`
 	Meters      string `yaml:"length"`
 	Percentage  string `yaml:"percentage"`
-	TrackLaps   string
-	TrackLength int
+	TrackLaps   string //Temporary for convenience
+	TrackLength int    //Temporary for convenience
+	ProgramName string //Temporary for convenience
 	Repos       string `yaml:"rest"`
 }
 

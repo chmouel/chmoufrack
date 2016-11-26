@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"strconv"
 )
 
 func main() {
@@ -20,10 +19,9 @@ func main() {
 	listP := flag.Bool("listP", false, "List all programs")
 	listW := flag.Bool("listW", false, "List all workouts")
 	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
-	createW := flag.Bool("createW", false, "Create workout: REPETITION METERS PERCENTAGE REPOS")
-	assignWP := flag.Bool("assignWP", false, "Assign: WORKOUT PROGRAM")
+	createW := flag.Bool("createW", false, "Create workout for program: PROGRAM_NAME REPETITION METERS PERCENTAGE REPOS")
 	deleteP := flag.Bool("deleteP", false, "Create Program: PROGRAM_NAME")
-	deleteW := flag.Bool("deleteW", false, "Delete workout: WORKOUT_NAME")
+	deleteW := flag.Bool("deleteW", false, "Delete workout attached to program: PROGRAM_NAME WORKOUT_NAME")
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
@@ -82,30 +80,7 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("createW take at least one argument")
 		}
-		repetition, err := strconv.Atoi(flag.Arg(0))
-		if err != nil {
-			log.Fatal(err)
-		}
-		meters, err := strconv.Atoi(flag.Arg(1))
-		if err != nil {
-			log.Fatal(err)
-		}
-		percentage, err := strconv.Atoi(flag.Arg(2))
-		if err != nil {
-			log.Fatal(err)
-		}
-		repos := flag.Arg(3)
-
-		_, err = createWorkout(repetition, meters, percentage, repos)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return
-	} else if *assignWP {
-		if flag.Arg(0) == "" || flag.Arg(1) == "" {
-			log.Fatal("assignWP take at least two arguments")
-		}
-		_, err = associateWorkoutProgramByName(flag.Arg(0), flag.Arg(1))
+		err := CreateWorkout(flag.Arg)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -126,14 +101,20 @@ func main() {
 		}
 		return
 	} else if *deleteW {
+		// Delete Workout of Program
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteW take at least one argument")
 		}
-		w, err := getWorkoutByName(flag.Arg(0))
+		p, err := getProgram(flag.Arg(0))
+		if p.ID == 0 {
+			log.Fatal("Could not find " + flag.Arg(0))
+		}
+
+		w, err := getWorkoutByName(flag.Arg(1))
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = deleteWorkout(w.ID)
+		_, err = deleteWorkout(p.ID, w.ID)
 		if err != nil {
 			log.Fatal(err)
 		}

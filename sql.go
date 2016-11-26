@@ -13,19 +13,15 @@ CREATE TABLE IF NOT EXISTS Workout (
     meters int,
 	percentage integer,
 	repos text,
-	CONSTRAINT uc_comicID UNIQUE (repetition, percentage, meters, repos));
+	programID integer NOT NULL,
+	CONSTRAINT uc_comicID UNIQUE (repetition, percentage, meters, repos, programID));
 
 CREATE TABLE IF NOT EXISTS Program (
 	id integer PRIMARY KEY,
 	date datetime DEFAULT CURRENT_TIMESTAMP,
     name varchar(255),
     comment text DEFAULT "",
-	CONSTRAINT uc_ProgramID UNIQUE (name));
-
-CREATE TABLE IF NOT EXISTS ProgramWorkout (
-	id integer PRIMARY KEY,
-	ProgramID integer,
-    WorkoutID integer);`
+	CONSTRAINT uc_ProgramID UNIQUE (name));`
 
 func createSchema() (err error) {
 	// TODO: proper sqlite location
@@ -44,12 +40,28 @@ func createSample() (err error) {
 	if err != nil {
 		return
 	}
+
 	pyramidID, err := res.LastInsertId()
 	if err != nil {
 		return
 	}
 
-	res, err = createProgram("3x100", "3x100 is the best!")
+	res, err = createWorkout(5, 400, 100, "1.5 minutes", int(pyramidID))
+	if err != nil {
+		return
+	}
+
+	res, err = createWorkout(3, 800, 95, "1.5 minutes", int(pyramidID))
+	if err != nil {
+		return
+	}
+
+	res, err = createWorkout(2, 1000, 90, "5 minutes", int(pyramidID))
+	if err != nil {
+		return
+	}
+
+	res, err = createProgram("8x400", "8x400 is the best!")
 	if err != nil {
 		return
 	}
@@ -58,52 +70,8 @@ func createSample() (err error) {
 	if err != nil {
 		return
 	}
-	res, err = createWorkout(3, 800, 90, "1.5 minutes")
-	if err != nil {
-		return
-	}
 
-	lastinsertid, err := res.LastInsertId()
-	if err != nil {
-		return
-	}
-
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
-	if err != nil {
-		return
-	}
-
-	_, err = associateWorkoutProgram(troiscentID, lastinsertid)
-	if err != nil {
-		return
-	}
-
-	res, err = createWorkout(3, 1000, 95, "5 minutes")
-	if err != nil {
-		return
-	}
-
-	lastinsertid, err = res.LastInsertId()
-	if err != nil {
-		return
-	}
-
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
-	if err != nil {
-		return
-	}
-
-	res, err = createWorkout(3, 100, 100, "3 minutes")
-	if err != nil {
-		return
-	}
-
-	lastinsertid, err = res.LastInsertId()
-	if err != nil {
-		return
-	}
-
-	_, err = associateWorkoutProgram(pyramidID, lastinsertid)
+	res, err = createWorkout(8, 400, 95, "Time it takes to complete", int(troiscentID))
 	if err != nil {
 		return
 	}
