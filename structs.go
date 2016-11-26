@@ -7,7 +7,7 @@ import (
 
 var (
 	TRACK_LENGTH = 400
-	VMA          = []int{13, 17}
+	VMA          = []int{14, 19}
 	CONFIG_DIR   = ""
 	DB           *sql.DB
 )
