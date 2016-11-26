@@ -16,6 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	listP := flag.Bool("listP", false, "List all programs")
 	listW := flag.Bool("listW", false, "List all workouts")
 	createP := flag.Bool("createP", false, "Create Program: PROGRAM_NAME [COMMENT]")
@@ -26,6 +27,7 @@ func main() {
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
+	vmas := flag.String("v", VMA, "Set VMAS with a colon as delimter in between")
 	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
 	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
 
@@ -37,6 +39,7 @@ func main() {
 	flag.Parse()
 
 	TRACK_LENGTH = *trackLength
+	VMA = *vmas
 
 	CONFIG_DIR = *configDir
 	if _, err := os.Stat(*configDir); os.IsNotExist(err) {

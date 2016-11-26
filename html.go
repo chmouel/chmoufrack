@@ -39,14 +39,21 @@ func generate_template(program_name, content string, outputWriter *os.File) (err
 	return
 }
 
-func getVMA(value []int) (vmas []int) {
-	if len(value) == 1 || len(value) > 2 {
-		return VMA
+func getVMAS(value string) (vmas []int) {
+	var s, e int
+
+	if strings.Index(value, ":") > 0 {
+		s, _ = strconv.Atoi(strings.Split(value, ":")[0])
+		e, _ = strconv.Atoi(strings.Split(value, ":")[1])
+	} else {
+		s, _ = strconv.Atoi(value)
+		e = s
 	}
 
-	for i := value[0]; i <= value[1]; i++ {
+	for i := s; i <= e; i++ {
 		vmas = append(vmas, i)
 	}
+
 	return
 }
 
@@ -89,7 +96,7 @@ func generate_html(program_name string, rounds []Workout, outputWriter *os.File)
 		w.TrackLength = TRACK_LENGTH
 
 		vmas := map[string]WorkoutVMA{}
-		for _, vmad := range getVMA(VMA) {
+		for _, vmad := range getVMAS(VMA) {
 			wt := WorkoutVMA{}
 			vma := float64(vmad)
 			total_time, err := calcul_vma_distance(vma, percentage, meters)
