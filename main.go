@@ -5,16 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/user"
 	"path/filepath"
 )
 
 func main() {
 	var rounds = []Workout{}
-	user, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
+	var err error
 
 	listP := flag.Bool("listP", false, "List all programs")
 	listW := flag.Bool("listW", false, "List all workouts")
@@ -24,10 +20,11 @@ func main() {
 	deleteW := flag.Bool("deleteW", false, "Delete workout attached to program: PROGRAM_NAME WORKOUT_NAME")
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
-	configDir := flag.String("configdir", filepath.Join(user.HomeDir, ".config/frack"), "Config directory for database")
+	configDir := flag.String("configdir", CONFIG_DIR, "Config directory for database")
 	vmas := flag.String("v", VMA, "Set VMAS with a colon as delimter in between")
 	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
 	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
+	staticDir := flag.String("staticdir", STATIC_DIR, "Set static files directory")
 	rest := flag.Bool("rest", false, "Start the REST server")
 
 	flag.Usage = func() {
@@ -46,6 +43,17 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+
+	STATIC_DIR = *staticDir
+	if _, err := os.Stat(filepath.Join("static")); !os.IsNotExist(err) {
+		STATIC_DIR, err = filepath.Abs(filepath.Join("static"))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	if _, err := os.Stat(STATIC_DIR); os.IsNotExist(err) {
+		log.Fatal("Cannot find the static directory you need to copy it from the sources in: " + CONFIG_DIR)
 	}
 
 	err = createSchema()

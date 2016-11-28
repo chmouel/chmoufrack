@@ -2,14 +2,27 @@ package main
 
 import (
 	"database/sql"
+	"log"
+	"os/user"
+	"path/filepath"
 	"time"
 )
+
+// getConfigDir ...
+func getConfigDir() (configDir string) {
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return filepath.Join(user.HomeDir, ".config", "frack")
+}
 
 var (
 	TRACK_LENGTH = 400
 	VMA          = "14:19"
-	CONFIG_DIR   = ""
+	CONFIG_DIR   = getConfigDir()
 	DB           *sql.DB
+	STATIC_DIR   = filepath.Join(CONFIG_DIR, "static")
 )
 
 type Workout struct {

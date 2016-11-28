@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"text/template"
 )
 
 func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
-	t, err := template.ParseFiles("templates/content.tmpl")
+	t, err := template.ParseFiles(filepath.Join(STATIC_DIR, "templates", "content.tmpl"))
 	if err != nil {
 		return
 	}
@@ -28,7 +29,7 @@ func generate_template(program_name, content string, outputWriter *os.File) (err
 		"ProgramName": program_name,
 	}
 
-	t, err := template.ParseFiles("templates/template.tmpl")
+	t, err := template.ParseFiles(filepath.Join(STATIC_DIR, "templates", "template.tmpl"))
 	if err != nil {
 		return
 	}
