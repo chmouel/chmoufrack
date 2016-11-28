@@ -1,4 +1,4 @@
-package main
+package chmoufrack
 
 import (
 	"bytes"
@@ -58,7 +58,7 @@ func getVMAS(value string) (vmas []int) {
 	return
 }
 
-func generate_html(program_name string, rounds []Workout, outputWriter *os.File) error {
+func HTMLGen(program_name string, rounds []Workout, outputWriter *os.File) error {
 	var content bytes.Buffer
 
 	for i := range rounds {

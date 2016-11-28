@@ -1,4 +1,4 @@
-package main
+package rest
 
 import "net/http"
 
@@ -16,24 +16,24 @@ var routes = Routes{
 		"ProgramsIndex",
 		"GET",
 		"/programs",
-		RESTProgramsIndex,
+		GETPrograms,
 	},
 	Route{
 		"ProgramCreate",
 		"POST",
 		"/program",
-		RESTProgramCreate,
+		CreateProgram,
 	},
 	Route{
 		"ProgramCleanup",
 		"DELETE",
 		"/program/purge/{name}",
-		RESTProgramCleanup,
+		CleanupProgram,
 	},
 	Route{
 		"WorkoutCreate",
 		"POST",
 		"/workouts",
-		RESTMultipleWorkoutsCreate,
+		CreateMultipleWorkouts,
 	},
 }

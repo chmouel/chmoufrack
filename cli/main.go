@@ -6,6 +6,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	. "github.com/chmouel/chmoufrack"
+	frackrest "github.com/chmouel/chmoufrack/rest"
 )
 
 func main() {
@@ -56,22 +59,22 @@ func main() {
 		log.Fatal("Cannot find the static directory you need to copy it from the sources in: " + CONFIG_DIR)
 	}
 
-	err = createSchema()
+	err = CreateSchema()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if *rest {
-		servRest()
+		frackrest.Server()
 		return
 	} else if *listP {
-		err = ListAllPrograms()
+		err = listAllPrograms()
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	} else if *listW {
-		err = ListAllWorkouts()
+		err = listAllWorkouts()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -83,7 +86,7 @@ func main() {
 		program := flag.Arg(0)
 		comment := flag.Arg(1)
 
-		_, err := createProgram(program, comment)
+		_, err := CreateProgram(program, comment)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -92,13 +95,13 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("createW take at least one argument")
 		}
-		err := CreateWorkout(flag.Arg)
+		err := cliCreateWorkout(flag.Arg)
 		if err != nil {
 			log.Fatal(err)
 		}
 		return
 	} else if *populateSample {
-		err = createSample()
+		err = CreateSample()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -107,7 +110,7 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteP take at least one argument")
 		}
-		_, err = deleteProgram(flag.Arg(0))
+		_, err = DeleteProgram(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -117,16 +120,16 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteW take at least one argument")
 		}
-		p, err := getProgram(flag.Arg(0))
+		p, err := GetProgram(flag.Arg(0))
 		if p.ID == 0 {
 			log.Fatal("Could not find " + flag.Arg(0))
 		}
 
-		w, err := getWorkoutByName(flag.Arg(1))
+		w, err := GetWorkoutByName(flag.Arg(1))
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = deleteWorkout(p.ID, w.ID)
+		_, err = DeleteWorkout(p.ID, w.ID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -150,9 +153,9 @@ func main() {
 	program_name := flag.Arg(0)
 
 	if *yamlSource != "" {
-		rounds, err = yamlImport(program_name, *yamlSource)
+		rounds, err = YAMLImport(program_name, *yamlSource)
 	} else {
-		rounds, err = getWorkoutsforProgram(program_name)
+		rounds, err = GetWorkoutsforProgram(program_name)
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -162,7 +165,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = generate_html(program_name, rounds, outputWriter)
+	err = HTMLGen(program_name, rounds, outputWriter)
 	if err != nil {
 		log.Fatal(err)
 	}

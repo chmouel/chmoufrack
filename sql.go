@@ -1,4 +1,4 @@
-package main
+package chmoufrack
 
 import (
 	"database/sql"
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS Program (
     comment text DEFAULT "",
 	CONSTRAINT uc_ProgramID UNIQUE (name));`
 
-func createSchema() (err error) {
+func CreateSchema() (err error) {
 	// TODO: proper sqlite location
 	DB, err = sql.Open("sqlite3", CONFIG_DIR+"/test.db")
 	if err != nil {
@@ -34,9 +34,9 @@ func createSchema() (err error) {
 	return
 }
 
-func createSample() (err error) {
+func CreateSample() (err error) {
 	var res sql.Result
-	res, err = createProgram("Pyramidal", "Pyramidial Workout going string and stronger by the strongess")
+	res, err = CreateProgram("Pyramidal", "Pyramidial Workout going string and stronger by the strongess")
 	if err != nil {
 		return
 	}
@@ -46,22 +46,22 @@ func createSample() (err error) {
 		return
 	}
 
-	res, err = createWorkout(5, 400, 100, "1.5 minutes", int(pyramidID))
+	res, err = CreateWorkout(5, 400, 100, "1.5 minutes", int(pyramidID))
 	if err != nil {
 		return
 	}
 
-	res, err = createWorkout(3, 800, 95, "1.5 minutes", int(pyramidID))
+	res, err = CreateWorkout(3, 800, 95, "1.5 minutes", int(pyramidID))
 	if err != nil {
 		return
 	}
 
-	res, err = createWorkout(2, 1000, 90, "5 minutes", int(pyramidID))
+	res, err = CreateWorkout(2, 1000, 90, "5 minutes", int(pyramidID))
 	if err != nil {
 		return
 	}
 
-	res, err = createProgram("8x400", "8x400 is the best!")
+	res, err = CreateProgram("8x400", "8x400 is the best!")
 	if err != nil {
 		return
 	}
@@ -71,7 +71,7 @@ func createSample() (err error) {
 		return
 	}
 
-	res, err = createWorkout(8, 400, 95, "Time it takes to complete", int(troiscentID))
+	res, err = CreateWorkout(8, 400, 95, "Time it takes to complete", int(troiscentID))
 	if err != nil {
 		return
 	}

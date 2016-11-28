@@ -1,4 +1,4 @@
-package main
+package rest
 
 import (
 	"encoding/json"
@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/chmouel/chmoufrack"
 	"github.com/gorilla/mux"
 )
 
-func RESTProgramsIndex(w http.ResponseWriter, r *http.Request) {
-	programs, err := getPrograms()
+func GETPrograms(w http.ResponseWriter, r *http.Request) {
+	programs, err := chmoufrack.GetPrograms()
 	if err != nil {
 		panic(err)
 	}
@@ -19,8 +20,8 @@ func RESTProgramsIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func RESTProgramCreate(writer http.ResponseWriter, reader *http.Request) {
-	var program Program
+func CreateProgram(writer http.ResponseWriter, reader *http.Request) {
+	var program chmoufrack.Program
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
 		return
@@ -31,15 +32,15 @@ func RESTProgramCreate(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	if _, err := createProgram(program.Name, program.Comment); err != nil {
+	if _, err := chmoufrack.CreateProgram(program.Name, program.Comment); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
 }
 
-func RESTMultipleWorkoutsCreate(writer http.ResponseWriter, reader *http.Request) {
-	var workouts []Workout
+func CreateMultipleWorkouts(writer http.ResponseWriter, reader *http.Request) {
+	var workouts []chmoufrack.Workout
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
 		return
@@ -62,17 +63,17 @@ func RESTMultipleWorkoutsCreate(writer http.ResponseWriter, reader *http.Request
 }
 
 //RESTProgramCleanup Cleanup all workout of a program
-func RESTProgramCleanup(writer http.ResponseWriter, reader *http.Request) {
+func CleanupProgram(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	p, err := getProgram(programName)
+	p, err := chmoufrack.GetProgram(programName)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = deleteAllWorkoutProgram(p.ID)
+	_, err = chmoufrack.DeleteAllWorkoutProgram(p.ID)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -82,10 +83,10 @@ func RESTProgramCleanup(writer http.ResponseWriter, reader *http.Request) {
 	writer.WriteHeader(http.StatusCreated)
 }
 
-func convertAndCreateWorkout(w Workout) (err error) {
+func convertAndCreateWorkout(w chmoufrack.Workout) (err error) {
 	var percentage, meters, repetition int
 
-	p, err := getProgram(w.ProgramName)
+	p, err := chmoufrack.GetProgram(w.ProgramName)
 	if p.ID == 0 {
 		return errors.New("Cannot find programName " + w.ProgramName)
 	}
@@ -102,6 +103,6 @@ func convertAndCreateWorkout(w Workout) (err error) {
 		return
 	}
 
-	_, err = createWorkout(repetition, meters, percentage, w.Repos, int(p.ID))
+	_, err = chmoufrack.CreateWorkout(repetition, meters, percentage, w.Repos, int(p.ID))
 	return
 }

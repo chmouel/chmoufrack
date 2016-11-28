@@ -1,4 +1,4 @@
-package main
+package chmoufrack
 
 import (
 	"database/sql"

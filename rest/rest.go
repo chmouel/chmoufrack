@@ -1,10 +1,11 @@
-package main
+package rest
 
 import (
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/chmouel/chmoufrack"
 	"github.com/gorilla/mux"
 )
 
@@ -41,13 +42,13 @@ func NewRouter() *mux.Router {
 
 	}
 
-	s := http.StripPrefix("/static/", http.FileServer(http.Dir(STATIC_DIR)))
+	s := http.StripPrefix("/static/", http.FileServer(http.Dir(chmoufrack.STATIC_DIR)))
 	router.PathPrefix("/static/").Handler(s)
 
 	return router
 }
 
-func servRest() {
+func Server() {
 	router := NewRouter()
 
 	log.Fatal(http.ListenAndServe(":8080", router))

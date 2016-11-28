@@ -1,4 +1,4 @@
-package main
+package chmoufrack
 
 import (
 	"io/ioutil"
@@ -16,7 +16,7 @@ type yamlStruct struct {
 	Program []yamlProgram
 }
 
-func yamlImport(program_name, filename string) (rounds []Workout, err error) {
+func YAMLImport(program_name, filename string) (rounds []Workout, err error) {
 	t := yamlStruct{}
 
 	source, err := ioutil.ReadFile(filename)
