@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func RESTProgramsIndex(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +55,27 @@ func RESTMultipleWorkoutsCreate(writer http.ResponseWriter, reader *http.Request
 		if err = convertAndCreateWorkout(workout); err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 		}
+	}
+
+	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	writer.WriteHeader(http.StatusCreated)
+}
+
+//RESTProgramCleanup Cleanup all workout of a program
+func RESTProgramCleanup(writer http.ResponseWriter, reader *http.Request) {
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+
+	p, err := getProgram(programName)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err = deleteAllWorkoutProgram(p.ID)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")

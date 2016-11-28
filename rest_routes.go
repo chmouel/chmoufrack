@@ -25,6 +25,12 @@ var routes = Routes{
 		RESTProgramCreate,
 	},
 	Route{
+		"ProgramCleanup",
+		"DELETE",
+		"/program/purge/{name}",
+		RESTProgramCleanup,
+	},
+	Route{
 		"WorkoutCreate",
 		"POST",
 		"/workouts",

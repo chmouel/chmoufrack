@@ -39,6 +39,12 @@ func deleteWorkout(programID, id int64) (res sql.Result, err error) {
 	return
 }
 
+func deleteAllWorkoutProgram(programID int64) (res sql.Result, err error) {
+	deleteWorkoutSQL := `DELETE FROM Workout WHERE programID=?`
+	res, err = sqlTX(deleteWorkoutSQL, programID)
+	return
+}
+
 func associateWorkoutProgram(programid, workoutid int64) (res sql.Result, err error) {
 	var associateWorkoutProgramSQL = `INSERT OR REPLACE INTO ProgramWorkout(ProgramID, WorkoutID) VALUES(?, ?)`
 	res, err = sqlTX(associateWorkoutProgramSQL, programid, workoutid)
