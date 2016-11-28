@@ -41,6 +41,9 @@ func NewRouter() *mux.Router {
 
 	}
 
+	s := http.StripPrefix("/static/", http.FileServer(http.Dir("./templates/static/")))
+	router.PathPrefix("/static/").Handler(s)
+
 	return router
 }
 
@@ -49,7 +52,3 @@ func servRest() {
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
-
-// 	router := mux.NewRouter().StrictSlash(true)
-// 	router.HandleFunc("/programs", RESTListPrograms)
-// 	log.Fatal(http.ListenAndServe(":8080", router))
