@@ -95,7 +95,7 @@ func GetProgram(programName string) (program Program, err error) {
 
 // getWorkout ...
 func GetWorkouts() (workouts []Workout, err error) {
-	var getProgramsSQL = `SELECT P.Name, W.repetition, W.meters, W.percentage, W.repos
+	var getProgramsSQL = `SELECT W.repetition, W.meters, W.percentage, W.repos
 					        FROM Program P, Workout W WHERE W.ProgramID == P.ID`
 	rows, err := DB.Query(getProgramsSQL)
 	if err != nil {
@@ -103,7 +103,7 @@ func GetWorkouts() (workouts []Workout, err error) {
 	}
 	for rows.Next() {
 		var w Workout
-		err = rows.Scan(&w.ProgramName, &w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
+		err = rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
 		if err != nil {
 			return
 		}

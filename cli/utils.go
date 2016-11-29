@@ -38,7 +38,8 @@ func listAllWorkouts() (err error) {
 	}
 	for p := range workouts {
 		t := workouts[p]
-		fmt.Printf("%-15s - %sx%s@%s -- rest %s \n", t.ProgramName, t.Repetition, t.Meters, t.Percentage, t.Repos)
+		//TODO: Add programName
+		fmt.Printf("%sx%s@%s -- rest %s \n", t.Repetition, t.Meters, t.Percentage, t.Repos)
 	}
 	return
 }

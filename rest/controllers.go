@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -51,27 +52,35 @@ func CreateProgram(writer http.ResponseWriter, reader *http.Request) {
 
 	if _, err := chmoufrack.CreateProgram(program.Name, program.Comment); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
 }
 
 func CreateMultipleWorkouts(writer http.ResponseWriter, reader *http.Request) {
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+
 	var workouts []chmoufrack.Workout
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
+		fmt.Println("Please send a request body")
 		return
 	}
 
 	err := json.NewDecoder(reader.Body).Decode(&workouts)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		fmt.Println("Cannot create Workout")
 		return
 	}
 
 	for _, workout := range workouts {
-		if err = convertAndCreateWorkout(workout); err != nil {
+		if err = convertAndCreateWorkout(programName, workout); err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
+			fmt.Println(err)
+			return
 		}
 	}
 
@@ -100,12 +109,12 @@ func CleanupProgram(writer http.ResponseWriter, reader *http.Request) {
 	writer.WriteHeader(http.StatusCreated)
 }
 
-func convertAndCreateWorkout(w chmoufrack.Workout) (err error) {
+func convertAndCreateWorkout(ProgramName string, w chmoufrack.Workout) (err error) {
 	var percentage, meters, repetition int
 
-	p, err := chmoufrack.GetProgram(w.ProgramName)
+	p, err := chmoufrack.GetProgram(ProgramName)
 	if p.ID == 0 {
-		return errors.New("Cannot find programName " + w.ProgramName)
+		return errors.New("Cannot find programName " + ProgramName)
 	}
 
 	if repetition, err = strconv.Atoi(w.Repetition); err != nil {

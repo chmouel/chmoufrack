@@ -32,7 +32,6 @@ type Workout struct {
 	Percentage  string `yaml:"percentage"`
 	TrackLaps   string //Temporary for convenience
 	TrackLength int    //Temporary for convenience
-	ProgramName string //Temporary for convenience
 	Repos       string `yaml:"rest"`
 }
 

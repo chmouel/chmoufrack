@@ -19,10 +19,16 @@ var routes = Routes{
 		GETPrograms,
 	},
 	Route{
-		"GetWorkoutsforProgram",
+		"ProgramWorkoutGet",
 		"GET",
 		"/program/{name}/workouts",
 		GetWorkoutsForProgram,
+	},
+	Route{
+		"ProgramWorkoutCreate",
+		"POST",
+		"/program/{name}/workouts",
+		CreateMultipleWorkouts,
 	},
 	Route{
 		"ProgramCreate",
@@ -33,13 +39,7 @@ var routes = Routes{
 	Route{
 		"ProgramCleanup",
 		"DELETE",
-		"/program/purge/{name}",
+		"/program/{name}/purge",
 		CleanupProgram,
-	},
-	Route{
-		"WorkoutCreate",
-		"POST",
-		"/workouts",
-		CreateMultipleWorkouts,
 	},
 }

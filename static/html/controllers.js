@@ -1,56 +1,55 @@
-var app = angular.module("myapp", []);
-app.controller("ListController", ['$scope', '$http', function($scope, $http) {
-    $scope.personalDetails = [
-        {
-            'repetition':'3',
-            'meters':'400',
-            'percentage':'100',
-            'repos': '3 minutes tranquillou poto!',
-            'programname': 'ProgramREST4963',
-        },
-        {
-            'repetition':'2',
-            'meters':'800',
-            'percentage':'95',
-            'repos': '3 minutes tranquillou poto!',
-            'programname': 'ProgramREST4963',
-        },
-        {
-            'repetition':'1',
-            'meters':'1000',
-            'percentage':'90',
-            'repos': '3 minutes tranquillou poto!',
-            'programname': 'ProgramREST4963',
-        }];
+var app = angular.module("EditWorkout", ["ngRoute"]);
 
-        $scope.addNew = function(personalDetail){
-            $scope.personalDetails.push({
-                'repetition': "",
-                'meters': "",
-                'repos': "",
-                'programname': "",
-            });
-            console.debug($scope);
-        };
+app.config(function($routeProvider) {
+    $routeProvider.
+        when("/:name", {
+            templateUrl : "editworkout.html",
+            controller: DetailController
+        })
+});
 
-        $scope.post = function(personalDetail){
-            console.debug($scope.personalDetails);
-            var res = $http.post('/workouts', $scope.personalDetails);
-		    res.success(function(data, status, headers, config) {
-			    console.debug(data);
-		    });;
-        };
+function DetailController($scope, $routeParams, $http) {
+    $scope.message = $routeParams.id;
 
-        $scope.remove = function(){
-            var newDataList=[];
-            $scope.selectedAll = false;
-            angular.forEach($scope.personalDetails, function(selected){
-                if(!selected.selected){
-                    newDataList.push(selected);
-                }
-            });
-            $scope.personalDetails = newDataList;
-        };
+    var res = $http.get('/program/' + $routeParams.name + "/workouts");
+	res.success(function(data, status, headers, config) {
+		$scope.programDetails = data;
+        $scope.programName = $routeParams.name;
+	});;
+
+    $("#wrapper").addClass("toggled");
+
+    $scope.addNew = function(programDetail){
+        $scope.programDetails.push({
+            'repetition': "",
+            'meters': "",
+            'repos': "",
+            'programname': "",
+        });
+    };
+
+    $scope.post = function(programDetail){
+        var res = $http.delete('/program/' + $scope.programName + '/purge')
+		res.success(function(data, status, headers, config) {
+			console.debug(data);
+		});;
+
+        var res = $http.post('/program/' + $scope.programName + '/workouts', $scope.programDetails);
+		res.success(function(data, status, headers, config) {
+			console.debug(data);
+		});;
+    };
+
+    $scope.remove = function(){
+        var newDataList=[];
+        $scope.selectedAll = false;
+        angular.forEach($scope.programDetails, function(selected){
+            if(!selected.selected){
+                newDataList.push(selected);
+            }
+        });
+        $scope.programDetails = newDataList;
+    };
 
     $scope.checkAll = function () {
         if (!$scope.selectedAll) {
@@ -58,10 +57,17 @@ app.controller("ListController", ['$scope', '$http', function($scope, $http) {
         } else {
             $scope.selectedAll = false;
         }
-        angular.forEach($scope.personalDetails, function(personalDetail) {
-            personalDetail.selected = $scope.selectedAll;
+        angular.forEach($scope.programDetails, function(programDetail) {
+            programDetail.selected = $scope.selectedAll;
         });
     };
 
+}
+
+app.controller("ListController", ['$scope', '$http', function($scope, $http) {
+    var res = $http.get('/programs');
+	res.success(function(data, status, headers, config) {
+		$scope.workoutS = data;
+	});;
 
 }]);
