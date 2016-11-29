@@ -10,13 +10,30 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GETPrograms(w http.ResponseWriter, r *http.Request) {
-	programs, err := chmoufrack.GetPrograms()
-	if err != nil {
-		panic(err)
+func GETPrograms(writer http.ResponseWriter, r *http.Request) {
+	var programs []chmoufrack.Program
+	var err error
+
+	if programs, err = chmoufrack.GetPrograms(); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
-	if err := json.NewEncoder(w).Encode(programs); err != nil {
-		panic(err)
+
+	if err = json.NewEncoder(writer).Encode(programs); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+}
+
+func GETProgram(writer http.ResponseWriter, reader *http.Request) {
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+
+	program, err := chmoufrack.GetProgram(programName)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := json.NewEncoder(writer).Encode(program); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
 

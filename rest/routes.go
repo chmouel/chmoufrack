@@ -19,6 +19,12 @@ var routes = Routes{
 		GETPrograms,
 	},
 	Route{
+		"ProgramShow",
+		"GET",
+		"/program/{name}",
+		GETProgram,
+	},
+	Route{
 		"ProgramCreate",
 		"POST",
 		"/program",
