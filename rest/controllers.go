@@ -23,16 +23,16 @@ func GETPrograms(writer http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GETProgram(writer http.ResponseWriter, reader *http.Request) {
+func GetWorkoutsForProgram(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	program, err := chmoufrack.GetProgram(programName)
+	workouts, err := chmoufrack.GetWorkoutsforProgram(programName)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if err := json.NewEncoder(writer).Encode(program); err != nil {
+	if err := json.NewEncoder(writer).Encode(workouts); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }

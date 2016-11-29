@@ -19,10 +19,10 @@ var routes = Routes{
 		GETPrograms,
 	},
 	Route{
-		"ProgramShow",
+		"GetWorkoutsforProgram",
 		"GET",
-		"/program/{name}",
-		GETProgram,
+		"/program/{name}/workouts",
+		GetWorkoutsForProgram,
 	},
 	Route{
 		"ProgramCreate",
