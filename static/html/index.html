@@ -48,16 +48,21 @@
 
     <!-- Menu Toggle Script -->
     <script>
-      function call(program) {
-          $(location).attr('href', '#' + program)
-      }
+     function add() {
+      bootbox.prompt("Add a new Program", (function (program) {
+          if (program === null || program == "") {
+              return 1;
+          }
+        $(location).attr('href', '#' + program);
+      }))
+     }
      $("#menu-toggle").click(function(e) {
          e.preventDefault();
          $("#wrapper").toggleClass("toggled");
      });
      $("#add-workout").click(function(e) {
-         e.preventDefault();
-         bootbox.prompt("Program Name", call)
+        e.preventDefault();
+        add();
      });
     </script>
   </body>

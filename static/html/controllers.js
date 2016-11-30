@@ -3,9 +3,13 @@ var app = angular.module("EditWorkout", ["ngRoute"]);
 app.config(function($routeProvider) {
     $routeProvider.
         when("/:name", {
-            templateUrl : "editworkout.html",
+            templateUrl: "partials/editworkout.html",
             controller: DetailController
         })
+        .otherwise({
+            templateUrl: "partials/default.html"
+        })
+
 });
 
 function DetailController($scope, $routeParams, $http) {
