@@ -3,3 +3,5 @@
   creating.
 * Checks data before submitting
 * i18n
+* Print message on UI when succeeding to update
+* Better error tracking in UI
