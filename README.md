@@ -18,13 +18,17 @@ command line for example :
 $ chmoufrack -y my-new-config-file.yaml 3x800/2x1000/1x2000 > /tmp/frackitlikeinthe90s.html
 ```
 
-This will generate a static html page of your different workout looking something like this
-on desktop :
+This will generate a static html page of your different workouts with all the VMAs. 
 
+There is other options on the command for example to adjust the VMA ranges with the -v option 
+if you like. 
 
+DEMO
+====
 
-There is other options on the command for example to adjust the VMA ranges.
+It will look like this :
 
+http://chmouel.com/frac/frac-16Oct2016-chmou.html
 
 UI
 ==
