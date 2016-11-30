@@ -5,3 +5,5 @@
 * i18n
 * Print message on UI when succeeding to update
 * Better error tracking in UI
+* Redesign REST Api to be well less sucky
+* Migrate to caddy or other proper go http server
