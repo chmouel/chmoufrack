@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,24 +32,27 @@ func GetWorkoutsForProgram(writer http.ResponseWriter, reader *http.Request) {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	if len(workouts) == 0 {
+		http.Error(writer, "Workout is empty", http.StatusNotFound)
+		return
+	}
+
 	if err := json.NewEncoder(writer).Encode(workouts); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
 
 func CreateProgram(writer http.ResponseWriter, reader *http.Request) {
-	var program chmoufrack.Program
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
 		return
 	}
-	err := json.NewDecoder(reader.Body).Decode(&program)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
-		return
-	}
 
-	if _, err := chmoufrack.CreateProgram(program.Name, program.Comment); err != nil {
+	if _, err := chmoufrack.CreateProgram(programName, ""); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -65,21 +67,18 @@ func CreateMultipleWorkouts(writer http.ResponseWriter, reader *http.Request) {
 	var workouts []chmoufrack.Workout
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
-		fmt.Println("Please send a request body")
 		return
 	}
 
 	err := json.NewDecoder(reader.Body).Decode(&workouts)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
-		fmt.Println("Cannot create Workout")
 		return
 	}
 
 	for _, workout := range workouts {
 		if err = convertAndCreateWorkout(programName, workout); err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
-			fmt.Println(err)
 			return
 		}
 	}

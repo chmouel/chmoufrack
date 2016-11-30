@@ -14,18 +14,24 @@ app.config(function($routeProvider) {
 
 function DetailController($scope, $routeParams, $http) {
     $scope.message = $routeParams.id;
+    $scope.AddNewProgram = false;
+    $scope.programName = $routeParams.name;
 
-    var res = $http.get('/program/' + $routeParams.name + "/workouts");
-	res.success(function(data, status, headers, config) {
-		$scope.programDetails = data;
-        $scope.programName = $routeParams.name;
-	});;
+    $http({
+        method: 'GET',
+        url: '/program/' + $routeParams.name + '/workouts'
+    }).then(function successCallback(response) {
+		$scope.programDetails = response.data;
+    }, function errorCallback(response) {
+        $scope.AddNewProgram = true;
+        $scope.addNew();
+    });
 
     $("#wrapper").addClass("toggled");
 
     $scope.addNew = function(programDetail){
-        console.debug($scope.programDetails);
-        if ($scope.programDetails == "null\n") { //wtf
+        if ($scope.programDetails == "null\n" || typeof($scope.programDetails) === "undefined") { //wtf
+
             $scope.programDetails = [];
         }
 
@@ -37,16 +43,29 @@ function DetailController($scope, $routeParams, $http) {
         });
     };
 
-    $scope.post = function(programDetail){
-        var res = $http.delete('/program/' + $scope.programName + '/purge')
-		res.success(function(data, status, headers, config) {
-			console.debug(data);
-		});;
+    $scope.submit = function(programDetail){
+        if ($scope.AddNewProgram) {
+            $http({
+                method: 'POST',
+                url: '/program/' + $scope.programName
+            }).then(function successCallback(response) {
+            }, function errorCallback(response) {
+                console.debug("Failed to create new program");
+            });
+            $scope.AddNewProgram = false;
+        } else {
+            $http({
+                method: 'DELETE',
+                url: '/program/' + $scope.programName + '/purge'
+            }).then(function successCallback(response) {
+                console.debug("Success purging program");
+            }, function errorCallback(response) {
+                console.debug("Failed to delete program");
+            });
+        }
+        $http.post('/program/' + $scope.programName + '/workouts',
+                   $scope.programDetails);
 
-        var res = $http.post('/program/' + $scope.programName + '/workouts', $scope.programDetails);
-		res.success(function(data, status, headers, config) {
-			console.debug(data);
-		});;
     };
 
     $scope.remove = function(){
@@ -77,7 +96,7 @@ app.controller("ListController", ['$scope', '$http', function($scope, $http) {
     var res = $http.get('/programs');
 	res.success(function(data, status, headers, config) {
 		$scope.workoutS = data;
-	});;
+	});
 
     $scope.addNewProgram = function() {
       bootbox.prompt("Add a new Program", (function (program) {

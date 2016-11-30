@@ -33,7 +33,7 @@ var routes = Routes{
 	Route{
 		"ProgramCreate",
 		"POST",
-		"/program",
+		"/program/{name}",
 		CreateProgram,
 	},
 	Route{
