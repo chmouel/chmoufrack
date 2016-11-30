@@ -20,6 +20,11 @@ function DetailController($scope, $routeParams, $http) {
     $("#wrapper").addClass("toggled");
 
     $scope.addNew = function(programDetail){
+        console.debug($scope.programDetails);
+        if ($scope.programDetails == "null\n") { //wtf
+            $scope.programDetails = [];
+        }
+
         $scope.programDetails.push({
             'repetition': "",
             'meters': "",
