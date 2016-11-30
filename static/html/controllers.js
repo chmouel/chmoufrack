@@ -79,4 +79,17 @@ app.controller("ListController", ['$scope', '$http', function($scope, $http) {
 		$scope.workoutS = data;
 	});;
 
+    $scope.addNewProgram = function() {
+      bootbox.prompt("Add a new Program", (function (program) {
+          if (program === null || program == "") {
+              return 1;
+          }
+        $(location).attr('href', '#' + program);
+      }))
+     }
+
+    $scope.toggleSidebar = function() {
+        $("#wrapper").toggleClass("toggled");
+    }
+
 }]);

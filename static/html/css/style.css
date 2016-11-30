@@ -4,3 +4,7 @@
 .container{
     padding: 10px;
 }
+
+a[ng-click]{
+    cursor: pointer;
+}

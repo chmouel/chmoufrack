@@ -11,8 +11,7 @@
     <script type="text/javascript"
             src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
 
-    <script type="text/javascript"
-            src="https://github.com/makeusabrew/bootbox/releases/download/v4.4.0/bootbox.min.js"></script>
+    <script type="text/javascript" src="css/bootbox.min.js"></script>
 
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/simple-sidebar.css" type="text/css" media="screen">
@@ -24,9 +23,9 @@
   <body ng-app="EditWorkout" ng-controller="ListController">
     <div id="header">
       <div id="header-content">
-        <a href="#" id="menu-toggle">Toggle menu</a>
+        <a ng-click="toggleSidebar()">Toggle menu</a>
         &nbsp;
-        <a href="#" id="add-workout">Add Program</a>
+        <a ng-click="addNewProgram()">Add Program</a>
 
       </div>
     </div>
@@ -45,25 +44,5 @@
 
     <div ng-view class="container"></div>
 
-
-    <!-- Menu Toggle Script -->
-    <script>
-     function add() {
-      bootbox.prompt("Add a new Program", (function (program) {
-          if (program === null || program == "") {
-              return 1;
-          }
-        $(location).attr('href', '#' + program);
-      }))
-     }
-     $("#menu-toggle").click(function(e) {
-         e.preventDefault();
-         $("#wrapper").toggleClass("toggled");
-     });
-     $("#add-workout").click(function(e) {
-        e.preventDefault();
-        add();
-     });
-    </script>
   </body>
 </html>
