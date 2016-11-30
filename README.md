@@ -14,7 +14,9 @@ This has been a work in progress but the basic yaml config source should work,
 look over the samples/yaml-config.yaml file for an example and specify on frack
 command line for example :
 
+```
 $ chmoufrack -y my-new-config-file.yaml 3x800/2x1000/1x2000 > /tmp/frackitlikeinthe90s.html
+```
 
 This will generate a static html page of your different workout looking something like this
 on desktop :
