@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Program (
 
 func CreateSchema() (err error) {
 	// TODO: proper sqlite location
-	DB, err = sql.Open("sqlite3", CONFIG_DIR+"/test.db")
+	DB, err = sql.Open("sqlite3", CONFIG_DIR+"/chmoufrack.db")
 	if err != nil {
 		return
 	}
