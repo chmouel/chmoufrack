@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">Editing Program <strong>{{programName}}</strong></div>
   <div class="panel-body">
-    <form ng-submit="submit()">
+    <form name="form" ng-submit="saveshow()">
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
@@ -26,7 +26,8 @@
       <div class="form-group">
         <input ng-hide="!programDetails.length" type="button" class="btn btn-danger" ng-click="remove()" value="Remove">
         <input ng-click="addNew()" class="btn btn-primary" value="Add New">
-        <input type="submit" class="btn btn-success addnew pull-right" value="Submit">
+        <input ng-click="save()" class="btn btn-info addnew" value="Save">
+        <input type="submit" class="btn btn-success pull-right" value="Show">
       </div>
     </form>
   </div>

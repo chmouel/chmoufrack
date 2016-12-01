@@ -43,7 +43,7 @@ function DetailController($scope, $routeParams, $http) {
         });
     };
 
-    $scope.submit = function(programDetail){
+    $scope.save = function(programDetail){
         if ($scope.AddNewProgram) {
             $http({
                 method: 'POST',
@@ -67,6 +67,11 @@ function DetailController($scope, $routeParams, $http) {
                    $scope.programDetails);
 
     };
+
+    $scope.saveshow = function(){
+        $scope.save();
+        $(location).attr('href', '/html/program/' + $scope.programName);
+    }
 
     $scope.remove = function(){
         var newDataList=[];
