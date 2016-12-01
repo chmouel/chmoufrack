@@ -15,31 +15,31 @@ var routes = Routes{
 	Route{
 		"ProgramsIndex",
 		"GET",
-		"/programs",
+		"/rest/programs",
 		GETPrograms,
 	},
 	Route{
 		"ProgramWorkoutGet",
 		"GET",
-		"/program/{name}/workouts",
+		"/rest/program/{name}/workouts",
 		GetWorkoutsForProgram,
 	},
 	Route{
 		"ProgramWorkoutCreate",
 		"POST",
-		"/program/{name}/workouts",
+		"/rest/program/{name}/workouts",
 		CreateMultipleWorkouts,
 	},
 	Route{
 		"ProgramCreate",
 		"POST",
-		"/program/{name}",
+		"/rest/program/{name}",
 		CreateProgram,
 	},
 	Route{
 		"ProgramCleanup",
 		"DELETE",
-		"/program/{name}/purge",
+		"/rest/program/{name}/purge",
 		CleanupProgram,
 	},
 	Route{

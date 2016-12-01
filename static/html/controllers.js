@@ -19,7 +19,7 @@ function DetailController($scope, $routeParams, $http) {
 
     $http({
         method: 'GET',
-        url: '/program/' + $routeParams.name + '/workouts'
+        url: '/rest/program/' + $routeParams.name + '/workouts'
     }).then(function successCallback(response) {
 		$scope.programDetails = response.data;
     }, function errorCallback(response) {
@@ -47,7 +47,7 @@ function DetailController($scope, $routeParams, $http) {
         if ($scope.AddNewProgram) {
             $http({
                 method: 'POST',
-                url: '/program/' + $scope.programName
+                url: '/rest/program/' + $scope.programName
             }).then(function successCallback(response) {
             }, function errorCallback(response) {
                 console.debug("Failed to create new program");
@@ -56,14 +56,14 @@ function DetailController($scope, $routeParams, $http) {
         } else {
             $http({
                 method: 'DELETE',
-                url: '/program/' + $scope.programName + '/purge'
+                url: '/rest/program/' + $scope.programName + '/purge'
             }).then(function successCallback(response) {
                 console.debug("Success purging program");
             }, function errorCallback(response) {
                 console.debug("Failed to delete program");
             });
         }
-        $http.post('/program/' + $scope.programName + '/workouts',
+        $http.post('/rest/program/' + $scope.programName + '/workouts',
                    $scope.programDetails);
 
     };
@@ -93,7 +93,7 @@ function DetailController($scope, $routeParams, $http) {
 }
 
 app.controller("ListController", ['$scope', '$http', function($scope, $http) {
-    var res = $http.get('/programs');
+    var res = $http.get('/rest/programs');
 	res.success(function(data, status, headers, config) {
 		$scope.workoutS = data;
 	});
