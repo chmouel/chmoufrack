@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -23,7 +22,7 @@ func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	return
 }
 
-func generate_template(program_name, content string, outputWriter *os.File) (err error) {
+func generate_template(program_name, content string, outputWriter *bytes.Buffer) (err error) {
 	dico := map[string]string{
 		"Content":     content,
 		"ProgramName": program_name,
@@ -58,7 +57,7 @@ func getVMAS(value string) (vmas []int) {
 	return
 }
 
-func HTMLGen(program_name string, rounds []Workout, outputWriter *os.File) error {
+func HTMLGen(program_name string, rounds []Workout, outputWriter *bytes.Buffer) error {
 	var content bytes.Buffer
 
 	for i := range rounds {

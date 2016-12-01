@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -165,7 +166,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = HTMLGen(program_name, rounds, outputWriter)
+	var output bytes.Buffer
+	err = HTMLGen(program_name, rounds, &output)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = outputWriter.Write(output.Bytes())
 	if err != nil {
 		log.Fatal(err)
 	}
