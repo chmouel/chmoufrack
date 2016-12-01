@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -106,6 +107,38 @@ func CleanupProgram(writer http.ResponseWriter, reader *http.Request) {
 
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
+}
+
+// HTMLProgramShow ...
+func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+
+	p, err := chmoufrack.GetProgram(programName)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusNotFound)
+		return
+	}
+	rounds, err := chmoufrack.GetWorkoutsforProgram(p.Name)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if len(rounds) == 0 {
+		http.Error(writer, "No workouts found for "+programName, http.StatusNotFound)
+	}
+
+	var output bytes.Buffer
+	err = chmoufrack.HTMLGen(programName, rounds, &output)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+	_, err = writer.Write(output.Bytes())
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 }
 
 func convertAndCreateWorkout(ProgramName string, w chmoufrack.Workout) (err error) {

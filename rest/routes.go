@@ -42,4 +42,10 @@ var routes = Routes{
 		"/program/{name}/purge",
 		CleanupProgram,
 	},
+	Route{
+		"HTMLProgramShow",
+		"GET",
+		"/html/program/{name}",
+		HTMLProgramShow,
+	},
 }
