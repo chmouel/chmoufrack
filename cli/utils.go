@@ -6,18 +6,19 @@ import (
 	"strconv"
 
 	"github.com/chmouel/chmoufrack"
+	"github.com/chmouel/chmoufrack/db"
 )
 
 // ListAllPrograms ...
 func listAllPrograms() (err error) {
-	programs, err := chmoufrack.GetPrograms()
+	programs, err := db.GetPrograms()
 	if err != nil {
 		return
 	}
 	for p := range programs {
 		var rounds []chmoufrack.Workout
 		t := programs[p]
-		rounds, err = chmoufrack.GetWorkoutsforProgram(t.Name)
+		rounds, err = db.GetWorkoutsforProgram(t.Name)
 		if err != nil {
 			return
 		}
@@ -32,7 +33,7 @@ func listAllPrograms() (err error) {
 }
 
 func listAllWorkouts() (err error) {
-	workouts, err := chmoufrack.GetWorkouts()
+	workouts, err := db.GetWorkouts()
 	if err != nil {
 		return
 	}
@@ -47,7 +48,7 @@ func listAllWorkouts() (err error) {
 // CreateWorkout ...
 func cliCreateWorkout(arg func(int) string) (err error) {
 	programName := arg(0)
-	p, err := chmoufrack.GetProgram(programName)
+	p, err := db.GetProgram(programName)
 	//TODO: custom error
 	if p.ID == 0 {
 		log.Fatal("Cannot find workout " + programName)
@@ -71,7 +72,7 @@ func cliCreateWorkout(arg func(int) string) (err error) {
 	repos := arg(4)
 
 	//TODO
-	_, err = chmoufrack.CreateWorkout(repetition, meters, percentage, repos, int(p.ID))
+	_, err = db.CreateWorkout(repetition, meters, percentage, repos, int(p.ID))
 	if err != nil {
 		log.Fatal(err)
 	}

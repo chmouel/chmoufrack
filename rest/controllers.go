@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/chmouel/chmoufrack"
+	"github.com/chmouel/chmoufrack/db"
 	"github.com/gorilla/mux"
 )
 
@@ -15,7 +16,7 @@ func GETPrograms(writer http.ResponseWriter, r *http.Request) {
 	var programs []chmoufrack.Program
 	var err error
 
-	if programs, err = chmoufrack.GetPrograms(); err != nil {
+	if programs, err = db.GetPrograms(); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 
@@ -28,7 +29,7 @@ func GetWorkoutsForProgram(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	workouts, err := chmoufrack.GetWorkoutsforProgram(programName)
+	workouts, err := db.GetWorkoutsforProgram(programName)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -53,7 +54,7 @@ func CreateProgram(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	if _, err := chmoufrack.CreateProgram(programName, ""); err != nil {
+	if _, err := db.CreateProgram(programName, ""); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -93,13 +94,13 @@ func CleanupProgram(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	p, err := chmoufrack.GetProgram(programName)
+	p, err := db.GetProgram(programName)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = chmoufrack.DeleteAllWorkoutProgram(p.ID)
+	_, err = db.DeleteAllWorkoutProgram(p.ID)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -114,12 +115,12 @@ func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	p, err := chmoufrack.GetProgram(programName)
+	p, err := db.GetProgram(programName)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusNotFound)
 		return
 	}
-	rounds, err := chmoufrack.GetWorkoutsforProgram(p.Name)
+	rounds, err := db.GetWorkoutsforProgram(p.Name)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -144,7 +145,7 @@ func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
 func convertAndCreateWorkout(ProgramName string, w chmoufrack.Workout) (err error) {
 	var percentage, meters, repetition int
 
-	p, err := chmoufrack.GetProgram(ProgramName)
+	p, err := db.GetProgram(ProgramName)
 	if p.ID == 0 {
 		return errors.New("Cannot find programName " + ProgramName)
 	}
@@ -161,6 +162,6 @@ func convertAndCreateWorkout(ProgramName string, w chmoufrack.Workout) (err erro
 		return
 	}
 
-	_, err = chmoufrack.CreateWorkout(repetition, meters, percentage, w.Repos, int(p.ID))
+	_, err = db.CreateWorkout(repetition, meters, percentage, w.Repos, int(p.ID))
 	return
 }

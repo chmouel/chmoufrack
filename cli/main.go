@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	. "github.com/chmouel/chmoufrack"
+	"github.com/chmouel/chmoufrack/db"
 	frackrest "github.com/chmouel/chmoufrack/rest"
 )
 
@@ -60,7 +61,7 @@ func main() {
 		log.Fatal("Cannot find the static directory you need to copy it from the sources in: " + CONFIG_DIR)
 	}
 
-	err = CreateSchema()
+	err = db.CreateSchema()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +88,7 @@ func main() {
 		program := flag.Arg(0)
 		comment := flag.Arg(1)
 
-		_, err := CreateProgram(program, comment)
+		_, err := db.CreateProgram(program, comment)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -102,7 +103,7 @@ func main() {
 		}
 		return
 	} else if *populateSample {
-		err = CreateSample()
+		err = db.CreateSample()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -111,7 +112,7 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteP take at least one argument")
 		}
-		_, err = DeleteProgram(flag.Arg(0))
+		_, err = db.DeleteProgram(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -121,16 +122,16 @@ func main() {
 		if flag.Arg(0) == "" {
 			log.Fatal("deleteW take at least one argument")
 		}
-		p, err := GetProgram(flag.Arg(0))
+		p, err := db.GetProgram(flag.Arg(0))
 		if p.ID == 0 {
 			log.Fatal("Could not find " + flag.Arg(0))
 		}
 
-		w, err := GetWorkoutByName(flag.Arg(1))
+		w, err := db.GetWorkoutByName(flag.Arg(1))
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = DeleteWorkout(p.ID, w.ID)
+		_, err = db.DeleteWorkout(p.ID, w.ID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -156,7 +157,7 @@ func main() {
 	if *yamlSource != "" {
 		rounds, err = YAMLImport(program_name, *yamlSource)
 	} else {
-		rounds, err = GetWorkoutsforProgram(program_name)
+		rounds, err = db.GetWorkoutsforProgram(program_name)
 	}
 	if err != nil {
 		log.Fatal(err)

@@ -1,9 +1,11 @@
-package chmoufrack
+package db
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	"github.com/chmouel/chmoufrack"
 )
 
 // TODO: Inserting comments is not working, figure this out!
@@ -47,15 +49,15 @@ func DeleteAllWorkoutProgram(programID int64) (res sql.Result, err error) {
 }
 
 // getWorkouts: get a workout for a
-func GetWorkoutsforProgram(name string) (rounds []Workout, err error) {
+func GetWorkoutsforProgram(name string) (rounds []chmoufrack.Workout, err error) {
 	var getWorkoutSQL = `
     SELECT W.id, W.repetition, W.meters, W.percentage, W.repos
        FROM Program P, Workout W WHERE P.name = $1
        AND W.ProgramID == P.id`
 
-	rows, err := DB.Query(getWorkoutSQL, name)
+	rows, err := chmoufrack.DB.Query(getWorkoutSQL, name)
 	for rows.Next() {
-		var w Workout
+		var w chmoufrack.Workout
 		err = rows.Scan(&w.ID, &w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
 		if err != nil {
 			return
@@ -66,14 +68,14 @@ func GetWorkoutsforProgram(name string) (rounds []Workout, err error) {
 }
 
 // getPrograms ...
-func GetPrograms() (programs []Program, err error) {
+func GetPrograms() (programs []chmoufrack.Program, err error) {
 	var getProgramsSQL = `SELECT id, name, date, comment from Program`
-	rows, err := DB.Query(getProgramsSQL)
+	rows, err := chmoufrack.DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}
 	for rows.Next() {
-		var p Program
+		var p chmoufrack.Program
 		err = rows.Scan(&p.ID, &p.Name, &p.Date, &p.Comment)
 		if err != nil {
 			return
@@ -83,9 +85,9 @@ func GetPrograms() (programs []Program, err error) {
 	return
 }
 
-func GetProgram(programName string) (program Program, err error) {
+func GetProgram(programName string) (program chmoufrack.Program, err error) {
 	var getProgramsSQL = `SELECT id, name, date, comment from Program where name = $1`
-	err = DB.QueryRow(getProgramsSQL, programName).Scan(
+	err = chmoufrack.DB.QueryRow(getProgramsSQL, programName).Scan(
 		&program.ID, &program.Name,
 		&program.Date, &program.Comment)
 	if err != nil {
@@ -95,15 +97,15 @@ func GetProgram(programName string) (program Program, err error) {
 }
 
 // getWorkout ...
-func GetWorkouts() (workouts []Workout, err error) {
+func GetWorkouts() (workouts []chmoufrack.Workout, err error) {
 	var getProgramsSQL = `SELECT W.repetition, W.meters, W.percentage, W.repos
 					        FROM Program P, Workout W WHERE W.ProgramID == P.ID`
-	rows, err := DB.Query(getProgramsSQL)
+	rows, err := chmoufrack.DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}
 	for rows.Next() {
-		var w Workout
+		var w chmoufrack.Workout
 		err = rows.Scan(&w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
 		if err != nil {
 			return
@@ -113,14 +115,14 @@ func GetWorkouts() (workouts []Workout, err error) {
 	return
 }
 
-func GetWorkoutByName(workoutName string) (workout Workout, err error) {
+func GetWorkoutByName(workoutName string) (workout chmoufrack.Workout, err error) {
 	var getProgramsSQL = `SELECT id, repetition, meters, percentage, repos from Workout`
-	rows, err := DB.Query(getProgramsSQL)
+	rows, err := chmoufrack.DB.Query(getProgramsSQL)
 	if err != nil {
 		return
 	}
 	for rows.Next() {
-		var w Workout
+		var w chmoufrack.Workout
 		err = rows.Scan(&w.ID, &w.Repetition, &w.Meters, &w.Percentage, &w.Repos)
 		if err != nil {
 			return

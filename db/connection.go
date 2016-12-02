@@ -1,8 +1,9 @@
-package chmoufrack
+package db
 
 import (
 	"database/sql"
 
+	"github.com/chmouel/chmoufrack"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -25,12 +26,13 @@ CREATE TABLE IF NOT EXISTS Program (
 
 func CreateSchema() (err error) {
 	// TODO: proper sqlite location
-	DB, err = sql.Open("sqlite3", CONFIG_DIR+"/chmoufrack.db")
+	chmoufrack.DB, err = sql.Open("sqlite3",
+		chmoufrack.CONFIG_DIR+"/chmoufrack.db")
 	if err != nil {
 		return
 	}
 
-	_, err = DB.Exec(sqlTable)
+	_, err = chmoufrack.DB.Exec(sqlTable)
 	return
 }
 
@@ -80,7 +82,7 @@ func CreateSample() (err error) {
 }
 
 func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
-	tx, err := DB.Begin()
+	tx, err := chmoufrack.DB.Begin()
 	if err != nil {
 		return
 	}
