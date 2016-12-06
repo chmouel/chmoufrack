@@ -38,7 +38,7 @@ func html_main_template(program_name, content string, outputWriter *bytes.Buffer
 	return
 }
 
-func getVMAS(value string) (vmas []int) {
+func get_vmas(value string) (vmas []int) {
 	var s, e int
 
 	if strings.Index(value, ":") > 0 {
@@ -87,7 +87,7 @@ func generate_program(workout Workout) (ts TemplateStruct, err error) {
 	workout.TrackLaps = laps
 	workout.TrackLength = TRACK_LENGTH
 
-	for _, vmad := range getVMAS(TARGET_VMA) {
+	for _, vmad := range get_vmas(TARGET_VMA) {
 		workout_vma := WorkoutVMA{}
 		vma := float64(vmad)
 		total_time, err = calcul_vma_distance(vma, percentage, meters)
