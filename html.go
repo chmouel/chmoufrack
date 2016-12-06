@@ -57,74 +57,84 @@ func getVMAS(value string) (vmas []int) {
 	return
 }
 
+func generate_all_vmas(meters, percentage float64) (vmas map[string]WorkoutVMA, err error) {
+	var total_time, time_lap string
+	vmas = map[string]WorkoutVMA{}
+
+	for _, vmad := range getVMAS(VMA) {
+		wt := WorkoutVMA{}
+		vma := float64(vmad)
+		total_time, err = calcul_vma_distance(vma, percentage, meters)
+		if err != nil {
+			return
+		}
+		wt.VMA = fmt.Sprintf("%.f", vma)
+		wt.TotalTime = total_time
+		if int(meters) >= TRACK_LENGTH {
+			time_lap, err = calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
+			if err != nil {
+				return
+			}
+			wt.TimeTrack = time_lap
+		} else {
+			wt.TimeTrack = "NA"
+		}
+		speed := calcul_vma_speed(vma, percentage)
+		wt.Speed = fmt.Sprintf("%.2f", speed)
+		wt.Pace = calcul_pace(speed)
+
+		vmas[wt.VMA] = wt
+	}
+	return
+}
+
+func generate_workout(w Workout) (wr Workout, err error) {
+	wr = w
+	meters, err := strconv.ParseFloat(w.Meters, 64)
+	if err != nil {
+		return
+	}
+
+	track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
+	if err != nil {
+		return
+	}
+
+	track_laps := meters / track_length
+	laps := fmt.Sprintf("%.1f", track_laps)
+	if strings.HasSuffix(laps, ".0") {
+		laps = strings.TrimSuffix(laps, ".0")
+	} else if laps == "0.5" {
+		laps = "½"
+	} else if strings.HasSuffix(laps, ".5") {
+		laps = strings.Replace(laps, ".5", "½", -1)
+	}
+	wr.TrackLaps = laps
+	wr.TrackLength = TRACK_LENGTH
+	return
+}
+
 func HTMLGen(program_name string, rounds []Workout, outputWriter *bytes.Buffer) error {
 	var content bytes.Buffer
 
-	for i := range rounds {
-		w := rounds[i]
-		repetition, err := strconv.ParseFloat(w.Repetition, 64)
+	for _, workout := range rounds {
+		genw, err := generate_workout(workout)
 		if err != nil {
 			return err
 		}
-		w.Repetition = fmt.Sprintf("%.f", repetition)
 
-		percentage, err := strconv.ParseFloat(w.Percentage, 64)
-		if err != nil {
-			return err
-		}
-		w.Percentage = fmt.Sprintf("%.f", percentage)
-		meters, err := strconv.ParseFloat(w.Meters, 64)
+		meters, _ := strconv.ParseFloat(genw.Meters, 64)
+		percentage, _ := strconv.ParseFloat(genw.Percentage, 64)
+
+		vmas, err := generate_all_vmas(meters, percentage)
 		if err != nil {
 			log.Fatal(err)
 		}
-		w.Meters = fmt.Sprintf("%.f", meters)
 
-		track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
-		if err != nil {
-			return err
-		}
-		track_laps := meters / track_length
-		laps := fmt.Sprintf("%.1f", track_laps)
-		if strings.HasSuffix(laps, ".0") {
-			laps = strings.TrimSuffix(laps, ".0")
-		} else if laps == "0.5" {
-			laps = "½"
-		} else if strings.HasSuffix(laps, ".5") {
-			laps = strings.Replace(laps, ".5", "½", -1)
-		}
-		w.TrackLaps = laps
-		w.TrackLength = TRACK_LENGTH
-
-		vmas := map[string]WorkoutVMA{}
-		for _, vmad := range getVMAS(VMA) {
-			wt := WorkoutVMA{}
-			vma := float64(vmad)
-			total_time, err := calcul_vma_distance(vma, percentage, meters)
-			if err != nil {
-				return err
-			}
-			wt.VMA = fmt.Sprintf("%.f", vma)
-			wt.TotalTime = total_time
-			if int(meters) >= TRACK_LENGTH {
-				time_lap, err := calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
-				if err != nil {
-					return err
-				}
-				wt.TimeTrack = time_lap
-			} else {
-				wt.TimeTrack = "NA"
-			}
-			speed := calcul_vma_speed(vma, percentage)
-			wt.Speed = fmt.Sprintf("%.2f", speed)
-			wt.Pace = calcul_pace(speed)
-
-			vmas[wt.VMA] = wt
-		}
 		ts := TemplateStruct{
 			VMAs: vmas,
-			WP:   w,
+			WP:   genw,
 		}
-
 		err = generate_content(ts, &content)
 		if err != nil {
 			return err
