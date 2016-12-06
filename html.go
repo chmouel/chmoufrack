@@ -3,14 +3,13 @@ package chmoufrack
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"text/template"
 )
 
-func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
+func html_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	t, err := template.ParseFiles(filepath.Join(STATIC_DIR, "templates", "content.tmpl"))
 	if err != nil {
 		return
@@ -22,7 +21,7 @@ func generate_content(ts TemplateStruct, content *bytes.Buffer) (err error) {
 	return
 }
 
-func generate_template(program_name, content string, outputWriter *bytes.Buffer) (err error) {
+func html_main_template(program_name, content string, outputWriter *bytes.Buffer) (err error) {
 	dico := map[string]string{
 		"Content":     content,
 		"ProgramName": program_name,
@@ -57,45 +56,21 @@ func getVMAS(value string) (vmas []int) {
 	return
 }
 
-func generate_all_vmas(meters, percentage float64) (vmas map[string]WorkoutVMA, err error) {
+func generate_program(workout Workout) (ts TemplateStruct, err error) {
 	var total_time, time_lap string
-	vmas = map[string]WorkoutVMA{}
+	vmas := map[string]WorkoutVMA{}
 
-	for _, vmad := range getVMAS(VMA) {
-		wt := WorkoutVMA{}
-		vma := float64(vmad)
-		total_time, err = calcul_vma_distance(vma, percentage, meters)
-		if err != nil {
-			return
-		}
-		wt.VMA = fmt.Sprintf("%.f", vma)
-		wt.TotalTime = total_time
-		if int(meters) >= TRACK_LENGTH {
-			time_lap, err = calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
-			if err != nil {
-				return
-			}
-			wt.TimeTrack = time_lap
-		} else {
-			wt.TimeTrack = "NA"
-		}
-		speed := calcul_vma_speed(vma, percentage)
-		wt.Speed = fmt.Sprintf("%.2f", speed)
-		wt.Pace = calcul_pace(speed)
-
-		vmas[wt.VMA] = wt
-	}
-	return
-}
-
-func generate_workout(w Workout) (wr Workout, err error) {
-	wr = w
-	meters, err := strconv.ParseFloat(w.Meters, 64)
+	meters, err := strconv.ParseFloat(workout.Meters, 64)
 	if err != nil {
 		return
 	}
 
 	track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
+	if err != nil {
+		return
+	}
+
+	percentage, err := strconv.ParseFloat(workout.Percentage, 64)
 	if err != nil {
 		return
 	}
@@ -109,41 +84,55 @@ func generate_workout(w Workout) (wr Workout, err error) {
 	} else if strings.HasSuffix(laps, ".5") {
 		laps = strings.Replace(laps, ".5", "½", -1)
 	}
-	wr.TrackLaps = laps
-	wr.TrackLength = TRACK_LENGTH
+	workout.TrackLaps = laps
+	workout.TrackLength = TRACK_LENGTH
+
+	for _, vmad := range getVMAS(TARGET_VMA) {
+		workout_vma := WorkoutVMA{}
+		vma := float64(vmad)
+		total_time, err = calcul_vma_distance(vma, percentage, meters)
+		if err != nil {
+			return
+		}
+		workout_vma.VMA = fmt.Sprintf("%.f", vma)
+		workout_vma.TotalTime = total_time
+		if int(meters) >= TRACK_LENGTH {
+			time_lap, err = calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
+			if err != nil {
+				return
+			}
+			workout_vma.TimeTrack = time_lap
+		} else {
+			workout_vma.TimeTrack = "NA"
+		}
+		speed := calcul_vma_speed(vma, percentage)
+		workout_vma.Speed = fmt.Sprintf("%.2f", speed)
+		workout_vma.Pace = calcul_pace(speed)
+
+		vmas[workout_vma.VMA] = workout_vma
+	}
+
+	ts = TemplateStruct{
+		VMAs: vmas,
+		WP:   workout,
+	}
+
 	return
 }
 
-func HTMLGen(program_name string, rounds []Workout, outputWriter *bytes.Buffer) error {
+func HTMLGen(program_name string, rounds []Workout, outputWriter *bytes.Buffer) (err error) {
 	var content bytes.Buffer
+	var ts TemplateStruct
 
 	for _, workout := range rounds {
-		genw, err := generate_workout(workout)
-		if err != nil {
-			return err
+		if ts, err = generate_program(workout); err != nil {
+			return
 		}
-
-		meters, _ := strconv.ParseFloat(genw.Meters, 64)
-		percentage, _ := strconv.ParseFloat(genw.Percentage, 64)
-
-		vmas, err := generate_all_vmas(meters, percentage)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		ts := TemplateStruct{
-			VMAs: vmas,
-			WP:   genw,
-		}
-		err = generate_content(ts, &content)
-		if err != nil {
-			return err
+		if err = html_content(ts, &content); err != nil {
+			return
 		}
 	}
 
-	err := generate_template(program_name, content.String(), outputWriter)
-	if err != nil {
-		return err
-	}
-	return nil
+	err = html_main_template(program_name, content.String(), outputWriter)
+	return
 }

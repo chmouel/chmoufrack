@@ -26,7 +26,7 @@ func main() {
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
 	configDir := flag.String("configdir", CONFIG_DIR, "Config directory for database")
-	vmas := flag.String("v", VMA, "Set VMAS with a colon as delimter in between")
+	vmas := flag.String("v", TARGET_VMA, "Set VMAS with a colon as delimter in between")
 	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
 	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
 	staticDir := flag.String("staticdir", STATIC_DIR, "Set static files directory")
@@ -40,7 +40,7 @@ func main() {
 	flag.Parse()
 
 	TRACK_LENGTH = *trackLength
-	VMA = *vmas
+	TARGET_VMA = *vmas
 
 	CONFIG_DIR = *configDir
 	if _, err := os.Stat(*configDir); os.IsNotExist(err) {

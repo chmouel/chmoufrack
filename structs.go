@@ -19,7 +19,7 @@ func getConfigDir() (configDir string) {
 
 var (
 	TRACK_LENGTH = 400
-	VMA          = "14:19"
+	TARGET_VMA   = "14:19"
 	CONFIG_DIR   = getConfigDir()
 	DB           *sql.DB
 	STATIC_DIR   = filepath.Join(CONFIG_DIR, "static")
