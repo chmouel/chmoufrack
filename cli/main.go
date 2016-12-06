@@ -168,7 +168,7 @@ func main() {
 	}
 
 	var output bytes.Buffer
-	err = HTMLGen(program_name, rounds, &output)
+	err = HTML_generate(program_name, rounds, &output)
 	if err != nil {
 		log.Fatal(err)
 	}

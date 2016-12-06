@@ -130,7 +130,7 @@ func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
 	}
 
 	var output bytes.Buffer
-	err = chmoufrack.HTMLGen(programName, rounds, &output)
+	err = chmoufrack.HTML_generate(programName, rounds, &output)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
