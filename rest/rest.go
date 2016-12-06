@@ -26,8 +26,8 @@ func Logger(inner http.Handler, name string) http.Handler {
 }
 
 func NewRouter() *mux.Router {
-
 	router := mux.NewRouter().StrictSlash(true)
+
 	for _, route := range routes {
 		var handler http.Handler
 
@@ -42,7 +42,8 @@ func NewRouter() *mux.Router {
 
 	}
 
-	s := http.StripPrefix("/static/", http.FileServer(http.Dir(chmoufrack.STATIC_DIR)))
+	s := http.StripPrefix("/static/",
+		http.FileServer(http.Dir(chmoufrack.STATIC_DIR)))
 	router.PathPrefix("/static/").Handler(s)
 
 	return router
@@ -50,6 +51,5 @@ func NewRouter() *mux.Router {
 
 func Server() {
 	router := NewRouter()
-
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
