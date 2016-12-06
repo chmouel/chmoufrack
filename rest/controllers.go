@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/chmouel/chmoufrack"
+	c "github.com/chmouel/chmoufrack"
 	"github.com/chmouel/chmoufrack/db"
 	"github.com/gorilla/mux"
 )
 
 func GETPrograms(writer http.ResponseWriter, r *http.Request) {
-	var programs []chmoufrack.Program
+	var programs []c.Program
 	var err error
 
 	if programs, err = db.GetPrograms(); err != nil {
@@ -21,6 +21,37 @@ func GETPrograms(writer http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = json.NewEncoder(writer).Encode(programs); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+}
+
+func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
+	type RestRep struct {
+		ProgramName string
+		Workouts    []c.TemplateStruct
+	}
+
+	vars := mux.Vars(reader)
+	programName := vars["name"]
+	var restRep = RestRep{ProgramName: programName}
+
+	workouts, err := db.GetWorkoutsforProgram(programName)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	for _, workout := range workouts {
+		var ts c.TemplateStruct
+
+		if ts, err = c.GenerateProgram(workout); err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		ts.ProgramName = programName
+		restRep.Workouts = append(restRep.Workouts, ts)
+	}
+	if err = json.NewEncoder(writer).Encode(restRep); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
@@ -66,7 +97,7 @@ func CreateMultipleWorkouts(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	programName := vars["name"]
 
-	var workouts []chmoufrack.Workout
+	var workouts []c.Workout
 	if reader.Body == nil {
 		http.Error(writer, "Please send a request body", http.StatusBadRequest)
 		return
@@ -130,7 +161,7 @@ func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
 	}
 
 	var output bytes.Buffer
-	err = chmoufrack.HTML_generate(programName, rounds, &output)
+	err = c.HTML_generate(programName, rounds, &output)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
@@ -142,7 +173,7 @@ func HTMLProgramShow(writer http.ResponseWriter, reader *http.Request) {
 	}
 }
 
-func convertAndCreateWorkout(ProgramName string, w chmoufrack.Workout) (err error) {
+func convertAndCreateWorkout(ProgramName string, w c.Workout) (err error) {
 	var percentage, meters, repetition int
 
 	p, err := db.GetProgram(ProgramName)

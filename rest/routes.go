@@ -31,6 +31,12 @@ var routes = Routes{
 		CreateMultipleWorkouts,
 	},
 	Route{
+		"ProgramWorkoutsGetFull",
+		"GET",
+		"/rest/program/{name}/full",
+		GetProgramFull,
+	},
+	Route{
 		"ProgramCreate",
 		"POST",
 		"/rest/program/{name}",
