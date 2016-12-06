@@ -1,5 +1,5 @@
 <div class="well-sm program">
-  <h3 class="text-center"><strong>{{.WP.Repetition}} * {{.WP.Meters}}m @ {{.WP.Percentage}}%</strong></h3>
+  <h3 class="text-center"><strong>{{.Workout.Repetition}} * {{.Workout.Meters}}m @ {{.Workout.Percentage}}%</strong></h3>
 </div>
 <div class="table-responsive">
   <table summary="Frac" class="table table-bordered table-striped">
@@ -7,7 +7,7 @@
       <tr>
         <th>VMA</th>
         <th>Total time</th>
-        <th>{{.WP.TrackLength}}m time</th>
+        <th>{{.Workout.TrackLength}}m time</th>
         <th>Speed</th>
         <th>Pace</th>
       </tr>
@@ -26,5 +26,5 @@
   </table>
 </div>
 <div>
-  <p class="text-right text-warning" >Rest: {{.WP.Repos}} </p>
+  <p class="text-right text-warning" >Rest: {{.Workout.Repos}} </p>
 </div>

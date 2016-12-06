@@ -91,7 +91,7 @@ func get_vmas(value string) (vmas []int) {
 	return
 }
 
-func generate_program(workout Workout) (ts TemplateStruct, err error) {
+func GenerateProgram(workout Workout) (ts TemplateStruct, err error) {
 	var total_time, time_lap string
 	vmas := map[string]WorkoutVMA{}
 
@@ -148,8 +148,8 @@ func generate_program(workout Workout) (ts TemplateStruct, err error) {
 	}
 
 	ts = TemplateStruct{
-		VMAs: vmas,
-		WP:   workout,
+		VMAs:    vmas,
+		Workout: workout,
 	}
 
 	return

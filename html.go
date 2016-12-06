@@ -40,7 +40,7 @@ func HTML_generate(program_name string, rounds []Workout, outputWriter *bytes.Bu
 	var ts TemplateStruct
 
 	for _, workout := range rounds {
-		if ts, err = generate_program(workout); err != nil {
+		if ts, err = GenerateProgram(workout); err != nil {
 			return
 		}
 		if err = html_content(ts, &content); err != nil {
