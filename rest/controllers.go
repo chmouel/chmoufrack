@@ -33,6 +33,11 @@ func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
 
 	vars := mux.Vars(reader)
 	programName := vars["name"]
+	vma := vars["vma"]
+	if vma == "" {
+		vma = c.TARGET_VMA
+	}
+
 	var restRep = RestRep{ProgramName: programName}
 
 	workouts, err := db.GetWorkoutsforProgram(programName)
@@ -44,7 +49,7 @@ func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
 	for _, workout := range workouts {
 		var ts c.TemplateStruct
 
-		if ts, err = c.GenerateProgram(workout); err != nil {
+		if ts, err = c.GenerateProgram(workout, vma); err != nil {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}

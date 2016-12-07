@@ -91,7 +91,7 @@ func get_vmas(value string) (vmas []int) {
 	return
 }
 
-func GenerateProgram(workout Workout) (ts TemplateStruct, err error) {
+func GenerateProgram(workout Workout, target_vma string) (ts TemplateStruct, err error) {
 	var total_time, time_lap string
 	vmas := map[string]WorkoutVMA{}
 
@@ -122,7 +122,7 @@ func GenerateProgram(workout Workout) (ts TemplateStruct, err error) {
 	workout.TrackLaps = laps
 	workout.TrackLength = TRACK_LENGTH
 
-	for _, vmad := range get_vmas(TARGET_VMA) {
+	for _, vmad := range get_vmas(target_vma) {
 		workout_vma := WorkoutVMA{}
 		vma := float64(vmad)
 		total_time, err = calcul_vma_distance(vma, percentage, meters)
