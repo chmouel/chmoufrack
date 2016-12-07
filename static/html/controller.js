@@ -1,28 +1,29 @@
-var app = angular.module("Frack", []);
+var app = angular.module("Frack", ["ngRoute"]);
 
-app.config(['$locationProvider', function($locationProvider){
-    $locationProvider.html5Mode({
-        enabled: true,
-        requireBase: false
-    });
-}]);
+app.config(function($routeProvider) {
+    $routeProvider.when("/:name", {controller: "FrackController"});
+});
 
-app.controller("FrackController", ['$scope', '$http', '$location', function($scope, $http, $location) {
-    var workout_name = $location.search().name;
-    var vma = $location.search().vma;
-    var res = '';
-    if (!workout_name) {
-        workout_name = 'HelloMoto';
-    }
-
-    if (vma) {
-        res = $http.get('/rest/program/' + workout_name + "/" + vma + "/full");
-    } else {
-        res = $http.get('/rest/program/' + workout_name + "/full");
-    }
-
+function FrackController($scope, $routeParams, $http) {
+    var workout_name = 'HelloMoto';
+    var vma = '17'
     $scope.programs = {'ProgramName': "", "Workout": []}
+    console.debug($routeParams);
+
+    res = $http.get('/rest/program/' + workout_name + "/" + vma + "/full");
 	res.success(function(data, status, headers, config) {
 		$scope.programs = data;
 	});
-}]);
+}
+app.controller("FrackController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+    var workout_name = 'HelloMoto';
+    var vma = '17'
+    $scope.programs = {'ProgramName': "", "Workout": []}
+    console.debug($routeParams.name);
+    return;
+
+    res = $http.get('/rest/program/' + workout_name + "/" + vma + "/full");
+	res.success(function(data, status, headers, config) {
+		$scope.programs = data;
+	});
+}])
