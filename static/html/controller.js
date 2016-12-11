@@ -2,8 +2,8 @@ var app = angular.module("Frack", ["ngRoute"]);
 
 app.config(function($routeProvider) {
     $routeProvider
-        .when("/workout/:name", {controller: "FrackController", templateUrl: "frack.html"})
-        .when("/workout/:name/vma/:vma", {controller: "FrackController", templateUrl: "frack.html"});
+        .when("/workout/:name", {controller: "FrackController", templateUrl: "partials/frack.html"})
+        .when("/workout/:name/vma/:vma", {controller: "FrackController", templateUrl: "partials/frack.html"});
 });
 
 
