@@ -37,7 +37,7 @@
       <input ng-model="selectedVMA" class="form-control" type="text" placeholder="VMA: {{workoutdetail.TargetVMA}}">
     </div>
     <div class="col-lg-4">
-      <select ng-options="x.Name for x in programs" class="form-control" ng-model="selectedWorkout">
+      <select ng-options="x.Name for x in programs" ng-change="submit()" class="form-control" ng-model="selectedWorkout">
       </select>
     </div>
     <div class="col-lg-2">
