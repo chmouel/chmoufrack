@@ -3,6 +3,7 @@ package rest
 import (
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
 
 	"github.com/chmouel/chmoufrack"
@@ -42,9 +43,15 @@ func NewRouter() *mux.Router {
 
 	}
 
-	s := http.StripPrefix("/static/",
-		http.FileServer(http.Dir(chmoufrack.STATIC_DIR)))
-	router.PathPrefix("/static/").Handler(s)
+	s := http.StripPrefix("/edit",
+		http.FileServer(http.Dir(filepath.Join(chmoufrack.STATIC_DIR, "html",
+			"edit"))))
+	router.PathPrefix("/edit").Handler(s)
+
+	s = http.StripPrefix("/",
+		http.FileServer(http.Dir(filepath.Join(chmoufrack.STATIC_DIR, "html",
+			"/show"))))
+	router.PathPrefix("/").Handler(s)
 
 	return router
 }
