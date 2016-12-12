@@ -1,4 +1,5 @@
 var app = angular.module("Frack", ["ngRoute"]);
+var vma = '14:19'
 
 app.config(function($routeProvider) {
     $routeProvider
@@ -9,7 +10,6 @@ app.config(function($routeProvider) {
 
 app.controller("FrackController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     var workout_name = 'HelloMoto';
-    var vma = '17'
     $scope.programs = {'ProgramName': "", "Workout": []}
 
     if ($routeParams.name) {
