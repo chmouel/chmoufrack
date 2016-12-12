@@ -8,9 +8,10 @@ app.config(function($routeProvider) {
 });
 
 
-app.controller("FrackController", ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     var workout_name = 'HelloMoto';
     $scope.programs = {'ProgramName': "", "Workout": []}
+    $scope.selectedVMA = '';
 
     if ($routeParams.name) {
         workout_name = $routeParams.name;
@@ -25,6 +26,22 @@ app.controller("FrackController", ['$scope', '$routeParams', '$http', function($
 
     res = $http.get('/rest/program/' + workout_name + "/" + vma + "/full");
 	res.success(function(data, status, headers, config) {
-		$scope.programs = data;
+		$scope.workoutdetail = data;
+        $scope.selectedVMA = $scope.workoutdetail.TargetVMA;
 	});
+    res = $http.get('/rest/programs');
+	res.success(function(data, status, headers, config) {
+		$scope.programs = data;
+        $scope.programs.forEach(function (program, i) {
+            if (program.Name == $scope.workoutdetail.ProgramName) {
+                $scope.selectedWorkout = $scope.programs[i];
+            }
+        });
+	});
+
+    $scope.submit = function() {
+        console.debug($scope.selectedWorkout.Name);
+        $location.path("/workout/" + $scope.selectedWorkout.Name + "/vma/" + $scope.selectedVMA)
+    }
+
 }])

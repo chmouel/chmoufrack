@@ -29,6 +29,7 @@ func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
 	type RestRep struct {
 		ProgramName string
 		Workouts    []c.TemplateStruct
+		TargetVMA   string
 	}
 
 	vars := mux.Vars(reader)
@@ -38,7 +39,7 @@ func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
 		vma = c.TARGET_VMA
 	}
 
-	var restRep = RestRep{ProgramName: programName}
+	var restRep = RestRep{ProgramName: programName, TargetVMA: vma}
 
 	workouts, err := db.GetWorkoutsforProgram(programName)
 	if err != nil {
