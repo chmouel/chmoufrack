@@ -8,6 +8,15 @@ app.config(function($routeProvider) {
         .otherwise({controller: "FrackController", templateUrl: "partials/frack.html"});
 });
 
+app.filter('range', function() {
+  return function(input, min, max) {
+    min = parseInt(min);
+    max = parseInt(max);
+    for (var i=min; i<=max; i++)
+      input.push(i);
+    return input;
+  };
+});
 
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     var workout_name = '';
