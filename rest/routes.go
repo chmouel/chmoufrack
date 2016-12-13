@@ -54,10 +54,4 @@ var routes = Routes{
 		"/rest/program/{name}/purge",
 		CleanupProgram,
 	},
-	Route{
-		"HTMLProgramShow",
-		"GET",
-		"/html/program/{name}",
-		HTMLProgramShow,
-	},
 }

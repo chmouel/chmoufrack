@@ -67,7 +67,7 @@ function DetailController($scope, $routeParams, $http) {
 
     $scope.saveshow = function(){
         $scope.save();
-        $(location).attr('href', '/html/program/' + $scope.programName);
+        $(location).attr('href', '/#/workout/' + $scope.programName);
     }
 
     $scope.remove = function(){
