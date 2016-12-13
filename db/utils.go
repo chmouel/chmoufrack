@@ -12,7 +12,6 @@ import (
 // createPrograms ...
 func CreateProgram(name, comment string) (res sql.Result, err error) {
 	var createProgramSQL = `INSERT INTO Program(name, comment) VALUES(?, ?)`
-	fmt.Println(createProgramSQL)
 	res, err = sqlTX(createProgramSQL, name, comment)
 	return
 }
