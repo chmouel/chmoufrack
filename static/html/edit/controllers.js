@@ -16,6 +16,7 @@ function DetailController($scope, $routeParams, $http) {
     $scope.message = $routeParams.id;
     $scope.AddNewProgram = false;
     $scope.programName = $routeParams.name;
+    $("#wrapper").addClass("toggled");
 
     $http({
         method: 'GET',
@@ -26,8 +27,6 @@ function DetailController($scope, $routeParams, $http) {
         $scope.AddNewProgram = true;
         $scope.addNew();
     });
-
-    $("#wrapper").addClass("toggled");
 
     $scope.addNew = function(programDetail){
         if ($scope.programDetails == "null\n" || typeof($scope.programDetails) === "undefined") { //wtf
@@ -43,28 +42,22 @@ function DetailController($scope, $routeParams, $http) {
     };
 
     $scope.save = function(programDetail){
+        var restPostWorkoutPromise = $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
         if ($scope.AddNewProgram) {
-            $http({
-                method: 'POST',
-                url: '/rest/program/' + $scope.programName
-            }).then(function successCallback(response) {
-                console.debug("Success creating program "  + $scope.programName)
-                $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
-            }, function errorCallback(response) {
-                console.debug("Failed to create new program "  + $scope.programName);
-            });
+            var firstStep = $http({method: 'POST', url: '/rest/program/' + $scope.programName})
+            firstStep.message = "create program"
             $scope.AddNewProgram = false;
         } else {
-            $http({
-                method: 'DELETE',
-                url: '/rest/program/' + $scope.programName + '/purge'
-            }).then(function successCallback(response) {
-                console.debug("Success purging program "  + $scope.programName);
-                $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
-            }, function errorCallback(response) {
-                console.debug("Failed to delete program "  + $scope.programName);
-            });
+            var firstStep = $http({method: 'DELETE', url: '/rest/program/' + $scope.programName + '/purge'})
+            firstStep.message = "purging program"
         }
+
+        firstStep.then(function successCallback(response) {
+            $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
+        }, function errorCallback(response) {
+            console.debug("Failing " + firstStep.message);
+        });
+
     };
 
     $scope.saveshow = function(){
