@@ -42,22 +42,27 @@ function DetailController($scope, $routeParams, $http) {
     };
 
     $scope.save = function(programDetail){
-        var restPostWorkoutPromise = $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
         if ($scope.AddNewProgram) {
             var firstStep = $http({method: 'POST', url: '/rest/program/' + $scope.programName})
             firstStep.message = "create program"
+            firstStep.thenFunction = function() {
+                //$scope.workoutS.push({'Comment': '', 'Date': '', 'ID': '', 'Name': $scope.programName});
+                $scope.refreshPrograms();
+            }
             $scope.AddNewProgram = false;
         } else {
             var firstStep = $http({method: 'DELETE', url: '/rest/program/' + $scope.programName + '/purge'})
             firstStep.message = "purging program"
+            firstStep.thenFunction = function() {};
         }
 
         firstStep.then(function successCallback(response) {
+            console.debug($scope.workoutS);
             $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
+            firstStep.thenFunction();
         }, function errorCallback(response) {
             console.debug("Failing " + firstStep.message);
         });
-
     };
 
     $scope.saveshow = function(){
@@ -90,10 +95,13 @@ function DetailController($scope, $routeParams, $http) {
 }
 
 app.controller("ListController", ['$scope', '$http', function($scope, $http) {
-    var res = $http.get('/rest/programs');
-	res.success(function(data, status, headers, config) {
-		$scope.workoutS = data;
-	});
+    $scope.refreshPrograms = function() {
+        var res = $http.get('/rest/programs');
+	    res.success(function(data, status, headers, config) {
+		    $scope.workoutS = data;
+	    });
+    }
+    $scope.refreshPrograms();
 
     $scope.addNewProgram = function() {
       bootbox.prompt("Add a new Program", (function (program) {
