@@ -16,6 +16,8 @@ function DetailController($scope, $routeParams, $http) {
     $scope.message = $routeParams.id;
     $scope.AddNewProgram = false;
     $scope.programName = $routeParams.name;
+    $scope.showSuccessAlert = false;
+
     $("#wrapper").addClass("toggled");
 
     $http({
@@ -63,6 +65,8 @@ function DetailController($scope, $routeParams, $http) {
         }, function errorCallback(response) {
             console.debug("Failing " + firstStep.message);
         });
+
+        $scope.showSuccessAlert = true;
     };
 
     $scope.saveshow = function(){

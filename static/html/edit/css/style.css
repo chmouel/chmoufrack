@@ -8,3 +8,7 @@
 a[ng-click]{
     cursor: pointer;
 }
+
+.addnew {
+    margin-left: 8px;
+}

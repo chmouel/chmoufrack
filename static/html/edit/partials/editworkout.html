@@ -1,3 +1,7 @@
+<div id="success" ng-show="showSuccessAlert" class="alert alert-success fade in">
+  <strong>Success!</strong> Your workout has been saved successfully.
+</div>
+
 <div class="panel panel-default">
   <div class="panel-heading">Editing Program <strong>{{programName}}</strong></div>
   <div class="panel-body">
@@ -24,9 +28,9 @@
       </table>
 
       <div class="form-group">
-        <input ng-hide="!programDetails.length" type="button" class="btn btn-danger" ng-click="remove()" value="Remove">
-        <input ng-click="addNew()" class="btn btn-primary" value="Add New">
-        <input ng-click="save()" class="btn btn-info addnew" value="Save">
+        <input ng-hide="!programDetails.length" type="button" class="btn btn-danger" ng-click="remove()" value="Remove Workout">
+        <input ng-click="addNew()" class="btn btn-primary" value="Add Workout">
+        <input ng-click="save()" class="btn btn-info addnew pull-right" value="Save">
         <input type="submit" class="btn btn-success pull-right" value="Show">
       </div>
     </form>
