@@ -31,7 +31,6 @@ function DetailController($scope, $routeParams, $http) {
 
     $scope.addNew = function(programDetail){
         if ($scope.programDetails == "null\n" || typeof($scope.programDetails) === "undefined") { //wtf
-
             $scope.programDetails = [];
         }
 
@@ -49,8 +48,10 @@ function DetailController($scope, $routeParams, $http) {
                 method: 'POST',
                 url: '/rest/program/' + $scope.programName
             }).then(function successCallback(response) {
+                console.debug("Success creating program "  + $scope.programName)
+                $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
             }, function errorCallback(response) {
-                console.debug("Failed to create new program");
+                console.debug("Failed to create new program "  + $scope.programName);
             });
             $scope.AddNewProgram = false;
         } else {
@@ -58,14 +59,12 @@ function DetailController($scope, $routeParams, $http) {
                 method: 'DELETE',
                 url: '/rest/program/' + $scope.programName + '/purge'
             }).then(function successCallback(response) {
-                console.debug("Success purging program");
+                console.debug("Success purging program "  + $scope.programName);
+                $http.post('/rest/program/' + $scope.programName + '/workouts', $scope.programDetails);
             }, function errorCallback(response) {
-                console.debug("Failed to delete program");
+                console.debug("Failed to delete program "  + $scope.programName);
             });
         }
-        $http.post('/rest/program/' + $scope.programName + '/workouts',
-                   $scope.programDetails);
-
     };
 
     $scope.saveshow = function(){
