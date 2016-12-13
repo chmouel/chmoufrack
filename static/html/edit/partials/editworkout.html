@@ -19,9 +19,9 @@
         <tbody>
           <tr ng-repeat="program in programDetails">
             <td><input type="checkbox" ng-model="program.selected"/></td>
-            <td><input type="text" class="form-control" ng-model="program.Repetition" required/></td>
-            <td><input type="text" class="form-control" ng-model="program.Meters" required/></td>
-            <td><input type="text" class="form-control" ng-model="program.Percentage" required/></td>
+            <td><input type="number" class="form-control" ng-model="program.Repetition" required/></td>
+            <td><input type="number" class="form-control" ng-model="program.Meters" required/></td>
+            <td><input type="number" class="form-control" ng-model="program.Percentage" required/></td>
             <td><textarea class="form-control" rows="2" ng-model="program.Repos"></textarea></td>
           </tr>
         </tbody>
