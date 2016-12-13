@@ -1,6 +1,6 @@
 * UI
 ** Workout ordering
-** Convert to movdule and share state to be able to refresh the sidebar after creating.
+** Convert to module and share state to be able to refresh the sidebar after creating.
 ** Checks data before submitting
 ** i18n
 ** Print message when succeeding to update
