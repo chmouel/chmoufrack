@@ -35,7 +35,7 @@ func GetProgramFull(writer http.ResponseWriter, reader *http.Request) {
 	programName := vars["name"]
 	vma := vars["vma"]
 	if vma == "" {
-		vma = c.TARGET_VMA
+		vma = c.TargetVma
 	}
 
 	var restRep = RestRep{ProgramName: programName, TargetVMA: vma}

@@ -1,13 +1,12 @@
 package chmoufrack
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
 
 func TestGetVMAs(t *testing.T) {
-	actual := get_vmas("14:18")
+	actual := getVmas("14:18")
 	expected := []int{14, 15, 16, 17, 18}
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("GETVmas failed: '%v', got '%v", expected, actual)
@@ -15,7 +14,7 @@ func TestGetVMAs(t *testing.T) {
 }
 
 func TestVMADistance(t *testing.T) {
-	c, err := calcul_vma_distance(12, 100, 1000)
+	c, err := calculVmaDistance(12, 100, 1000)
 	if err != nil {
 		t.Error(err)
 	}
@@ -24,7 +23,7 @@ func TestVMADistance(t *testing.T) {
 		t.Error(c + " should equal" + result)
 	}
 
-	result, err = calcul_vma_distance(11, 100, 1000)
+	result, err = calculVmaDistance(11, 100, 1000)
 	if err != nil {
 		t.Error(err)
 	}
@@ -34,42 +33,42 @@ func TestVMADistance(t *testing.T) {
 }
 
 func TestVMAVitesse(t *testing.T) {
-	c := calcul_vma_speed(20, 50)
+	c := calculVmaSpeed(20, 50)
 	result := 10.0
 	if c != result {
-		t.Error(fmt.Sprintf("%.0f should equal %s", result, c))
+		t.Errorf("%.0f should equal %.0f", result, c)
 	}
 }
 
 func TestVMAPace(t *testing.T) {
-	c := calcul_pace(14)
+	c := calculPace(14)
 	result := "4'17"
 	if c != result {
 		t.Error(c + " should equal " + result)
 	}
 	// should add a 0 at the begin
-	c = calcul_pace(11.9)
+	c = calculPace(11.9)
 	result = "5'03"
 	if c != result {
 		t.Error(c + " should equal " + result)
 	}
 
 	// should have just the minutes
-	c = calcul_pace(5)
+	c = calculPace(5)
 	result = "12'"
 	if c != result {
 		t.Error(c + " should equal " + result)
 	}
 
 	// should have only the seconds
-	c = calcul_pace(100)
+	c = calculPace(100)
 	result = "36\""
 	if c != result {
 		t.Error(c + " should equal " + result)
 	}
 
 	// this should equal to 4'60 which mean 5 if our thing work well
-	c = calcul_pace(12.02)
+	c = calculPace(12.02)
 	result = "5'"
 	if c != result {
 		t.Error(c + " should equal " + result)

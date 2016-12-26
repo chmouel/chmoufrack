@@ -39,12 +39,12 @@ func NewRouter() *mux.Router {
 	}
 
 	s := http.StripPrefix("/edit",
-		http.FileServer(http.Dir(filepath.Join(chmoufrack.STATIC_DIR, "html",
+		http.FileServer(http.Dir(filepath.Join(chmoufrack.StaticDir, "html",
 			"edit"))))
 	router.PathPrefix("/edit").Handler(s)
 
 	s = http.StripPrefix("/",
-		http.FileServer(http.Dir(filepath.Join(chmoufrack.STATIC_DIR, "html",
+		http.FileServer(http.Dir(filepath.Join(chmoufrack.StaticDir, "html",
 			"/show"))))
 	router.PathPrefix("/").Handler(s)
 

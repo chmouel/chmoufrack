@@ -20,10 +20,10 @@ func round(val float64) float64 {
 }
 
 // calcul vma of a distance, you give a vma and a percent for a distance
-func calcul_vma_distance(vma, percent, distance float64) (result string, err error) {
-	vma_ms := vma * 1000 / 3600
-	vma_100 := 100 / vma_ms
-	calcul := vma_100 / percent * distance
+func calculVmaDistance(vma, percent, distance float64) (result string, err error) {
+	vmaMs := vma * 1000 / 3600
+	vma100 := 100 / vmaMs
+	calcul := vma100 / percent * distance
 
 	stemps := int(calcul)
 	minute := ((stemps - (stemps)%60) / 60)
@@ -41,19 +41,19 @@ func calcul_vma_distance(vma, percent, distance float64) (result string, err err
 }
 
 // calcul_vma_vitesse ...
-func calcul_vma_speed(vma, percent float64) float64 {
+func calculVmaSpeed(vma, percent float64) float64 {
 	return (vma * percent) / 100
 }
 
-// calcul_pace from a speed (kmh)
-func calcul_pace(vitesse float64) (ret string) {
+// calculPace from a speed (kmh)
+func calculPace(vitesse float64) (ret string) {
 	var e = 1 / vitesse * 60
 	var t = math.Floor(e / 60)
 	var n = math.Floor(e - t*60)
 	var r = round(60 * (e - t*60 - n))
 
 	if r == 60 {
-		n += 1
+		n++
 		r = 0
 	}
 
@@ -73,7 +73,7 @@ func calcul_pace(vitesse float64) (ret string) {
 	return
 }
 
-func get_vmas(value string) (vmas []int) {
+func getVmas(value string) (vmas []int) {
 	var s, e int
 
 	if strings.Index(value, ":") > 0 {
@@ -91,8 +91,8 @@ func get_vmas(value string) (vmas []int) {
 	return
 }
 
-func GenerateProgram(workout Workout, target_vma string) (ts TemplateStruct, err error) {
-	var total_time, time_lap string
+func GenerateProgram(workout Workout, targetVma string) (ts TemplateStruct, err error) {
+	var totalTime, timeLap string
 	vmas := map[string]WorkoutVMA{}
 
 	meters, err := strconv.ParseFloat(workout.Meters, 64)
@@ -100,7 +100,7 @@ func GenerateProgram(workout Workout, target_vma string) (ts TemplateStruct, err
 		return
 	}
 
-	track_length, err := strconv.ParseFloat(strconv.Itoa(TRACK_LENGTH), 64)
+	trackLength, err := strconv.ParseFloat(strconv.Itoa(TrackLength), 64)
 	if err != nil {
 		return
 	}
@@ -110,8 +110,8 @@ func GenerateProgram(workout Workout, target_vma string) (ts TemplateStruct, err
 		return
 	}
 
-	track_laps := meters / track_length
-	laps := fmt.Sprintf("%.1f", track_laps)
+	trackLaps := meters / trackLength
+	laps := fmt.Sprintf("%.1f", trackLaps)
 	if strings.HasSuffix(laps, ".0") {
 		laps = strings.TrimSuffix(laps, ".0")
 	} else if laps == "0.5" {
@@ -120,31 +120,31 @@ func GenerateProgram(workout Workout, target_vma string) (ts TemplateStruct, err
 		laps = strings.Replace(laps, ".5", "½", -1)
 	}
 	workout.TrackLaps = laps
-	workout.TrackLength = TRACK_LENGTH
+	workout.TrackLength = TrackLength
 
-	for _, vmad := range get_vmas(target_vma) {
-		workout_vma := WorkoutVMA{}
+	for _, vmad := range getVmas(targetVma) {
+		workoutVma := WorkoutVMA{}
 		vma := float64(vmad)
-		total_time, err = calcul_vma_distance(vma, percentage, meters)
+		totalTime, err = calculVmaDistance(vma, percentage, meters)
 		if err != nil {
 			return
 		}
-		workout_vma.VMA = fmt.Sprintf("%.f", vma)
-		workout_vma.TotalTime = total_time
-		if int(meters) >= TRACK_LENGTH {
-			time_lap, err = calcul_vma_distance(vma, percentage, float64(TRACK_LENGTH))
+		workoutVma.VMA = fmt.Sprintf("%.f", vma)
+		workoutVma.TotalTime = totalTime
+		if int(meters) >= TrackLength {
+			timeLap, err = calculVmaDistance(vma, percentage, float64(TrackLength))
 			if err != nil {
 				return
 			}
-			workout_vma.TimeTrack = time_lap
+			workoutVma.TimeTrack = timeLap
 		} else {
-			workout_vma.TimeTrack = "NA"
+			workoutVma.TimeTrack = "NA"
 		}
-		speed := calcul_vma_speed(vma, percentage)
-		workout_vma.Speed = fmt.Sprintf("%.2f", speed)
-		workout_vma.Pace = calcul_pace(speed)
+		speed := calculVmaSpeed(vma, percentage)
+		workoutVma.Speed = fmt.Sprintf("%.2f", speed)
+		workoutVma.Pace = calculPace(speed)
 
-		vmas[workout_vma.VMA] = workout_vma
+		vmas[workoutVma.VMA] = workoutVma
 	}
 
 	ts = TemplateStruct{

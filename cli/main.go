@@ -25,11 +25,11 @@ func main() {
 	deleteW := flag.Bool("deleteW", false, "Delete workout attached to program: PROGRAM_NAME WORKOUT_NAME")
 	populateSample := flag.Bool("populateS", false, "Populate samples")
 	outputFile := flag.String("o", "", "Output file for the generated HTML")
-	configDir := flag.String("configdir", CONFIG_DIR, "Config directory for database")
-	vmas := flag.String("v", TARGET_VMA, "Set VMAS with a colon as delimter in between")
-	trackLength := flag.Int("trackLength", TRACK_LENGTH, "Track Length")
+	configDir := flag.String("configdir", ConfigDir, "Config directory for database")
+	vmas := flag.String("v", TargetVma, "Set VMAS with a colon as delimter in between")
+	trackLength := flag.Int("trackLength", TrackLength, "Track Length")
 	yamlSource := flag.String("y", "", "Use a yaml file as source instead of the DB")
-	staticDir := flag.String("staticdir", STATIC_DIR, "Set static files directory")
+	staticDir := flag.String("staticdir", StaticDir, "Set static files directory")
 	rest := flag.Bool("rest", false, "Start the REST server")
 
 	flag.Usage = func() {
@@ -39,10 +39,10 @@ func main() {
 
 	flag.Parse()
 
-	TRACK_LENGTH = *trackLength
-	TARGET_VMA = *vmas
+	TrackLength = *trackLength
+	TargetVma = *vmas
 
-	CONFIG_DIR = *configDir
+	ConfigDir = *configDir
 	if _, err := os.Stat(*configDir); os.IsNotExist(err) {
 		err := os.MkdirAll(*configDir, 0755)
 		if err != nil {
@@ -50,15 +50,15 @@ func main() {
 		}
 	}
 
-	STATIC_DIR = *staticDir
+	StaticDir = *staticDir
 	if _, err := os.Stat(filepath.Join("static")); !os.IsNotExist(err) {
-		STATIC_DIR, err = filepath.Abs(filepath.Join("static"))
+		StaticDir, err = filepath.Abs(filepath.Join("static"))
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	if _, err := os.Stat(STATIC_DIR); os.IsNotExist(err) {
-		log.Fatal("Cannot find the static directory you need to copy it from the sources in: " + CONFIG_DIR)
+	if _, err := os.Stat(StaticDir); os.IsNotExist(err) {
+		log.Fatal("Cannot find the static directory you need to copy it from the sources in: " + ConfigDir)
 	}
 
 	err = db.CreateSchema()
@@ -168,7 +168,7 @@ func main() {
 	}
 
 	var output bytes.Buffer
-	err = HTML_generate(program_name, rounds, &output)
+	err = HTMLGenerate(program_name, rounds, &output)
 	if err != nil {
 		log.Fatal(err)
 	}
