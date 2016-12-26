@@ -33,9 +33,7 @@ func YAMLImport(program_name, filename string) (rounds []Workout, err error) {
 		if program.Name != program_name {
 			continue
 		}
-		for _, workout := range program.Workouts {
-			rounds = append(rounds, workout)
-		}
+		rounds = append(rounds, program.Workouts...)
 	}
 	return
 }
