@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/chmouel/chmoufrack/common"
 	"github.com/gorilla/mux"
 )
 
@@ -36,7 +37,7 @@ func Router() *mux.Router {
 			Name(route.Name).Handler(handler)
 	}
 
-	s := http.StripPrefix("/", http.FileServer(http.Dir("ui/")))
+	s := http.StripPrefix("/", http.FileServer(http.Dir(common.StaticDir)))
 	router.PathPrefix("/").Handler(s)
 
 	return router

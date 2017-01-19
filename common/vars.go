@@ -4,6 +4,7 @@ import "time"
 
 var (
 	Yaml_File   = `frack.yaml`
+	StaticDir   = `./ui/`
 	TrackLength = 400
 	TargetVma   = "14:19"
 )
