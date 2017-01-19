@@ -6,41 +6,32 @@ The name is a play on world between F***ck it (The usual word you spit when
 looking for the first at tonight's coach program) and fractioneés means intervals
 in french. It supposed to be funny but yet clever (fail)
 
+There is two component to this, the REST server and the UI based on angular.
+
+It was originally based on sqlite but I changed as yaml since that was good
+enough and didn't want to bother.
+
 USAGE
 -----
 
-This has been a work in progress but the basic yaml config source should work,
-look over the samples/yaml-config.yaml file for an example and specify on frack
-command line for example :
+Look over the `frack.yaml` for the example of format of the config file for how to
+specify the list of the workouts.
+
+You will then launch the UI :
 
 ```
-$ chmoufrack -y my-new-config-file.yaml 3x800/2x1000/1x2000 > /tmp/frackitlikeinthe90s.html
+$ go build
+$ ./frack
 ```
 
-This will generate a static html page of your different workouts with all the VMAs.
+You can then access to :
 
-There is other options on the command for example to adjust the VMA ranges with the -v option
-if you like.
+http://localhost:8080
 
-DEMO
-----
+to see the generated UI.
 
-It will look like this :
+You can update the `frack.yaml` as much as you like it get read on every rest call
 
-http://chmouel.com/frac/frac-16Oct2016-chmou.html
-
-UI
---
-
-The UI is in a heavy work in progress, you launch it with :
-
-chmoufrack -rest
-
-and it will expose itself to localhost:8080, just access directly in :
-
-https://localhost:8080/static/html
-
-as mentioned things are moving quite heavily in there.
 
 Requirements
 ------------

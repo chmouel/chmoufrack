@@ -1,0 +1,61 @@
+- name: Jan-2410
+  comment: |
+    Super program de Jan a refaire et refaire.
+  workouts:
+    - laps: 4
+      length: 200
+      percentage: 110
+      rest: 2mn active
+    - laps: 3
+      length: 400
+      percentage: 100
+      rest: 2mn active
+    - laps: 2
+      length: 600
+      percentage: 95
+      rest: 2mn active
+    - laps: 1
+      length: 800
+      percentage: 90
+      rest: 5mn
+
+- name: Pyramid-30112017
+  comment: |
+    Commencer par 5 tours warmup (2km)
+    Finir par 5 tours de warmdown (2km)
+  workouts:
+    - laps: 1
+      length: 100
+      percentage: 110
+      rest: 100m au trôt
+    - laps: 1
+      length: 200
+      percentage: 100
+      rest: 100m au trôt
+    - laps: 1
+      length: 300
+      percentage: 100
+      rest: 100m au trôt
+    - laps: 1
+      length: 400
+      percentage: 95
+      rest: 100m au trôt
+    - laps: 1
+      length: 500
+      percentage: 95
+      rest: 100m au trôt
+    - laps: 1
+      length: 400
+      percentage: 95
+    - laps: 1
+      length: 300
+      percentage: 100
+      rest: 100m au trôt
+    - laps: 1
+      length: 200
+      percentage: 100
+      rest: 100m au trôt
+    - laps: 1
+      length: 100
+      percentage: 110
+      rest: 100m au trôt

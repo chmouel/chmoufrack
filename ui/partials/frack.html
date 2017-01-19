@@ -35,8 +35,7 @@
   <div class="form-group  container-fluid">
     <div class="col-lg-offset-2 col-lg-2">
       <label for="vma">Select VMA:</label>
-      <!-- <input ng-model="selectedVMA" class="form-control" type="text" placeholder="VMA: {{workoutdetail.TargetVMA}}"> -->
-      <select id="vma" class="form-control" ng-model="selectedVMA" ng-options="n for n in [] | range:12:22">
+      <select id="vma" class="form-control" ng-change="submit()" ng-options="n for n in [] | range:10:22" ng-model="selectedVMA">
       </select>
     </div>
     <div class="col-lg-4">

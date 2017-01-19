@@ -20,7 +20,7 @@ app.filter('range', function() {
 
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     var workout_name = '';
-    $scope.workoutdetail = {'ProgramName': "", "Workout": []}
+    $scope.workoutdetail = {'Name': "", "Workout": []}
     $scope.selectedVMA = '';
     vma = default_vma;
 
@@ -28,12 +28,17 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         workout_name = $routeParams.name;
     }
 
-    if ($routeParams.vma) {
-        vma = $routeParams.vma;
-        $scope.selectedVMA = $routeParams.vma;
+    if ($routeParams.vma == "undefined") {
+        $location.path("/workout/" + workout_name + "/vma/" + default_vma)
+        return;
     }
 
-    res = $http.get('/rest/program/' + workout_name + "/" + vma + "/full");
+    if ($routeParams.vma) {
+        vma = $routeParams.vma;
+        $scope.selectedVMA = vma;
+    }
+
+    res = $http.get('/rest/program/' + workout_name + "/" + vma);
 	res.success(function(data, status, headers, config) {
 		$scope.workoutdetail = data;
         $scope.selectedVMA = $scope.workoutdetail.TargetVMA;
@@ -43,9 +48,9 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
 	res.success(function(data, status, headers, config) {
 		$scope.programs = data;
 
-        if ($scope.workoutdetail.ProgramName != '') {
+        if ($scope.workoutdetail.Name != '') {
             $scope.programs.forEach(function (program, i) {
-                if (program.Name == $scope.workoutdetail.ProgramName) {
+                if (program.Name == $scope.workoutdetail.Name) {
                     $scope.selectedWorkout = $scope.programs[i];
                 }
             });

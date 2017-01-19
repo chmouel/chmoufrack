@@ -1,4 +1,4 @@
-package chmoufrack
+package common
 
 import (
 	"fmt"
@@ -91,7 +91,8 @@ func getVmas(value string) (vmas []int) {
 	return
 }
 
-func GenerateProgram(workout Workout, targetVma string) (ts TemplateStruct, err error) {
+// GenerateProgram Generate a program
+func GenerateProgram(workout Workout, targetVma string) (ts CalculatedProgram, err error) {
 	var totalTime, timeLap string
 	vmas := map[string]WorkoutVMA{}
 
@@ -147,7 +148,7 @@ func GenerateProgram(workout Workout, targetVma string) (ts TemplateStruct, err 
 		vmas[workoutVma.VMA] = workoutVma
 	}
 
-	ts = TemplateStruct{
+	ts = CalculatedProgram{
 		VMAs:    vmas,
 		Workout: workout,
 	}
