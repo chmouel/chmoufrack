@@ -9,10 +9,10 @@
       <thead>
         <tr>
           <th>VMA</th>
-          <th>Total time</th>
-          <th>400m time</th>
-          <th>Speed</th>
-          <th>Pace</th>
+          <th>Temps Total</th>
+          <th>Temps 400m</th>
+          <th>Vitesse</th>
+          <th>Allure</th>
         </tr>
       </thead>
       <tbody>
@@ -25,21 +25,21 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <div>
-    <p class="text-right text-warning">{{program.Workout.Repos}} </p>
+    <div class="text-right bg-warning table" style="margin-top: -20px;">
+      <strong>Repos:</strong> <span class="text-muted">{{program.Workout.Repos}}</span>
+    </div>
   </div>
 </div>
 
 <form ng-submit="submit()">
   <div class="form-group  container-fluid">
     <div class="col-lg-offset-2 col-lg-2">
-      <label for="vma">Select VMA:</label>
+      <label for="vma">VMA:</label>
       <select id="vma" class="form-control" ng-change="submit()" ng-options="n for n in [] | range:10:22" ng-model="selectedVMA">
       </select>
     </div>
     <div class="col-lg-4">
-      <label for="programs">Select Program:</label>
+      <label for="programs">Programme:</label>
       <select id="programs" ng-options="x.Name for x in programs" ng-change="submit()" class="form-control" ng-model="selectedWorkout">
       </select>
     </div>
