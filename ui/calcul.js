@@ -68,14 +68,12 @@ app.controller('CalculController', ['$scope', function($scope) {
     }
 
     $scope.test = function(r, m, p) {
-        var vmas = [14, 15, 16, 17];
-        var res = calc(r, m, p, vmas);
+        var res = calc(r, m, p, $scope.vmaWanted);
         return res;
     };
 
     for (var program of $scope.programs) {
         if (program.Name != $scope.programWanted) continue;
         $scope.program = program;
-        console.log($scope.program);
     }
 }]);
