@@ -1,32 +1,34 @@
 <img class="img-responsive img-rounded" alt="banner" src="https://github.com/chmouel/chmoufrack/raw/oldversionondb/static/images/banner.jpg">
 
-<div ng-repeat="program in workoutdetail.Workouts">
-  <div class="well-sm program">
-    <h3 class="text-center"><strong>{{program.Workout.Repetition}} * {{program.Workout.Meters}}m @ {{program.Workout.Percentage}}%</strong></h3>
-  </div>
-  <div class="table-responsive">
-    <table summary="Frac" class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th>VMA</th>
-          <th>Temps Total</th>
-          <th>Temps 400m</th>
-          <th>Vitesse</th>
-          <th>Allure</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="w in program.VMAs">
-          <td><strong>{{w.VMA}}</strong></td>
-          <td>{{w.TotalTime}}</td>
-          <td>{{w.TimeTrack}}</td>
-          <td>{{w.Speed}}</td>
-          <td>{{w.Pace}}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div ng-if="program.Workout.Repos != ''" class="text-center bg-warning" style="padding: 5px;margin-top: -20px;">
-      <strong>Repos:</strong> <span class="text-muted">{{program.Workout.Repos}}</span>
+<div ng-controller="CalculController">
+  <div ng-repeat="w in program.Workouts">
+    <div class="well-sm program">
+      <h3 class="text-center"><strong>{{hello}} {{w.Repetition}} * {{w.Meters}}m @ {{w.Percentage}}%</strong></h3>
+    </div>
+    <div class="table-responsive">
+      <table summary="Frac" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>VMA</th>
+            <th>Temps Total</th>
+            <th>Temps 400m</th>
+            <th>Vitesse</th>
+            <th>Allure</th>
+          </tr>
+        </thead>
+        <tbody ng-init="vmas = test(w.Repetition, w.Meters, w.Percentage)">
+          <tr ng-repeat="v in vmas">
+            <td><strong>{{v.vma}}</strong></td>
+            <td>{{v.totalTime}}</td>
+            <td>{{v.timeLap}}</td>
+            <td>{{v.speed}}</td>
+            <td>{{v.pace}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div ng-if="workout.Repos != ''" class="text-center bg-warning" style="padding: 5px;margin-top: -20px;">
+        <strong>Repos:</strong> <span class="text-muted">{{w.Repos}}</span>
+      </div>
     </div>
   </div>
 </div>
