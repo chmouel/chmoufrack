@@ -37,14 +37,15 @@
   <div class="form-group  container-fluid">
     <div class="col-lg-offset-2 col-lg-2">
       <label for="vma">VMA:</label>
-      <select id="vma" class="form-control" ng-options="n for n in [] | range:10:22" ng-model="selectedVMA">
+      <select id="vma" class="form-control" ng-options="n for n in [] | range:10:22" ng-change="submit()" ng-model="selectedVMA">
       </select>
     </div>
     <div class="col-lg-4">
       <label for="programs">Programme:</label>
-      <select id="programs" ng-options="x.Name for x in programs" ng-change="submit()" class="form-control" ng-model="selectedWorkout">
+      <select ng-options="x.Name for x in programs" ng-change="submit()" ng-model="selectedProgram" class="form-control">
       </select>
     </div>
+
     <div style="margin-top: 2px;" class="col-lg-2">
       <label for="zou"></label>
       <input id="zou" class="form-control" type="submit" value="Zou!">

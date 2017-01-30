@@ -18,16 +18,4 @@ var allRoutes = routes{
 		"/rest/programs",
 		GETPrograms,
 	},
-	route{
-		"GetProgram",
-		"GET",
-		"/rest/program/{name}",
-		GETProgram,
-	},
-	route{
-		"GetProgram",
-		"GET",
-		"/rest/program/{name}/{vma}",
-		GETProgram,
-	},
 }

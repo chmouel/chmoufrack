@@ -25,15 +25,23 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     $scope.programWanted = '';
     $scope.vmaWanted = [];
 
-
     if ($routeParams.name) {
         $scope.programWanted = $routeParams.name;
+        $scope.selectedProgram = $routeParams.name;
     }
 
+    // By default use 12-18, if we have a 12:18 in the router config parse it to
+    // range int 12.13.14....18...etc. if only one number then pass it straight
     if ($routeParams.vma) {
-        $scope.vmaWanted = [parseInt($routeParams.vma)];
+        if ($routeParams.vma.indexOf(":") == -1) {
+            $scope.selectedVMA = $routeParams.vma;
+            $scope.vmaWanted = [parseInt($routeParams.vma)];
+        } else {
+            var sp = $routeParams.vma.split(':');
+            $scope.vmaWanted = range([], sp[0], sp[1]);
+        }
     } else {
-        $scope.vmaWanted = range([], 12, 18);
+        $scope.vmaWanted = range([], 12, 18); //default
     }
 
     var res = $http.get('/rest/programs');
@@ -42,7 +50,21 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
 	});
 
     $scope.submit = function() {
-        $location.path("/workout/" + $scope.selectedWorkout.Name);
+        var t = "", p ="";
+        if ( $scope.selectedVMA) {
+            t = $scope.selectedVMA;
+        } else if ($scope.vmaWanted.length > 1) {
+            t = $scope.vmaWanted[0] + ":" + $scope.vmaWanted[$scope.vmaWanted.length - 1];
+        } else {
+            t = "12:18"; //default
+        }
+
+        if (typeof $scope.selectedProgram === 'string' ) {
+            p = $scope.selectedProgram;
+        } else {
+            p = $scope.selectedProgram.Name;
+        }
+        $location.path("/workout/" + p + "/vma/" + t);
     };
 
-}])
+}]);
