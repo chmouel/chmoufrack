@@ -89,7 +89,7 @@ app.controller('CalculController', ['$scope', function($scope) {
     };
 
     for (var program of $scope.programs) {
-        if (program.name != $scope.programWanted) continue;
+        if (program.name != $scope.selectedProgram) continue;
         $scope.program = program;
     }
 }]);

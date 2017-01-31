@@ -1,12 +1,10 @@
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
-    $scope.programWanted = '';
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 20);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     if ($routeParams.name) {
         $scope.selectedProgram = decodeURI($routeParams.name);
-        $scope.programWanted = $routeParams.name;
     }
 
     // By default use 12-18, if we have a 12:18 in the router config parse it to
