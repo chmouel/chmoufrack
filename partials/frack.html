@@ -1,25 +1,26 @@
 <div ng-controller="CalculController">
   <div ng-repeat="w in program.workouts">
     <div class="well-sm program">
-      <h3 class="text-center"><strong>{{hello}} {{w.laps}} * {{w.length}}m @ {{w.percentage}}%</strong></h3>
+      <h3 class="text-center"><strong>{{w.laps}} * <span ng-if="w.seconds">{{w.seconds}}s</span>
+        <span ng-if="w.length">{{w.length}}m</span> @ {{w.percentage}}%</strong></h3>
     </div>
     <div class="table-responsive">
       <table summary="Frac" class="table table-bordered table-striped">
         <thead>
           <tr>
             <th>VMA</th>
-            <th>Temps Total</th>
+            <th><span ng-if="w.seconds">Distance Total</span><span ng-if="w.length">Temps Total</span></th>
             <th>Temps 400m</th>
             <th>Vitesse</th>
             <th>Allure</th>
           </tr>
         </thead>
-        <tbody ng-init="vmas = test(w.laps, w.length, w.percentage)">
+        <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
           <tr ng-repeat="v in vmas">
             <td><strong>{{v.vma}}</strong></td>
             <td>{{v.totalTime}}</td>
             <td>{{v.timeLap}}</td>
-            <td>{{v.speed}}</td>
+            <td>{{v.speed}}kh</td>
             <td>{{v.pace}}</td>
           </tr>
         </tbody>

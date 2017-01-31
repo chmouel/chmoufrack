@@ -17,6 +17,13 @@ app.controller('ProgramIndexController', ['$scope', function($scope) {
 app.controller('CalculController', ['$scope', function($scope) {
     var trackLength = 400;
 
+    function calculDistanceForSeconds(vma, seconds, percentage) {
+        var vma_ms = vma * 1000 / 3600;
+        var SDist = vma_ms * seconds * percentage / 100;
+	    SDist = ( Math.round(SDist * 10) ) / 10;
+	    return Math.round(SDist);
+    }
+
     function calcVMADistance(vma, meters, percentage) {
         var result = "";
         var vmaMs = vma * 1000 / 3600;
@@ -30,7 +37,16 @@ app.controller('CalculController', ['$scope', function($scope) {
             result = minute;
             result += "'";
         }
-        result += Number((second).toFixed(0));
+
+        if (second != 0) {
+            if (second < 10) {
+                result += 0;
+            }
+            result += Number((second).toFixed(0));
+        } else {
+            result += "00";
+        }
+
         if (minute == 0) {
             result += "s";
         }
@@ -55,6 +71,7 @@ app.controller('CalculController', ['$scope', function($scope) {
 
         ret += n + "'";
         if (r == 0) {
+            ret += "00";
             return ret;
         } else if (r < 10) {
             ret += "0";
@@ -64,14 +81,23 @@ app.controller('CalculController', ['$scope', function($scope) {
         return ret;
     }
 
-    function calc(time, meters, percentage, vmas) {
+    function calc(time, meters, seconds, percentage, vmas) {
         var res = new Object();
-        var trackLaps = meters / trackLength; // Todo the fancy half stuff
 
         for (var vmaTarget of vmas) {
             res[vmaTarget] = Object();
             res[vmaTarget]['vma'] = vmaTarget; // Hack
-            res[vmaTarget]['totalTime'] = calcVMADistance(vmaTarget, meters, percentage);
+
+            if (seconds > 0) {
+                meters = calculDistanceForSeconds(vmaTarget, seconds, percentage);
+                res[vmaTarget]['totalTime'] = meters + "m";
+            } else {
+                var length = calcVMADistance(vmaTarget, meters, percentage);
+                res[vmaTarget]['totalTime'] = length;
+            }
+
+            var trackLaps = meters / trackLength; // Todo the fancy half stuff
+
             if (meters >= trackLength) {
                 res[vmaTarget]['timeLap'] = calcVMADistance(vmaTarget, trackLength, percentage);
             } else {
@@ -83,8 +109,8 @@ app.controller('CalculController', ['$scope', function($scope) {
         return res;
     }
 
-    $scope.test = function(r, m, p) {
-        var res = calc(r, m, p, $scope.vmaWanted);
+    $scope.doCalc = function(r, m, s, p) {
+        var res = calc(r, m, s, p, $scope.vmaWanted);
         return res;
     };
 

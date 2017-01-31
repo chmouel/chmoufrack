@@ -18,6 +18,17 @@
       percentage: 90
       rest: 5mn
 
+- name: 3x30s@100% 1x5mn@75%
+  comment: By numbers
+  workouts:
+    - laps: 3
+      seconds: 30
+      percentage: 100
+      rest: 2mn active
+    - laps: 1
+      seconds: 300
+      percentage: 75
+
 - name: 3x1000@80 3x1000@90
   workouts:
     - laps: 3
