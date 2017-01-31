@@ -9,11 +9,11 @@ app.config(function($routeProvider) {
 
 
 function range(min, max) {
-    var input = Array();
+    var input = [];
     min = parseInt(min);
     max = parseInt(max);
     for (var i=min; i<=max; i++)
-        input.push(i);
+        input.push(i.toString());
     return input;
 };
 
@@ -25,8 +25,7 @@ app.filter('range', function() {
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.programWanted = '';
     $scope.vmaWanted = [];
-    $scope.allVMAS = range(12, 18);
-    $scope.selectedVMA = 18;
+    $scope.allVMAS = range(12, 20);
 
     if ($routeParams.name) {
         $scope.programWanted = $routeParams.name;
@@ -44,7 +43,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
             $scope.vmaWanted = range(sp[0], sp[1]);
         }
     } else {
-        $scope.vmaWanted = range(12, 18); //default
+        $scope.vmaWanted = $scope.allVMAS;
     }
 
     if (!$scope.programs) {
@@ -64,10 +63,12 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         } else if ($scope.vmaWanted.length > 1) {
             t = $scope.vmaWanted[0] + ":" + $scope.vmaWanted[$scope.vmaWanted.length - 1];
         } else {
-            t = "12:18"; //default
+            t = $scope.allVMAS[0] + ":" + $scope.allVMAS[$scope.allVMAS.length - 1];; //default
         }
 
         p = $scope.selectedProgram;
+        if (typeof(p) == "undefined")
+            return false;
         $location.path("/workout/" + p + "/vma/" + t);
     };
 
