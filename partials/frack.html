@@ -5,7 +5,7 @@
         <span ng-if="w.length">{{w.length}}m</span> @ {{w.percentage}}%</strong></h3>
     </div>
     <div class="table-responsive">
-      <table summary="Frac" class="table table-bordered table-striped">
+      <table summary="Frac" class="text-center table table-bordered table-striped">
         <thead>
           <tr>
             <th>VMA</th>
@@ -16,7 +16,7 @@
           </tr>
         </thead>
         <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
-          <tr class="text-center" ng-repeat="v in vmas">
+          <tr ng-repeat="v in vmas">
             <td><strong>{{v.vma}}</strong></td>
             <td>{{v.totalTime}}</td>
             <td>{{v.timeLap}}</td>
