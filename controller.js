@@ -5,8 +5,8 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     if ($routeParams.name) {
+        $scope.selectedProgram = decodeURI($routeParams.name);
         $scope.programWanted = $routeParams.name;
-        $scope.selectedProgram = $routeParams.name;
     }
 
     // By default use 12-18, if we have a 12:18 in the router config parse it to
