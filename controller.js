@@ -33,7 +33,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     $scope.programWanted = '';
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 20);
-    $scope.rootUrl = $location.absUrl().replace($location.path(), "");
+    $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     if ($routeParams.name) {
         $scope.programWanted = $routeParams.name;
