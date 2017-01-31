@@ -37,12 +37,12 @@
   <div class="form-group  container-fluid">
     <div class="col-lg-offset-2 col-lg-2">
       <label for="vma">VMA:</label>
-      <select id="vma" class="form-control" ng-options="n for n in [] | range:10:22" ng-change="submit()" ng-model="selectedVMA">
+      <select ng-options="x for x in allVMAS" ng-change="submit()" ng-model="selectedVma" class="form-control" >
       </select>
     </div>
     <div class="col-lg-4">
       <label for="programs">Programme:</label>
-      <select ng-options="x.name for x in programs" ng-change="submit()" ng-model="selectedProgram" class="form-control">
+      <select ng-options="x for x in programNames" ng-change="submit()" ng-model="selectedProgram" class="form-control">
       </select>
     </div>
 

@@ -8,7 +8,8 @@ app.config(function($routeProvider) {
 });
 
 
-function range(input, min, max) {
+function range(min, max) {
+    var input = Array();
     min = parseInt(min);
     max = parseInt(max);
     for (var i=min; i<=max; i++)
@@ -24,6 +25,8 @@ app.filter('range', function() {
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.programWanted = '';
     $scope.vmaWanted = [];
+    $scope.allVMAS = range(12, 18);
+    $scope.selectedVMA = 18;
 
     if ($routeParams.name) {
         $scope.programWanted = $routeParams.name;
@@ -38,16 +41,21 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
             $scope.vmaWanted = [parseInt($routeParams.vma)];
         } else {
             var sp = $routeParams.vma.split(':');
-            $scope.vmaWanted = range([], sp[0], sp[1]);
+            $scope.vmaWanted = range(sp[0], sp[1]);
         }
     } else {
-        $scope.vmaWanted = range([], 12, 18); //default
+        $scope.vmaWanted = range(12, 18); //default
     }
 
-    var res = $http.get('/frack.yaml');
-	res.success(function(data, status, headers, config) {
-        $scope.programs = jsyaml.load(data);;
-	});
+    if (!$scope.programs) {
+        var res = $http.get('/frack.yaml');
+	    res.success(function(data, status, headers, config) {
+            $scope.programs = jsyaml.load(data);;
+            $scope.programNames = Array();
+            for (var p of $scope.programs)
+                $scope.programNames.push(p.name);
+	    });
+    }
 
     $scope.submit = function() {
         var t = "", p ="";
@@ -59,11 +67,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
             t = "12:18"; //default
         }
 
-        if (typeof $scope.selectedProgram === 'string' ) {
-            p = $scope.selectedProgram;
-        } else {
-            p = $scope.selectedProgram.name;
-        }
+        p = $scope.selectedProgram;
         $location.path("/workout/" + p + "/vma/" + t);
     };
 
