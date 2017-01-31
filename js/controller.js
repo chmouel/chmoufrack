@@ -23,12 +23,14 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
 
     if (!$scope.programs) {
         var res = $http.get('config/frack.yaml');
-	    res.success(function(data, status, headers, config) {
-            $scope.programs = jsyaml.load(data);;
+	    res.then(function succesCB(r) {
+            $scope.programs = jsyaml.load(r.data);;
             $scope.programNames = [];
             for (var p of $scope.programs)
                 $scope.programNames.push(p.name);
-	    });
+	    }, function errorCB(r) {
+            console.log(r);
+        });
     }
 
     $scope.submit = function(tourl) {
