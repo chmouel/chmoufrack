@@ -12,7 +12,6 @@ app.controller('ProgramIndexController', ['$scope', function($scope) {
         }
         $scope.programIndex[p.name]["totalTrackLap"] = $scope.programIndex[p.name]["totalLength"] / 400;
     }
-    console.debug($scope.programIndex);
 }]);
 
 app.controller('CalculController', ['$scope', function($scope) {
