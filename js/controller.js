@@ -1,6 +1,6 @@
 app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http', function($scope, $location, $routeParams, $http) {
     $scope.vmaWanted = [];
-    $scope.allVMAS = range(12, 20);
+    $scope.allVMAS = range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     if ($routeParams.name) {
