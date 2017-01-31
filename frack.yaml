@@ -1,8 +1,7 @@
-- name: Jan-2410
-  comment: |
-    Super program de Jan a refaire et refaire.
+- name: Pyramids Short
+  comments: Not a Bad one at all!!
   workouts:
-    - laps: 4
+    - laps: 3
       length: 200
       percentage: 110
       rest: 2mn active
@@ -19,43 +18,37 @@
       percentage: 90
       rest: 5mn
 
-- name: Pyramid-30112017
-  comment: |
-    Commencer par 5 tours warmup (2km)
-    Finir par 5 tours de warmdown (2km)
+- name: 3x1000@80 3x1000@90
   workouts:
+    - laps: 3
+      length: 1000
+      percentage: 80
+      rest: 400m
+    - laps: 3
+      length: 1000
+      percentage: 90
+      rest: 1000m
+
+- name: 3x1000@90 2x2000@85 1x3000@80
+  workouts:
+    - laps: 3
+      length: 1000
+      percentage: 90
+      rest: 2 minutes
+    - laps: 2
+      length: 2000
+      percentage: 85
+      rest: 2 minute 30
     - laps: 1
-      length: 100
-      percentage: 110
-      rest: 100m au trôt
-    - laps: 1
-      length: 200
-      percentage: 100
-      rest: 100m au trôt
-    - laps: 1
-      length: 300
-      percentage: 100
-      rest: 100m au trôt
-    - laps: 1
-      length: 400
-      percentage: 95
-      rest: 100m au trôt
-    - laps: 1
-      length: 500
-      percentage: 95
-      rest: 100m au trôt
-    - laps: 1
-      length: 400
-      percentage: 95
-    - laps: 1
-      length: 300
-      percentage: 100
-      rest: 100m au trôt
-    - laps: 1
-      length: 200
-      percentage: 100
-      rest: 100m au trôt
-    - laps: 1
-      length: 100
-      percentage: 110
-      rest: 100m au trôt
+      length: 3000
+      percentage: 80
+
+
+- name: 8x800@93
+  comment: |
+    8 x 800 VMA 94%, training for 10k
+  workouts:
+    - laps: 8
+      length: 800
+      percentage: 93
+      rest: 60 a 90s de repos
