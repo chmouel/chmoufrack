@@ -44,9 +44,10 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         $scope.vmaWanted = range([], 12, 18); //default
     }
 
-    var res = $http.get('/rest/programs');
+    var res = $http.get('/frack.yaml');
 	res.success(function(data, status, headers, config) {
-		$scope.programs = data;
+        $scope.programs = jsyaml.load(data);;
+        console.debug($scope.programs);
 	});
 
     $scope.submit = function() {
@@ -62,7 +63,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         if (typeof $scope.selectedProgram === 'string' ) {
             p = $scope.selectedProgram;
         } else {
-            p = $scope.selectedProgram.Name;
+            p = $scope.selectedProgram.name;
         }
         $location.path("/workout/" + p + "/vma/" + t);
     };
