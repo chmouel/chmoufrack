@@ -1,5 +1,8 @@
 {
- "name": "ChmouFrack",
+    "short_name": "ChmouFrack",
+    "name": "ChmouFrack - Frack those Fractionee",
+    "display": "standalone",
+
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
