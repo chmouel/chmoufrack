@@ -27,7 +27,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         var res = $http.get('/frack.yaml');
 	    res.success(function(data, status, headers, config) {
             $scope.programs = jsyaml.load(data);;
-            $scope.programNames = Array();
+            $scope.programNames = [];
             for (var p of $scope.programs)
                 $scope.programNames.push(p.name);
 	    });

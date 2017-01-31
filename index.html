@@ -27,6 +27,11 @@
        padding: 5 90px;
      }
 
+     .tableComment {
+       border: 1px solid;
+       padding: 10px;
+     }
+
     </style>
 
     <script type="text/javascript" src="config.js"></script>
@@ -36,7 +41,31 @@
   </head>
   <body ng-controller="FrackController" ng-app="Frack">
 
+    <a ng-href="{{rootUrl}}">
+      <img class="img-responsive img-rounded" alt="banner" src="https://github.com/chmouel/chmoufrack/raw/oldversionondb/static/images/banner.jpg">
+    </a>
+
+
     <div ng-view class="container-fluid"></div>
+
+    <form ng-submit="submit()">
+      <div class="form-group  container-fluid">
+        <div class="col-lg-offset-2 col-lg-4">
+          <label for="programs">Programme:</label>
+          <select ng-options="x for x in programNames" ng-change="submit()" ng-model="selectedProgram" class="form-control">
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <label for="vma">VMA:</label>
+          <select ng-options="x for x in allVMAS" ng-change="submit()" ng-model="selectedVMA" class="form-control" >
+          </select>
+        </div>
+        <div style="margin-top: 2px;" class="col-lg-2">
+          <label for="zou"></label>
+          <input id="zou" class="form-control" type="submit" value="Zou!">
+        </div>
+      </div>
+    </form>
 
     <div class="text-center">
       <code>

@@ -1,5 +1,5 @@
 - name: Pyramids Short
-  comments: Not a Bad one at all
+  comment: Not a Bad one at all
   workouts:
     - laps: 3
       length: 200

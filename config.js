@@ -4,7 +4,7 @@ app.config(function($routeProvider) {
     $routeProvider
         .when("/workout/:name", {controller: "FrackController", templateUrl: "partials/frack.html"})
         .when("/workout/:name/vma/:vma", {controller: "FrackController", templateUrl: "partials/frack.html"})
-        .otherwise({controller: "FrackController", templateUrl: "partials/frack.html"});
+        .otherwise({controller: "FrackController", templateUrl: "partials/selection.html"});
 });
 
 
