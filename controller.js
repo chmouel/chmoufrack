@@ -4,7 +4,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     if ($routeParams.name) {
-        $scope.selectedProgram = decodeURI($routeParams.name);
+        $scope.selectedProgram = $routeParams.name;
     }
 
     // By default use 12-18, if we have a 12:18 in the router config parse it to
@@ -31,7 +31,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
 	    });
     }
 
-    $scope.submit = function() {
+    $scope.submit = function(tourl) {
         var t = "", p ="";
         if ( $scope.selectedVMA) {
             t = $scope.selectedVMA;
@@ -41,7 +41,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
             t = $scope.allVMAS[0] + ":" + $scope.allVMAS[$scope.allVMAS.length - 1];; //default
         }
 
-        p = $scope.selectedProgram;
+        p = tourl ? tourl : $scope.selectedProgram;
         if (typeof(p) == "undefined")
             return false;
 
