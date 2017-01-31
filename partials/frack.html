@@ -25,7 +25,7 @@
           </tr>
         </tbody>
       </table>
-      <div ng-if="workout.Repos != ''" class="text-center bg-warning">
+      <div ng-if="w.rest" class="text-center bg-warning">
         <strong>Repos:</strong> <span class="text-muted">{{w.rest}}</span>
       </div>
     </div>
@@ -43,10 +43,6 @@
       <label for="vma">VMA:</label>
       <select ng-options="x for x in allVMAS" ng-change="submit()" ng-model="selectedVMA" class="form-control" >
       </select>
-    </div>
-    <div style="margin-top: 2px;" class="col-lg-2">
-      <label for="zou"></label>
-      <input id="zou" class="form-control" type="submit" value="Zou!">
     </div>
   </div>
 </form>
