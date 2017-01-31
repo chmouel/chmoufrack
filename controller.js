@@ -26,6 +26,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     $scope.programWanted = '';
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 20);
+    $scope.rootUrl = $location.absUrl().replace($location.path(), "");
 
     if ($routeParams.name) {
         $scope.programWanted = $routeParams.name;
@@ -69,7 +70,9 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
         p = $scope.selectedProgram;
         if (typeof(p) == "undefined")
             return false;
+
         $location.path("/workout/" + p + "/vma/" + t);
+        return true; //make emacs happy
     };
 
 }]);
