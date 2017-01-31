@@ -16,7 +16,7 @@
           </tr>
         </thead>
         <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
-          <tr ng-repeat="v in vmas">
+          <tr class="text-center" ng-repeat="v in vmas">
             <td><strong>{{v.vma}}</strong></td>
             <td>{{v.totalTime}}</td>
             <td>{{v.timeLap}}</td>
