@@ -1,0 +1,19 @@
+.container-fluid {
+    max-width: 810px;
+    padding: 10px;
+}
+
+.img-responsive {
+    margin: 0 auto;
+}
+
+.program {
+    background-color: #def0fc;
+    margin-top: 20px;
+    padding: 5 90px;
+}
+
+.tableComment {
+    border: 1px solid;
+    padding: 10px;
+}
