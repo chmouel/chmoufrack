@@ -52,3 +52,23 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
     };
 
 }]);
+
+app.controller("TabsCtrl", ['$scope', function($scope) {
+    $scope.tabs = [
+        { link : '#!/home', label : 'Home' },
+        { link : '#!/help', label : 'Comment calculer sa VMA' },
+    ];
+
+    $scope.selectedTab = $scope.tabs[0];
+    $scope.setSelectedTab = function(tab) {
+        $scope.selectedTab = tab;
+    };
+
+    $scope.tabClass = function(tab) {
+        if ($scope.selectedTab == tab) {
+            return "active";
+        } else {
+            return "";
+        }
+    };
+}]);

@@ -38,11 +38,16 @@
 
   </head>
   <body ng-controller="FrackController" ng-app="Frack">
-
     <a ng-href="{{rootUrl}}">
       <img class="img-responsive img-rounded" alt="banner" src="img/banner.jpg">
     </a>
 
+    <div class="container-fluid">
+      <ul class="nav nav-tabs nav-justified" ng-controller="TabsCtrl">
+        <li ng-class="tabClass(tab)" ng-repeat="tab in tabs" tab="tab"><a href="{{tab.link}}" ng-click="setSelectedTab(tab)">{{tab.label}}</a></li>
+        <li tab="tab"><a href="http://runcalc.net">Calculette allure et plus</li>
+      </ul>
+    </div>
 
     <div ng-view class="container-fluid"></div>
 
