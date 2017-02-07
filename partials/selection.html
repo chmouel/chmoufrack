@@ -21,7 +21,7 @@
           </tr>
       </table>
       <div ng-if="p.comment" class="text-center bg-warning">
-        {{p.comment}}
+        <span ng-bind-html="p.comment | linky:'_blank'"></span>
       </div>
     </div>
   </div>

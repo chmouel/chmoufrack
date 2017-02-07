@@ -1,4 +1,4 @@
-var app = angular.module("Frack", ["ngRoute"]);
+var app = angular.module("Frack", ["ngRoute", "ngSanitize"]);
 
 app.config(function($routeProvider) {
     $routeProvider
