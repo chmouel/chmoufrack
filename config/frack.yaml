@@ -55,7 +55,7 @@
       percentage: 80
 
 
-- name: 8x800@93
+- name: 8x800@93%
   comment: |
     8 x 800 VMA 94%, training for 10k
   workouts:
