@@ -3,24 +3,9 @@
     <div class="well-sm program">
       <h3 class="text-center"><strong><a href>{{p.name}}</a></strong></h3>
     </div>
-    <div class="table-responsive tableComment" >
-      <table summary="Frac" class="table">
-        <thead>
-          <tr>
-            <th>Nombre d'exercices</th>
-            <th ng-if="p.totalSeconds">Temps Total</th>
-            <th ng-if="p.totalLength > 0">Distance Total</th>
-            <th ng-if="p.totalLength > 0">Tour Total</th>
-          </tr>
-        </thead>
-          <tr>
-            <td> {{p.totalWorkout}}</td>
-            <td ng-if="p.totalSeconds"> {{p.totalSeconds}}</td>
-            <td ng-if="p.totalLength > 0"> {{p.totalLength}} métres</td>
-            <td ng-if="p.totalLength > 0"> {{p.totalTrackLap}}</td>
-          </tr>
-      </table>
-      <div ng-if="p.comment" class="text-center bg-warning">
+    <div class="table-responsive text-center tableComment" style="margin-top: 10px;">
+      <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
+      <div ng-if="p.comment" class="text-center bg-warning rest2">
         <span ng-bind-html="p.comment | linky:'_blank'"></span>
       </div>
     </div>
