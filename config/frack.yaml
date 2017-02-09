@@ -39,7 +39,7 @@
     Hard and long for marathon
   programs:
     - workouts:
-      x- laps: 3
+      - laps: 3
         length: 1000
         percentage: 90
         rest: 2 minutes
