@@ -103,20 +103,21 @@
         percentage: 85
         rest: Repos de 1 minute 30
 
-- name: 8x800@93%
+- name: repetition-100-2000
   comment: |
-    8 x 800 VMA 94%, training for 10k  https://goo.gl/mpiwsN
+    Repetition
   programs:
     - warmup: 5mn
     - repeat:
         time: 5
         workouts:
           - laps: 1
-            length: 200
-            percentage: 90
-            rest: 30s
+            length: 500
+            percentage: 80
+            rest: |
+              1'30
           - laps: 1
-            length: 200
+            length: 1000
             percentage: 90
             time: 5
         rest: 1mn
