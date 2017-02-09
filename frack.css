@@ -103,3 +103,14 @@
     background: #ededed;
     border-style: solid;
 }
+
+.quoteContainer{
+	background: #fff;
+	text-align: right;
+}
+
+.quoteGenius{
+	font-style: italic;
+	font-weight: 600;
+	text-align: right;
+}

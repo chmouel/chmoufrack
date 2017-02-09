@@ -36,6 +36,7 @@
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/calcul.js"></script>
+    <script type="text/javascript" src="js/quotes.js"></script>
 
   </head>
   <body ng-controller="FrackController" ng-app="Frack">
@@ -64,5 +65,10 @@
         Contact: <a href="//www.twitter.com/samchmou/">@samchmou</a>
       </code>
     </div>
+    <div class="container-fluid quoteContainer">
+      {{quote}}
+      <p class="quoteGenius">{{quote_author}}</p>
+    </div>
+
   </body>
 </html>
