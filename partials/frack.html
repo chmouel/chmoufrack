@@ -1,35 +1,37 @@
 <div ng-controller="CalculController">
-  <div ng-repeat="w in program.workouts">
-    <div class="well-sm program">
-      <h3 class="text-center"><strong>{{w.laps}} * <span ng-if="w.seconds">{{w.seconds}}s</span>
-        <span ng-if="w.length">{{w.length}}m</span> @ {{w.percentage}}%</strong></h3>
+  <div ng-repeat="w in program.programs">
+
+    <div ng-if="w.repeat" class="block-repeat">
+      <div class="block-header">
+        <img width="28px" height="24px" src="img/repeat.png"/>
+        <strong>Répétitions</strong> {{w.repeat.time}} fois
+      </div>
+
+        <div ng-repeat="w in w.repeat.workouts">
+          <div ng-include="'partials/workout.html'">
+          </div>
+        </div>
+
+        <div ng-if="w.repeat.rest" class="workout-step rest">
+          <strong>Repos:</strong> <span
+          class="text-muted">{{w.repeat.rest}}</span>
+        </div>
     </div>
-    <div class="table-responsive">
-      <table summary="Frac" class="text-center table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>VMA</th>
-            <th><span ng-if="w.seconds">Distance Total</span><span ng-if="w.length">Temps Total</span></th>
-            <th>Temps 400m</th>
-            <th>Vitesse</th>
-            <th>Allure</th>
-          </tr>
-        </thead>
-        <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
-          <tr ng-repeat="v in vmas">
-            <td><strong>{{v.vma}}</strong></td>
-            <td>{{v.totalTime}}</td>
-            <td>{{v.timeLap}}</td>
-            <td>{{v.speed}}kh</td>
-            <td>{{v.pace}}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div ng-if="w.rest" class="text-center bg-warning">
-        <strong>Repos:</strong> <span class="text-muted">{{w.rest}}</span>
+
+    <div ng-repeat="w in w.workouts">
+      <div ng-include="'partials/workout.html'">
       </div>
     </div>
+
+    <div ng-if="w.warmup" class="workout-step warmup">
+      <strong>Échauffement:</strong>&nbsp;{{w.warmup}}
+    </div>
+    <div ng-if="w.warmdown" class="workout-step warmdown">
+      <strong>Récupération:</strong>&nbsp;{{w.warmdown}}
+    </div>
+
   </div>
+
 </div>
 
 <form ng-submit="submit()">

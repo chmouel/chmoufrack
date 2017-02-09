@@ -1,0 +1,33 @@
+<!-- workout -->
+<div ng-init="isTableOpen=true" ng-click="isTableOpen = !isTableOpen" class="workout-step active">
+  <strong>Exercice</strong> - <i>{{w.laps}}</i> X <i><span ng-if="w.seconds">{{w.seconds}}s</span>
+    <span ng-if="w.length">{{w.length}}m</span></i> - <strong>VMA</strong>: <i>{{w.percentage}}%</i>
+</div>
+
+<div ng-show="isTableOpen"  class="table-responsive">
+  <table summary="Frac" class="text-center table table-bordered table-striped table-vma">
+    <thead>
+      <tr>
+        <th>VMA</th>
+        <th><span ng-if="w.seconds">Distance Total</span><span ng-if="w.length">Temps Total</span></th>
+        <th>Temps 400m</th>
+        <th>Vitesse</th>
+        <th>Allure</th>
+      </tr>
+    </thead>
+    <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
+      <tr ng-repeat="v in vmas">
+        <td><strong>{{v.vma}}</strong></td>
+        <td>{{v.totalTime}}</td>
+        <td>{{v.timeLap}}</td>
+        <td>{{v.speed}}kh</td>
+        <td>{{v.pace}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div ng-if="w.rest" class="text-center bg-warning rest2">
+    <strong>Repos:</strong> <span class="text-muted">{{w.rest}}</span>
+  </div>
+</div>
+
+<!-- repeat -->

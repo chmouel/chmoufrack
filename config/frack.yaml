@@ -1,65 +1,123 @@
 - name: Pyramids Short
-  comment: Not a Bad one at all
-  workouts:
-    - laps: 3
-      length: 200
-      percentage: 110
-      rest: 2mn active
-    - laps: 3
-      length: 400
-      percentage: 100
-      rest: 2mn active
-    - laps: 2
-      length: 600
-      percentage: 95
-      rest: 2mn active
-    - laps: 1
-      length: 800
-      percentage: 90
-      rest: 5mn
-
-- name: 3x30s@100% 1x5mn@75%
-  comment: By numbers
-  workouts:
-    - laps: 3
-      seconds: 30
-      percentage: 100
-      rest: 2mn active
-    - laps: 1
-      seconds: 300
-      percentage: 75
+  comments: |
+    Short and intense intervals, usually to gain speed.
+  programs:
+    - workouts:
+      - laps: 3
+        length: 200
+        percentage: 110
+        rest: 30s active
+      - laps: 3
+        length: 400
+        percentage: 100
+        rest: 1mn active
+      - laps: 2
+        length: 600
+        percentage: 95
+        rest: 1mn30 active
+      - laps: 1
+        length: 800
+        percentage: 90
+        rest: 5mn
 
 - name: 3x1000@80 3x1000@90
-  workouts:
-    - laps: 3
-      length: 1000
-      percentage: 80
-      rest: 400m
-    - laps: 3
-      length: 1000
-      percentage: 90
-      rest: 1000m
+  comment: |
+    Long distance intervals
+  programs:
+    - workouts:
+      - laps: 3
+        length: 1000
+        percentage: 80
+        rest: 400m
+      - laps: 3
+        length: 1000
+        percentage: 90
+        rest: 1000m
 
 - name: 3x1000@90 2x2000@85 1x3000@80
-  workouts:
-    - laps: 3
-      length: 1000
-      percentage: 90
-      rest: 2 minutes
-    - laps: 2
-      length: 2000
-      percentage: 85
-      rest: 2 minute 30
-    - laps: 1
-      length: 3000
-      percentage: 80
+  comment: |
+    Hard and long for marathon
+  programs:
+    - workouts:
+      x- laps: 3
+        length: 1000
+        percentage: 90
+        rest: 2 minutes
+      - laps: 2
+        length: 2000
+        percentage: 85
+        rest: 2 minute 30
+      - laps: 1
+        length: 3000
+        percentage: 80
 
+- name: 8x80093
+  comment: |
+    8 x 800 VMA 94%, training for 10k
+  programs:
+    - workouts:
+      - laps: 8
+        length: 800
+        percentage: 93
+        rest: 60 a 90s de repos
+
+- name: 4x1500@75%80%85%90%
+  comment: |
+    Programe 1 de la Seance ARJaures du Jeudi 9 Fevrier 2017:
+    https://goo.gl/mpiwsN
+  programs:
+    - workouts:
+      - laps: 1
+        length: 1500
+        percentage: 75
+        rest: Repos de 2 minutes
+      - laps: 1
+        length: 1500
+        percentage: 80
+        rest: Repos de 2 minutes
+      - laps: 1
+        length: 1500
+        percentage: 85
+        rest: Repos de 2 minutes
+      - laps: 1
+        length: 1500
+        percentage: 90
+        rest: Repos de 2 minutes
+
+- name: 1000|1500|2000@85%
+  comment: |
+    Programe 2 de la Seance ARJaures du Jeudi 9 Fevrier 2017:
+    https://goo.gl/mpiwsN
+  programs:
+    - workouts:
+      - laps: 1
+        length: 1000
+        percentage: 85
+        rest: Repos de 1 minute 30
+      - laps: 1
+        length: 1500
+        percentage: 85
+        rest: Repos de 1 minute 30
+      - laps: 1
+        length: 2000
+        percentage: 85
+        rest: Repos de 1 minute 30
 
 - name: 8x800@93%
   comment: |
     8 x 800 VMA 94%, training for 10k  https://goo.gl/mpiwsN
-  workouts:
-    - laps: 8
-      length: 800
-      percentage: 93
-      rest: 60 a 90s de repos
+  programs:
+    - warmup: 5mn
+    - repeat:
+        time: 5
+        workouts:
+          - laps: 1
+            length: 200
+            percentage: 90
+            rest: 30s
+          - laps: 1
+            length: 200
+            percentage: 90
+            time: 5
+        rest: 1mn
+    - warmdown: 5mn

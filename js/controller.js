@@ -28,6 +28,7 @@ app.controller("FrackController", ['$scope', '$location', '$routeParams', '$http
             $scope.programNames = [];
             for (var p of $scope.programs)
                 $scope.programNames.push(p.name);
+
 	    }, function errorCB(r) {
             console.log(r);
         });
