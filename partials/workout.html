@@ -1,6 +1,6 @@
 <!-- workout -->
 <div ng-init="isTableOpen=true" ng-click="isTableOpen = !isTableOpen" class="workout-step active">
-  <strong>Exercice</strong> - <i>{{w.laps}}</i> X <i><span ng-if="w.seconds">{{w.seconds}}s</span>
+  <strong>Exercice</strong> - <i>{{w.laps}}</i> fois <i><span ng-if="w.seconds">{{w.seconds}}s</span>
     <span ng-if="w.length">{{w.length}}m</span></i> - <strong>VMA</strong>: <i>{{w.percentage}}%</i>
 </div>
 
@@ -26,7 +26,7 @@
     </tbody>
   </table>
   <div ng-if="w.rest" class="text-center rest2">
-    <strong>Repos:</strong> <span class="text-muted">{{w.rest}}</span>
+    <strong>Repos <span ng-show="repetion">après cet exercice:</span>:</strong> <span class="text-muted">{{w.rest}}</span>
   </div>
 </div>
 

@@ -7,13 +7,13 @@
         <strong>Répétitions</strong> {{w.repeat.time}} fois
       </div>
 
-        <div ng-repeat="w in w.repeat.workouts">
+        <div ng-init="repetion=true" ng-repeat="w in w.repeat.workouts">
           <div ng-include="'partials/workout.html'">
           </div>
         </div>
 
         <div ng-if="w.repeat.rest" class="workout-step rest">
-          <strong>Repos:</strong> <span
+          <strong>Repos à la fin de la répétition:</strong> <span
           class="text-muted">{{w.repeat.rest}}</span>
         </div>
     </div>
