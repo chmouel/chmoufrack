@@ -93,3 +93,13 @@
     box-shadow: inset 0 0 0 1px #6e8594;
     border-radius: 8px;
 }
+
+.footer {
+    width: 50%;
+}
+.footer>ul>li {
+    border: 1px;
+    border-radius: 8px;
+    background: #ededed;
+    border-style: solid;
+}
