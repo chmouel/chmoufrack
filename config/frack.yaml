@@ -111,7 +111,7 @@
     - repeat:
         time: 5
         workouts:
-          - laps: 1
+          - laps: 3
             length: 500
             percentage: 80
             rest: |
