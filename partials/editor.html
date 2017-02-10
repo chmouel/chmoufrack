@@ -1,0 +1,16 @@
+<div class="col-md-10">
+  <ul class="reorder" ng-repeat="step in allSteps">
+    <li drag-to-reorder="allSteps" ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></li>
+    <li drag-to-reorder="allSteps" ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></li>
+  </ul>
+
+  <!-- <step></step> -->
+</div>
+
+<div class="col-md-2">
+  <button ng-click="addNewWarmupWarmdown()" type="button" class="btn btn-info">Ajouter échauffement</button>
+  <br />
+  <button ng-click="addNewIntervals()" type="button" class="btn btn-primary">Ajouter un fractionée</button>
+  <br/>
+  <button ng-click="submit()" type="button" class="btn btn-success">Sauvegarder</button>
+</div>
