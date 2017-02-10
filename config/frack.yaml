@@ -89,6 +89,7 @@
     Programe 2 de la Seance ARJaures du Jeudi 9 Fevrier 2017:
     https://goo.gl/mpiwsN
   programs:
+    - warmup: 5 tour de pistes
     - workouts:
       - laps: 1
         length: 1000
@@ -102,6 +103,7 @@
         length: 2000
         percentage: 85
         rest: Repos de 1 minute 30
+    - warmdown: 5 tour de pistes
 
 - name: repetition-100-2000
   comment: |
