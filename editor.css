@@ -1,6 +1,6 @@
 .editor {
   position: relative;
-  padding: 45px 15px 15px;
+  padding: 15px;
   margin: 0 -15px 15px;
   background-color: #fafafa;
   box-shadow: inset 0 3px 6px rgba(0,0,0,.05);
@@ -8,16 +8,13 @@
   border-style: solid;
   border-width: 1px 0;
 }
-.editor:after {
-  position: absolute;
-  top:  15px;
-  left: 15px;
+.editor-after {
   font-size: 12px;
   font-weight: bold;
-  color: #bbb;
+  color: #a06cde;
   text-transform: uppercase;
   letter-spacing: 1px;
-  content: "Excercises";
+  margin-left: 10px;
 }
 
 /* Make the examples and snippets not full-width */
@@ -57,4 +54,8 @@
     padding: 2px 8px;
     font-size: 14px;
     line-height: 14px;
+}
+
+.input-small {
+    width: 120px;
 }

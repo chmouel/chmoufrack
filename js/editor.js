@@ -1,29 +1,36 @@
 app.controller("Editor", ['$scope', function($scope, $http) {
-    $scope.allSteps = [
+    $scope.Excercise = [
         {
-            "type": "warmup",
-            "effort_type": "distance",
-            "effort_unit": "km",
-            "distance":  "0",
-            "time":  "0"
-        },
-        {
-            "type": "interval",
-            "laps": 0,
-            "length": 0,
-            "percentage": 0,
-            "rest": "",
-            "effort_type": "distance",
-            "effort_unit": "km"
-        },
-        {
-            "type": "warmdown",
-            "effort_type": "distance",
-            "effort_unit": "km",
-            "distance":  "0",
-            "time":  "0"
+            name: "",
+            comment: "",
+            steps: [
+                {
+                    "type": "warmup",
+                    "effort_type": "distance",
+                    "effort_unit": "km",
+                    "distance":  "0",
+                    "time":  "0"
+                },
+                {
+                    "type": "interval",
+                    "laps": 0,
+                    "length": 0,
+                    "percentage": 0,
+                    "rest": "",
+                    "effort_type": "distance",
+                    "effort_unit": "km"
+                },
+                {
+                    "type": "warmdown",
+                    "effort_type": "distance",
+                    "effort_unit": "km",
+                    "distance":  "0",
+                    "time":  "0"
+                }
+            ]
         }
     ];
+    $scope.excercise = $scope.Excercise[0];
 
     $scope.effortDistanceUnits = [
         { name: 'Mètres', value: 'm'},
