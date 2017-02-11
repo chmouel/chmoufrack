@@ -46,3 +46,14 @@
     border-radius: 4px 4px 0 0;
     border-color: #ddd;
 }
+.navbar-xs {
+    padding: 10px;
+    min-height:22px;
+    border-width: 2px;
+    border-radius:1
+}
+.navbar-xs .navbar-brand{
+    padding: 2px 8px;
+    font-size: 14px;
+    line-height: 14px;
+}
