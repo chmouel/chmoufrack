@@ -43,7 +43,9 @@
     border-radius: 4px 4px 0 0;
     box-shadow: 5px 5px 5px #888888;
     margin-top: 20px;
+    position: relative;
 }
+
 .navbar-xs {
     padding: 10px;
     min-height:22px;

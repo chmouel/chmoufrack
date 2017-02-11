@@ -71,11 +71,11 @@ app.controller("Editor", ['$scope', function($scope, $http) {
             "effort_type": "distance",
             "effort_unit": "km"
         });
-    }
+    };
 
-    $scope.remove = function(step) {
-        $scope.allSteps.splice(step, step);
-    }
+    $scope.removeStep = function(step) {
+        $scope.excercise.steps.splice(step, 1);
+    };
 
 }]);
 

@@ -1,14 +1,24 @@
 <div class="editor">
   <strong>Nom</strong>:
   <input ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
-  <span ng-hide="editing" class="editor-after">
+  <span ng-hide="editing">
     {{excercise.name || "Edit" }}
   </span>
   <a href ng-hide="editing" ng-click="editing = true"><i class="glyphicon glyphicon-pencil"></i></a>
-  <p class="step" ng-repeat="step in excercise.steps">
+
+  <div class="step" ng-repeat="step in excercise.steps">
+
     <span ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></span>
+
     <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
-  </p>
+
+    <div class="text-right">
+      <i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i>
+      <i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i>
+      <a href ng-click="removeStep($index)"><i class="glyphicon glyphicon-remove"></i></a>
+    </div>
+  </div> <!-- ng-repeat -->
+
 </div>
 
 <nav class="navbar navbar-default navbar-xs" role="navigation">
