@@ -52,6 +52,16 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         console.log($scope.excercise.steps[2]);
     };
 
+    $scope.swapUp = function(index) {
+        var item = $scope.excercise.steps.splice(index, 1);
+        $scope.excercise.steps.splice(index - 1, 0, item[0]);
+    }
+
+    $scope.swapDown = function(index) {
+        var item = $scope.excercise.steps.splice(index, 1);
+        $scope.excercise.steps.splice(index + 1, 0, item[0]);
+    }
+
     $scope.addNewWarmupWarmdown = function() {
         $scope.excercise.steps.push({
             "type": "warmup",
@@ -73,8 +83,8 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         });
     };
 
-    $scope.removeStep = function(step) {
-        $scope.excercise.steps.splice(step, 1);
+    $scope.removeStep = function(index) {
+        $scope.excercise.steps.splice(index, 1);
     };
 
 }]);

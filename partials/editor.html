@@ -13,8 +13,8 @@
     <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
 
     <div class="text-right">
-      <i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i>
-      <i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i>
+      <a href ng-click="swapUp($index)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
+      <a href ng-click="swapDown($index)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
       <a href ng-click="removeStep($index)"><i class="glyphicon glyphicon-remove"></i></a>
     </div>
   </div> <!-- ng-repeat -->
