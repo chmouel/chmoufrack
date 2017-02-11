@@ -1,30 +1,9 @@
-<div class="workout-step" ng-class="{warmup: step.type == 'warmup', warmdown: step.type == 'warmdown'}">
-
-  <select ng-model="step.type">
-    <option ng-repeat="option in $parent.stepTypeOptions" value="{{option.value}}">
-      {{option.name}}
-    </option>
-  </select>
-
-  <select ng-model="step.effort_type">
-    <option ng-repeat="option in $parent.effortTypeOptions" value="{{option.value}}">
-      {{option.name}}
-    </option>
-  </select>
-
-  <span ng-show="step.effort_type == 'distance'">
-    <input type="text" class="input input_medium" ng-minlength="1" select-on-click ng-maxlength="9" name="time" ng-model="step.distance">
-    <select ng-model="step.effort_unit">
-      <option ng-repeat="option in $parent.effortDistanceUnits" select-on-click  value="{{option.value}}">
-        {{option.name}}
-      </option>
-    </select>
-  </span>
-
-  <span ng-show="step.effort_type == 'time'">
-    <input type="text" class="input input_small" select-on-click ng-minlength="1" ng-maxlength="9" name="time" ng-model="step.time">
-    &nbsp;mn
-  </span>
-
-  <img ng-click="remove($index)" class="icon" src="img/delete.png"/>
-</div>
+<form data-toggle="validator" role="form">
+  <span class="label label-warning">Échauffement</span>
+  <div class="input-group">
+    <span class="input-group-addon">
+      <i class="glyphicon glyphicon-hand-up"></i>
+    </span>
+    <input type="text" class="form-control" name="wamrmup" placeholder="Distance ou temps d'échauffement">
+  </div>
+</form>
