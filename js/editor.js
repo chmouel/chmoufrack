@@ -53,21 +53,20 @@ app.controller("Editor", ['$scope', function($scope, $http) {
     };
 
     $scope.addNewWarmupWarmdown = function() {
-        $scope.allSteps.push({
+        $scope.excercise.steps.push({
             "type": "warmup",
             "effort_type": "distance",
             "effort_unit": "km",
-            "distance":  "0",
-            "time":  "0"
+            "effort":  ""
         });
     };
 
     $scope.addNewIntervals = function() {
-        $scope.allSteps.push({
+        $scope.excercise.steps.push({
             "type": "interval",
-            "laps": 0,
-            "length": 0,
-            "percentage": 0,
+            "laps": "",
+            "length": "",
+            "percentage": "",
             "rest": "",
             "effort_type": "distance",
             "effort_unit": "km"
