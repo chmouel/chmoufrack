@@ -3,20 +3,22 @@
   <div class="form-inline row">
     <div class="form-group col-sm-12">
       <label for="repetition" class="control-label">Répétition: </label>
-      <input type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombres">
+      <input type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombres" ng-model="step.laps">
       <br/>
       <label for="unit" class="control-label">Type: </label>
-      <select name="unit" class="form-control">
-        <option>Distance</option>
-        <option>Temps</option>
+      <select name="unit" ng-model="step.effort_type">
+        <option ng-repeat="option in effortTypeOptions" value="{{option.value}}">
+          {{option.name}}
+        </option>
       </select>
-      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres">
+      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
+      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'time'" ng-model="step.time">
       <br/>
       <label for="vma" class="control-label">VMA:</label>
-      <input type="text" class="form-control" name="vma" placeholder="Pourcentage">
+      <input type="text" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage">
       <br/>
       <label for="rest" class="control-label">Repos:</label>
-      <input type="text" class="form-control" name="rest" placeholder="Temps ou distance repos">
+      <input type="text" class="form-control" name="rest" placeholder="Temps ou distance repos" ng-model="step.rest">
 
     </div>
   </div>

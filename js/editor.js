@@ -8,14 +8,13 @@ app.controller("Editor", ['$scope', function($scope, $http) {
                     "type": "warmup",
                     "effort_type": "distance",
                     "effort_unit": "km",
-                    "distance":  "0",
-                    "time":  "0"
+                    "effort":  ""
                 },
                 {
                     "type": "interval",
-                    "laps": 0,
-                    "length": 0,
-                    "percentage": 0,
+                    "laps": "",
+                    "length": "",
+                    "percentage": "",
                     "rest": "",
                     "effort_type": "distance",
                     "effort_unit": "km"
@@ -24,8 +23,7 @@ app.controller("Editor", ['$scope', function($scope, $http) {
                     "type": "warmdown",
                     "effort_type": "distance",
                     "effort_unit": "km",
-                    "distance":  "0",
-                    "time":  "0"
+                    "effort":  ""
                 }
             ]
         }
@@ -48,7 +46,10 @@ app.controller("Editor", ['$scope', function($scope, $http) {
     ];
 
     $scope.submit = function() {
-        console.table($scope.allSteps);
+        console.log($scope.excercise);
+        console.log($scope.excercise.steps[0]);
+        console.log($scope.excercise.steps[1]);
+        console.log($scope.excercise.steps[2]);
     };
 
     $scope.addNewWarmupWarmdown = function() {
