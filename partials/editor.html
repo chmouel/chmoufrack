@@ -1,3 +1,10 @@
+<div class="editor">
+  <p class="step" ng-repeat="step in allSteps">
+    <span ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></span>
+    <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
+  </p>
+</div>
+
 <nav class="navbar navbar-default navbar-xs" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
@@ -19,12 +26,3 @@
     </a>
   </div>
 </nav>
-
-
-<div class="editor">
-  <p class="step" ng-repeat="step in allSteps">
-    <span ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></span>
-    <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
-  </p>
-
-</div>
