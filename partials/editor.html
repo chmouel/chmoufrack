@@ -1,5 +1,5 @@
 <div class="editor">
-  <strong>Editer Excercise</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
+  <strong>Editer séance</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
   <input ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
   <span ng-hide="editing">
     {{excercise.name || "Sans Nom" }}
@@ -23,22 +23,29 @@
 
 <nav class="navbar navbar-default navbar-xs" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <a href class="dropdown-toggle" data-toggle="dropdown">
-      <i class="glyphicon glyphicon-plus"></i> Ajouter</a>
-    <ul class="dropdown-menu">
-      <li><a href ng-click="addNewWarmupWarmdown()">Échauffement</a></li>
-      <li><a href>Récupération</a></li>
-      <li><a href ng-click="addNewIntervals()">Fractionnée</a></li>
-    </ul>
+  <div class="navbar-nav navbar-center">
+    <button class="btn btn-default navbar-btn">
+      <a href class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-plus"></i> Ajouter un excercise
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href ng-click="addNewWarmupWarmdown()">Échauffement</a></li>
+        <li><a href>Récupération</a></li>
+        <li><a href ng-click="addNewIntervals()">Fractionnée</a></li>
+      </ul>
+    </button>
     &nbsp;
-    <a href="#">
-      <i class="glyphicon glyphicon-remove"></i> Supprimer
-    </a>
+    <button class="btn btn-default navbar-btn">
+      <a href="#">
+        <i class="glyphicon glyphicon-remove"></i> Supprimer
+      </a>
+    </button>
     &nbsp;
-    <a href ng-click="submit()">
-      <i class="glyphicon glyphicon-save"></i>
-      Sauvegarder
-    </a>
+    <button class="btn btn-default navbar-btn">
+      <a href ng-click="submit()">
+        <i class="glyphicon glyphicon-save"></i>
+        Sauvegarder
+      </a>
+    </button>
   </div>
 </nav>
