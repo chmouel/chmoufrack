@@ -62,9 +62,9 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         $scope.excercise.steps.splice(index + 1, 0, item[0]);
     }
 
-    $scope.addNewWarmupWarmdown = function() {
+    $scope.addNewWarmupWarmdown = function(t) {
         $scope.excercise.steps.push({
-            "type": "warmup",
+            "type": t,
             "effort_type": "distance",
             "effort_unit": "km",
             "effort":  ""
