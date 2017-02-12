@@ -3,12 +3,19 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         {
             name: "",
             comment: "",
-            steps: [
-                {
+            steps: [{
+                "type": "warmup",
+                "effort_type": "distance",
+                "effort_unit": "km",
+                "effort":  ""
+            },
+            {
+                "type": "repeat",
+                "time": 5,
+                steps: [{
                     "type": "warmup",
                     "effort_type": "distance",
-                    "effort_unit": "km",
-                    "effort":  ""
+                    "effort":  "Tout doux pendant 5km!"
                 },
                 {
                     "type": "interval",
@@ -16,18 +23,24 @@ app.controller("Editor", ['$scope', function($scope, $http) {
                     "length": "",
                     "percentage": "",
                     "rest": "",
-                    "effort_type": "distance",
-                    "effort_unit": "km"
-                },
-                {
-                    "type": "warmdown",
-                    "effort_type": "distance",
-                    "effort_unit": "km",
-                    "effort":  ""
-                }
-            ]
-        }
-    ];
+                    "effort_type": "distance"
+                }]
+            },
+            {
+                "type": "interval",
+                "laps": "",
+                "length": "",
+                "percentage": "",
+                "rest": "",
+                "effort_type": "distance"
+            },
+                    {
+                        "type": "warmdown",
+                        "effort_type": "distance",
+                        "effort":  ""
+                    },
+        {}
+    ]}];
     $scope.excercise = $scope.Excercise[0];
 
     $scope.effortDistanceUnits = [
@@ -52,27 +65,31 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         console.log($scope.excercise.steps[2]);
     };
 
-    $scope.swapUp = function(index) {
-        var item = $scope.excercise.steps.splice(index, 1);
-        $scope.excercise.steps.splice(index - 1, 0, item[0]);
+    $scope.swapUp = function(index, arr) {
+        var item = arr.steps.splice(index, 1);
+        arr.steps.splice(index - 1, 0, item[0]);
     }
 
-    $scope.swapDown = function(index) {
-        var item = $scope.excercise.steps.splice(index, 1);
-        $scope.excercise.steps.splice(index + 1, 0, item[0]);
+    $scope.swapDown = function(index, arr) {
+        var item = arr.steps.splice(index, 1);
+        arr.steps.splice(index + 1, 0, item[0]);
     }
 
-    $scope.addNewWarmupWarmdown = function(t) {
-        $scope.excercise.steps.push({
+    $scope.removeStep = function(index, arr) {
+        arr.steps.splice(index, 1);
+    };
+
+    $scope.addNewWarmupWarmdown = function(t, arr) {
+        arr.steps.push({
             "type": t,
             "effort_type": "distance",
-            "effort_unit": "km",
             "effort":  ""
         });
     };
 
-    $scope.addNewIntervals = function() {
-        $scope.excercise.steps.push({
+    $scope.addNewIntervals = function(arr) {
+        console.log(arr);
+        arr.steps.push({
             "type": "interval",
             "laps": "",
             "length": "",
@@ -83,9 +100,6 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         });
     };
 
-    $scope.removeStep = function(index) {
-        $scope.excercise.steps.splice(index, 1);
-    };
 
 }]);
 

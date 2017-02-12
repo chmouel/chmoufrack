@@ -2,7 +2,7 @@
   <strong>Editer séance</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
   <input select-on-click ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
   <span ng-hide="editing">
-    {{excercise.name || "Sans Nom" }}
+    {{excercise.name}}
   </span>
   <a href ng-hide="editing" ng-click="editing = true"><i class="glyphicon glyphicon-pencil"></i></a>
 
@@ -12,10 +12,23 @@
 
     <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
 
+    <span ng-show="step.type == 'repeat'" ng-include="'partials/repeat.html'"></span>
+
     <div class="text-right">
-      <a href ng-click="swapUp($index)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
-      <a href ng-click="swapDown($index)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
-      <a href ng-click="removeStep($index)"><i class="glyphicon glyphicon-remove"></i></a>
+      <a href ng-click="swapUp($index, excercise)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
+      <a href ng-click="swapDown($index, excercise)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
+      <a href ng-click="removeStep($index, orig)"><i class="glyphicon glyphicon-remove"></i></a>
+
+      <span ng-show="step.type == 'repeat'"> <!-- plus a new only when a repeat -->
+        <a href class="dropdown-toggle" data-toggle="dropdown">
+          <i class="glyphicon glyphicon-plus"></i>
+        </a>
+        <ul class="dropdown-menu pull-right">
+          <li><a href ng-click="addNewWarmupWarmdown('warmup', step)">Échauffement</a></li>
+          <li><a href ng-click="addNewWarmupWarmdown('warmdown', step)">Récupération</a></li>
+          <li><a href ng-click="addNewIntervals(step)">Fractionnée</a></li>
+        </ul>
+      </span>
     </div>
   </div> <!-- ng-repeat -->
 
@@ -28,9 +41,9 @@
         <i class="glyphicon glyphicon-plus"></i> Ajouter un excercise
       </a>
       <ul class="dropdown-menu">
-        <li><a href ng-click="addNewWarmupWarmdown('warmup')">Échauffement</a></li>
-        <li><a href ng-click="addNewWarmupWarmdown('warmdown')">Récupération</a></li>
-        <li><a href ng-click="addNewIntervals()">Fractionnée</a></li>
+        <li><a href ng-click="addNewWarmupWarmdown('warmup', excercise)">Échauffement</a></li>
+        <li><a href ng-click="addNewWarmupWarmdown('warmdown', excercise)">Récupération</a></li>
+        <li><a href ng-click="addNewIntervals(excercise)">Fractionnée</a></li>
       </ul>
     </button>
     &nbsp;
