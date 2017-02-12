@@ -1,8 +1,8 @@
 <div class="editor">
-  <strong>Nom</strong>:
+  <strong>Editer Excercise</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
   <input ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
   <span ng-hide="editing">
-    {{excercise.name || "Edit" }}
+    {{excercise.name || "Sans Nom" }}
   </span>
   <a href ng-hide="editing" ng-click="editing = true"><i class="glyphicon glyphicon-pencil"></i></a>
 
