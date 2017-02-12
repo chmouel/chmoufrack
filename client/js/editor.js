@@ -3,20 +3,16 @@ app.controller("Editor", ['$scope', function($scope, $http) {
         {
             name: "",
             comment: "",
-            steps: [{
+            steps: [
+            {
                 "type": "warmup",
                 "effort_type": "distance",
-                "effort_unit": "km",
                 "effort":  ""
             },
             {
                 "type": "repeat",
                 "time": 5,
-                steps: [{
-                    "type": "warmup",
-                    "effort_type": "distance",
-                    "effort":  "Tout doux pendant 5km!"
-                },
+                steps: [
                 {
                     "type": "interval",
                     "laps": "",
@@ -27,19 +23,10 @@ app.controller("Editor", ['$scope', function($scope, $http) {
                 }]
             },
             {
-                "type": "interval",
-                "laps": "",
-                "length": "",
-                "percentage": "",
-                "rest": "",
-                "effort_type": "distance"
+                "type": "warmdown",
+                "effort_type": "distance",
+                "effort":  ""
             },
-                    {
-                        "type": "warmdown",
-                        "effort_type": "distance",
-                        "effort":  ""
-                    },
-        {}
     ]}];
     $scope.excercise = $scope.Excercise[0];
 
@@ -95,8 +82,7 @@ app.controller("Editor", ['$scope', function($scope, $http) {
             "length": "",
             "percentage": "",
             "rest": "",
-            "effort_type": "distance",
-            "effort_unit": "km"
+            "effort_type": "distance"
         });
     };
 
