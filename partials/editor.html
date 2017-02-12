@@ -1,6 +1,6 @@
 <div class="editor">
   <strong>Editer séance</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
-  <input ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
+  <input select-on-click  ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
   <span ng-hide="editing">
     {{excercise.name || "Sans Nom" }}
   </span>

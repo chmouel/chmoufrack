@@ -4,7 +4,7 @@
   <div class="form-group">
     <label for="repetition" class="control-label col-sm-2">Répétition:</label>
     <div class="col-sm-2">
-      <input type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombre" ng-model="step.laps">
+      <input select-on-click type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombre" ng-model="step.laps">
     </div>
   </div>
 
@@ -21,19 +21,19 @@
     <label ng-show="step.effort_type == 'distance'" for="unit" class="control-label col-sm-3">Distance en mètres:</label>
     <label ng-show="step.effort_type == 'time'" for="unit" class="control-label col-sm-3">Temps d'effort:</label>
     <div class="col-sm-3">
-      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
-      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.time">
+      <input select-on-click type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
+      <input select-on-click type="text" maxlength="9" class="form-control" name="distance" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.time">
     </div>
   </div>
 
   <div class="form-group">
     <label for="vma" class="control-label col-sm-1">VMA:</label>
     <div class="col-sm-3">
-      <input type="text" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage">
+      <input select-on-click type="text" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage">
     </div>
     <label for="rest" class="control-label col-sm-1">Repos:</label>
     <div class="col-sm-7">
-      <textarea class="form-control" placeholder="Temps ou distance de repos" ng-model="step.rest" rows="2" name="rest"></textarea>
+      <textarea select-on-click class="form-control" placeholder="Temps ou distance de repos" ng-model="step.rest" rows="2" name="rest"></textarea>
     </div>
   </div>
 
