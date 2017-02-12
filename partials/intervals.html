@@ -1,25 +1,40 @@
-<form data-toggle="validator" role="form">
+<form class="form-horizontal">
   <span class="label label-success">Fractionnée</span>
-  <div class="form-inline row">
-    <div class="form-group col-sm-12">
-      <label for="repetition" class="control-label">Répétition: </label>
-      <input type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombres" ng-model="step.laps">
-      <br/>
-      <label for="unit" class="control-label">Type: </label>
-      <select name="unit" ng-model="step.effort_type">
+
+  <div class="form-group">
+    <label for="repetition" class="control-label col-sm-2">Répétition:</label>
+    <div class="col-sm-2">
+      <input type="text" maxlength="2" class="form-control" name="repetition" placeholder="Nombre" ng-model="step.laps">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="unit" class="control-label col-sm-2">Type d'effort:</label>
+    <div class="col-sm-2">
+      <select class="form-control" name="unit" ng-model="step.effort_type">
         <option ng-repeat="option in effortTypeOptions" value="{{option.value}}">
           {{option.name}}
         </option>
       </select>
-      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
-      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'time'" ng-model="step.time">
-      <br/>
-      <label for="vma" class="control-label">VMA:</label>
-      <input type="text" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage">
-      <br/>
-      <label for="rest" class="control-label">Repos:</label>
-      <input type="text" class="form-control" name="rest" placeholder="Temps ou distance repos" ng-model="step.rest">
+    </div>
 
+    <label ng-show="step.effort_type == 'distance'" for="unit" class="control-label col-sm-3">Distance en mètres:</label>
+    <label ng-show="step.effort_type == 'time'" for="unit" class="control-label col-sm-3">Temps d'effort:</label>
+    <div class="col-sm-3">
+      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
+      <input type="text" maxlength="9" class="form-control" name="distance" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.time">
     </div>
   </div>
+
+  <div class="form-group">
+    <label for="vma" class="control-label col-sm-1">VMA:</label>
+    <div class="col-sm-2">
+      <input type="text" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage">
+    </div>
+    <label for="rest" class="control-label col-sm-1">Repos:</label>
+    <div class="col-sm-8">
+      <input type="text" class="form-control" name="rest" placeholder="Temps ou distance de repos" ng-model="step.rest">
+    </div>
+  </div>
+
 </form>
