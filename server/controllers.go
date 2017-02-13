@@ -16,7 +16,11 @@ func GETExcercise(writer http.ResponseWriter, reader *http.Request) {
 
 	excercise, err = getProgram(programName)
 	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
+		if _, ok := err.(*error404); ok {
+			http.Error(writer, err.Error(), http.StatusNotFound)
+		} else {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+		}
 		return
 	}
 

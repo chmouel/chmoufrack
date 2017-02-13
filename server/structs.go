@@ -1,5 +1,13 @@
 package server
 
+type error404 struct {
+	s string
+}
+
+func (e *error404) Error() string {
+	return e.s
+}
+
 type Repeat struct {
 	ID     int    `json:"-"`
 	Steps  []Step `json:"steps,omitempty"`

@@ -179,6 +179,8 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 		if err != sql.ErrNoRows {
 			return
 		}
+		err = &error404{"ProgramNotFound"}
+		return
 	}
 
 	err = getSteps("excerciseID", excercise.ID, &steps)
