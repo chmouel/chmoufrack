@@ -144,8 +144,7 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	return
 }
 
-//TODO: reconver to local
-func GetProgram(excerciseName string) (excercise Excercise, err error) {
+func getProgram(excerciseName string) (excercise Excercise, err error) {
 	var getExcerciseSQL = `SELECT id, comment FROM Excercise WHERE name=?`
 	var getRepeatSQL = `SELECT id, repeat FROM Repeat WHERE excerciseID=?`
 	var steps []Step
@@ -154,9 +153,10 @@ func GetProgram(excerciseName string) (excercise Excercise, err error) {
 	excercise = Excercise{
 		Name: excerciseName,
 	}
+
 	err = DB.QueryRow(getExcerciseSQL, excerciseName).Scan(
 		&excercise.ID,
-		&excercise.Name)
+		&excercise.Comment)
 	if err != nil {
 		return
 	}
@@ -186,5 +186,27 @@ func GetProgram(excerciseName string) (excercise Excercise, err error) {
 	steps = append(steps, step)
 	excercise.Steps = steps
 
+	return
+}
+
+func getAllPrograms() (excercises []Excercise, err error) {
+	var getAllExcercises = `SELECT name from Excercise`
+	rows, err := DB.Query(getAllExcercises)
+	if err != nil {
+		return
+	}
+
+	for rows.Next() {
+		e := Excercise{}
+		err = rows.Scan(&e.Name)
+		if err != nil {
+			return
+		}
+		e, err = getProgram(e.Name)
+		if err != nil {
+			return
+		}
+		excercises = append(excercises, e)
+	}
 	return
 }

@@ -1,25 +1,25 @@
 package server
 
 type Repeat struct {
-	ID     int    `json:",omitempty"`
-	Steps  []Step `json:",omitempty"`
-	Repeat int    `json:",omitempty"`
+	ID     int    `json:"-"`
+	Steps  []Step `json:"steps,omitempty"`
+	Repeat int    `json:"repeat,omitempty"`
 }
 
 type Step struct {
-	Effort     string `json:",omitempty"`
-	EffortType string `json:",omitempty"`
-	Laps       int    `json:",omitempty"`
-	Length     int    `json:",omitempty"`
-	Percentage int    `json:",omitempty"`
-	Type       string `json:",omitempty"`
-	Repeat     Repeat `json:",omitempty"`
-	Rest       string `json:",omitempty"`
-	Position   int    `json:",omitempty"`
+	Effort     string `json:"effort,omitempty"`
+	EffortType string `json:"effort_type,omitempty"`
+	Laps       int    `json:"laps,omitempty"`
+	Length     int    `json:"length,omitempty"`
+	Percentage int    `json:"percentage,omitempty"`
+	Type       string `json:"type,omitempty"`
+	Repeat     Repeat `json:"repeat,omitempty"`
+	Rest       string `json:"rest,omitempty"`
+	Position   int    `json:"position,omitempty"`
 }
 
 type Excercise struct {
-	ID      int    `json:",omitempty"`
+	ID      int    `json:"-"`
 	Name    string `json:",omitempty"`
 	Comment string `json:",omitempty"`
 	Steps   []Step `json:",omitempty"`

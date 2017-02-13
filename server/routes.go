@@ -18,4 +18,10 @@ var allRoutes = routes{
 		"/v1/excercise/{name}",
 		GETExcercise,
 	},
+	route{
+		"GETExcerciseS",
+		"GET",
+		"/v1/excercises",
+		GETExcerciseS,
+	},
 }
