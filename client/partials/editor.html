@@ -28,9 +28,9 @@
           <i class="glyphicon glyphicon-plus"></i>
         </a>
         <ul class="dropdown-menu pull-right">
+          <li><a href ng-click="addNewIntervals(step.repeat)">Fractionnée</a></li>
           <li><a href ng-click="addNewWarmupWarmdown('warmup', step.repeat)">Échauffement</a></li>
           <li><a href ng-click="addNewWarmupWarmdown('warmdown', step.repeat)">Récupération</a></li>
-          <li><a href ng-click="addNewIntervals(step.repeat)">Fractionnée</a></li>
         </ul>
       </span>
     </div>
@@ -45,9 +45,10 @@
         <i class="glyphicon glyphicon-plus"></i> Ajouter un exercise
       </a>
       <ul class="dropdown-menu">
+        <li><a href ng-click="addNewIntervals(exercise)">Fractionnée</a></li>
+        <li><a href ng-click="addNewRepeat(exercise)">Répétition</a></li>
         <li><a href ng-click="addNewWarmupWarmdown('warmup', exercise)">Échauffement</a></li>
         <li><a href ng-click="addNewWarmupWarmdown('warmdown', exercise)">Récupération</a></li>
-        <li><a href ng-click="addNewIntervals(exercise)">Fractionnée</a></li>
       </ul>
     </button>
     &nbsp;

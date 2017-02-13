@@ -289,7 +289,6 @@ func addProgram(exercise Exercise) (res sql.Result, err error) {
 			}
 
 		} else if step.Type == "interval" {
-			sql = ``
 			res, err = sqlTX(`
 			insert into Interval (
 			id, position, laps,

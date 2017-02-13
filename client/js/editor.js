@@ -55,6 +55,14 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
         });
     };
 
+    $scope.addNewRepeat = function(arr) {
+        arr.steps.push({
+            "type": "repeat",
+            "repeat": {steps: [], repeat: 0}
+        });
+    };
+
+
     $scope.addNewIntervals = function(arr) {
         arr.steps.push({
             "type": "interval",

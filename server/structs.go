@@ -11,16 +11,16 @@ func (e *error404) Error() string {
 type Repeat struct {
 	ID     int    `json:"id"`
 	Steps  []Step `json:"steps,omitempty"`
-	Repeat int    `json:"repeat,omitempty,string"`
+	Repeat int    `json:"repeat,omitempty"`
 }
 
 type Step struct {
 	ID         int    `json:"id"`
 	Effort     string `json:"effort,omitempty"`
 	EffortType string `json:"effort_type,omitempty"`
-	Laps       int    `json:"laps,omitempty,string"`
-	Length     int    `json:"length,omitempty,string"`
-	Percentage int    `json:"percentage,omitempty,string"`
+	Laps       int    `json:"laps,omitempty"`
+	Length     int    `json:"length,omitempty"`
+	Percentage int    `json:"percentage,omitempty"`
 	Type       string `json:"type,omitempty"`
 	Repeat     Repeat `json:"repeat,omitempty"`
 	Rest       string `json:"rest,omitempty"`
