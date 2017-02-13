@@ -188,7 +188,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	}
 
 	step := Step{
-		Type: "Repeat",
+		Type: "repeat",
 	}
 	repeat := Repeat{}
 	err = DB.QueryRow(getRepeatSQL, excercise.ID).Scan(
@@ -198,6 +198,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	if err != nil {
 		if err != sql.ErrNoRows {
 			fmt.Printf("repeat error2: %s\n", err.Error())
+			return
 		} else {
 			err = nil
 		}

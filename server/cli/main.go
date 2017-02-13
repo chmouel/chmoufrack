@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/chmouel/chmoufrack/server"
 )
@@ -9,7 +9,8 @@ import (
 func main() {
 	err := server.DBConnect()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("repeat error: %s\n", err.Error())
+		return
 	}
 
 	server.Serve()

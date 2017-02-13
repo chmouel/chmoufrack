@@ -17,16 +17,16 @@
     <div class="text-right">
       <a href ng-click="swapUp($index, excercise)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
       <a href ng-click="swapDown($index, excercise)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
-      <a href ng-click="removeStep($index, orig)"><i class="glyphicon glyphicon-remove"></i></a>
+      <a href ng-click="removeStep($index, excercise)"><i class="glyphicon glyphicon-remove"></i></a>
 
       <span ng-show="step.type == 'repeat'"> <!-- plus a new only when a repeat -->
         <a href class="dropdown-toggle" data-toggle="dropdown">
           <i class="glyphicon glyphicon-plus"></i>
         </a>
         <ul class="dropdown-menu pull-right">
-          <li><a href ng-click="addNewWarmupWarmdown('warmup', step)">Échauffement</a></li>
-          <li><a href ng-click="addNewWarmupWarmdown('warmdown', step)">Récupération</a></li>
-          <li><a href ng-click="addNewIntervals(step)">Fractionnée</a></li>
+          <li><a href ng-click="addNewWarmupWarmdown('warmup', step.repeat)">Échauffement</a></li>
+          <li><a href ng-click="addNewWarmupWarmdown('warmdown', step.repeat)">Récupération</a></li>
+          <li><a href ng-click="addNewIntervals(step.repeat)">Fractionnée</a></li>
         </ul>
       </span>
     </div>

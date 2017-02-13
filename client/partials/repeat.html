@@ -6,7 +6,7 @@
 <div class="form-group">
   <div class="col-sm-12">
     <strong>Repetitions</strong>:
-    <input select-on-click type="number" maxlength="2" class="form-control" ng-model="step.repeat">
+    <input select-on-click type="number" maxlength="2" class="form-control" ng-model="step.repeat.repeat">
   </div>
 </div>
 
@@ -18,8 +18,8 @@
 
 <div class="block-repeat">
   <!-- TODO: commonalize with editor.html -->
-  <span ng-init="orig = step">
-    <div class="step" ng-repeat="step in step.steps">
+  <span ng-init="orig = step.repeat">
+    <div class="step" ng-repeat="step in step.repeat.steps">
 
       <span ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></span>
 

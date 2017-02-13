@@ -20,9 +20,9 @@ type Step struct {
 
 type Excercise struct {
 	ID      int    `json:"-"`
-	Name    string `json:",omitempty"`
-	Comment string `json:",omitempty"`
-	Steps   `json:",omitempty"`
+	Name    string `json:"name,omitempty"`
+	Comment string `json:"comment,omitempty"`
+	Steps   `json:"steps,omitempty"`
 }
 
 type Steps []Step

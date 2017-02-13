@@ -8,7 +8,6 @@ app.config(function($routeProvider) {
         .otherwise({controller: "FrackController", templateUrl: "partials/selection.html"});
 });
 
-
 function range(min, max) {
     var input = [];
     min = parseInt(min);

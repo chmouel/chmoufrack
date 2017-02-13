@@ -1,34 +1,10 @@
-app.controller("Editor", ['$scope', function($scope, $http) {
-    $scope.Excercise = [
-        {
-            name: "",
-            comment: "",
-            steps: [
-            {
-                "type": "warmup",
-                "effort_type": "distance",
-                "effort":  ""
-            },
-            {
-                "type": "repeat",
-                "repeat": 5,
-                steps: [
-                {
-                    "type": "interval",
-                    "laps": "",
-                    "length": "",
-                    "percentage": "",
-                    "rest": "",
-                    "effort_type": "distance"
-                }]
-            },
-            {
-                "type": "warmdown",
-                "effort_type": "distance",
-                "effort":  ""
-            },
-    ]}];
-    $scope.excercise = $scope.Excercise[0];
+app.controller("Editor", ['$scope', '$http', function($scope, $http) {
+    var res = $http.get('/v1/excercises');
+	res.then(function(response) {
+        console.log(response.data);
+        $scope.Excercises = response.data;
+        $scope.excercise = $scope.Excercises[0];
+	});
 
     $scope.effortDistanceUnits = [
         { name: 'Mètres', value: 'm'},
@@ -55,12 +31,12 @@ app.controller("Editor", ['$scope', function($scope, $http) {
     $scope.swapUp = function(index, arr) {
         var item = arr.steps.splice(index, 1);
         arr.steps.splice(index - 1, 0, item[0]);
-    }
+    };
 
     $scope.swapDown = function(index, arr) {
         var item = arr.steps.splice(index, 1);
         arr.steps.splice(index + 1, 0, item[0]);
-    }
+    };
 
     $scope.removeStep = function(index, arr) {
         arr.steps.splice(index, 1);

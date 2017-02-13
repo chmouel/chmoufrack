@@ -36,11 +36,14 @@ func router() *mux.Router {
 			Name(route.Name).Handler(handler)
 	}
 
+	s := http.StripPrefix("/", http.FileServer(http.Dir("../client")))
+	router.PathPrefix("/").Handler(s)
+
 	return router
 }
 
 func Serve() {
 	router := router()
 	// TODO(chmou): setting
-	log.Fatal(http.ListenAndServe(":9091", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
