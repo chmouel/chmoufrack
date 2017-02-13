@@ -106,6 +106,7 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 		return
 
 	}
+
 	defer stmt.Close()
 	res, err = stmt.Exec(args...)
 	if err != nil {
@@ -115,10 +116,10 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	return
 }
 
-func getSteps(t string, id int, steps *[]Step) (err error) {
-	var getWarmupSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmup WHERE %s=?`, t)
-	var getWarmdownSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmdown WHERE %s=?`, t)
-	var getIntervalSQL = fmt.Sprintf(`SELECT id, position, laps, length, percentage, rest, effort_type, effort FROM Interval WHERE %s=?`, t)
+func getSteps(exerciseType string, id int, steps *[]Step) (err error) {
+	var getWarmupSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmup WHERE %s=?`, exerciseType)
+	var getWarmdownSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmdown WHERE %s=?`, exerciseType)
+	var getIntervalSQL = fmt.Sprintf(`SELECT id, position, laps, length, percentage, rest, effort_type, effort FROM Interval WHERE %s=?`, exerciseType)
 
 	rows, err := DB.Query(getWarmupSQL, id)
 	if err != nil {
@@ -253,6 +254,92 @@ func getAllPrograms() (exercises []Exercise, err error) {
 	return
 }
 
+func cleanupSteps(exerciseType string, id int) (res sql.Result, err error) {
+	res, err = sqlTX(fmt.Sprintf(`delete from Warmup where %s=?`, exerciseType), id)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	res, err = sqlTX(fmt.Sprintf(`delete from Warmdown where %s=?`, exerciseType), id)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	res, err = sqlTX(fmt.Sprintf(`delete from Interval where %s=?`, exerciseType), id)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	return
+}
+
+func addSteps(exerciseType string, id int, steps []Step) (res sql.Result, err error) {
+	var sql string
+
+	for position, step := range steps {
+		if step.Type == "warmup" {
+			sql = fmt.Sprintf("insert into Warmup (id, effort_type, effort, position, %s) values (?, ?, ?, ?, ?)", exerciseType)
+			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, id)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		} else if step.Type == "warmdown" {
+			sql = fmt.Sprintf("insert into Warmdown (id, effort_type, effort, position, %s) values (?, ?, ?, ?, ?)", exerciseType)
+			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, id)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+		} else if step.Type == "interval" {
+			sql = fmt.Sprintf(`
+			insert into Interval (
+			id, position, laps,
+			length, percentage, rest,
+			effort_type, effort, %s) values
+			(?, ?, ?, ?, ?, ?, ?, ?, ?)`, exerciseType)
+			res, err = sqlTX(sql,
+				step.ID, position, step.Laps,
+				step.Length, step.Percentage, step.Rest,
+				step.EffortType, step.Effort, id)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		} else if step.Type == "repeat" {
+			// NOTE(chmou): This is so ugly this is going to bite me back soon
+			if step.Repeat.ID == 0 {
+				sql := `insert into Repeat (exerciseID, repeat, position) values (?, ?, ?);`
+				res, err = sqlTX(sql, id, step.Repeat.Repeat, position)
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+				i, _ := res.LastInsertId()
+				step.Repeat.ID = int(i)
+			} else {
+				sql := `UPDATE Repeat SET ID=?, exerciseID=?, repeat=?, position=?;`
+				res, err = sqlTX(sql, step.Repeat.ID, id, step.Repeat.Repeat, position)
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+			}
+
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			res, err = cleanupSteps("repeatID", step.Repeat.ID)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			res, err = addSteps("repeatID", step.Repeat.ID, step.Repeat.Steps)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+
+	}
+
+	return
+}
+
 func addProgram(exercise Exercise) (res sql.Result, err error) {
 	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
 	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
@@ -260,49 +347,7 @@ func addProgram(exercise Exercise) (res sql.Result, err error) {
 		fmt.Println(err.Error())
 	}
 
-	res, err = sqlTX(`delete from Warmup where exerciseID=?`, exercise.ID)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	res, err = sqlTX(`delete from Warmdown where exerciseID=?`, exercise.ID)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	res, err = sqlTX(`delete from Interval where exerciseID=?`, exercise.ID)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	for position, step := range exercise.Steps {
-
-		if step.Type == "warmup" {
-			sql = `insert into Warmup (id, effort_type, effort, position, exerciseID) values (?, ?, ?, ?, ?);`
-			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, exercise.ID)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-		} else if step.Type == "warmdown" {
-			sql = `insert into Warmdown (id, effort_type, effort, position, exerciseID) values (?, ?, ?, ?, ?);`
-			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, exercise.ID)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-
-		} else if step.Type == "interval" {
-			res, err = sqlTX(`
-			insert into Interval (
-			id, position, laps,
-			length, percentage, rest,
-			effort_type, effort, exerciseID) values
-			(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-				step.ID, position, step.Laps,
-				step.Length, step.Percentage, step.Rest,
-				step.EffortType, step.Effort, exercise.ID)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-
-		}
-	}
+	res, err = cleanupSteps("exerciseID", exercise.ID)
+	res, err = addSteps("exerciseID", exercise.ID, exercise.Steps)
 	return
 }

@@ -5,7 +5,7 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
             $scope.exercise = response.data;
             if (!$scope.exercise.steps)
                 $scope.exercise.steps = [];
-            console.log($scope.exercise.steps[1]);
+            console.log($scope.exercise);
 	    }, function errorCallBack(response) {
             $scope.exercise = new Object();
             $scope.exercise.steps = {};
@@ -29,8 +29,8 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
     ];
 
     $scope.submit = function() {
-        var res = $http.post('/v1/exercise', $scope.exercise);
         console.log($scope.exercise);
+        var res = $http.post('/v1/exercise', $scope.exercise);
     };
 
     $scope.swapUp = function(index, arr) {
