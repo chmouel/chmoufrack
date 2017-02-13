@@ -252,9 +252,6 @@ func getAllPrograms() (excercises []Excercise, err error) {
 }
 
 func addProgram(excercise Excercise) (err error) {
-	Debug(excercise)
-	Debug(excercise.Steps[0])
-	Debug(excercise.Steps[1])
-	Debug(excercise.Steps[2])
+	fmt.Println(excercise.ID)
 	return
 }

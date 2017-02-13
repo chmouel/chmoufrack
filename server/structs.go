@@ -9,7 +9,7 @@ func (e *error404) Error() string {
 }
 
 type Repeat struct {
-	ID     int    `json:"-"`
+	ID     int    `json:"id"`
 	Steps  []Step `json:"steps,omitempty"`
 	Repeat int    `json:"repeat,omitempty"`
 }
@@ -27,7 +27,7 @@ type Step struct {
 }
 
 type Excercise struct {
-	ID      int    `json:"-"`
+	ID      int    `json:"id"`
 	Name    string `json:"name,omitempty"`
 	Comment string `json:"comment,omitempty"`
 	Steps   `json:"steps,omitempty"`
