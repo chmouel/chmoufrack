@@ -191,4 +191,9 @@ func TestAddGetRepeat(t *testing.T) {
 			originSteps+1)
 	}
 
+	if len(e.Steps[3].Repeat.Steps) != 1 {
+		t.Fatalf("failing to getAdd a repeat step %d != 1",
+			len(e.Steps[3].Repeat.Steps))
+	}
+
 }

@@ -196,6 +196,19 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 		exercise.Steps = append(exercise.Steps, step)
 	}
 
+	getRepeatSQL := `SELECT id, repeat from Repeat where exerciseID=?`
+	rows, err = DB.Query(getRepeatSQL, ID)
+	for rows.Next() {
+		step := Step{
+			Type: "repeat",
+		}
+		err = rows.Scan(&step.ID, &step.Repeat.ID)
+		if err != nil {
+			return
+		}
+		exercise.Steps = append(exercise.Steps, step)
+	}
+
 	sort.Sort(exercise)
 	return
 }
@@ -258,7 +271,15 @@ func addStep(value Step, exerciseType string, position, id int) (
 			return
 		}
 	} else if value.Type == "repeat" {
-		fmt.Println("Hello Moto")
+		sql := `insert or replace into Repeat
+				(ID, repeat, position, exerciseId) values
+				(?, ?, ?, ?);`
+		res, err = sqlTX(sql,
+			value.Repeat.ID, value.Repeat.Repeat,
+			position, id)
+		if err != nil {
+			return
+		}
 	}
 	return
 }
