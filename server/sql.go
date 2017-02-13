@@ -257,6 +257,8 @@ func addStep(value Step, exerciseType string, position, id int) (
 		if err != nil {
 			return
 		}
+	} else if value.Type == "repeat" {
+		fmt.Println("Hello Moto")
 	}
 	return
 }
