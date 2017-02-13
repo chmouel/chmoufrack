@@ -154,3 +154,41 @@ func TestUpdateExercise(t *testing.T) {
 	}
 
 }
+
+func TestAddGetRepeat(t *testing.T) {
+	setUp()
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	originSteps := len(e.Steps)
+
+	var repeatSteps Steps
+	repeatStep := Step{
+		Laps:       6,
+		Length:     400,
+		Percentage: 100,
+		Type:       "interval",
+	}
+	repeatSteps = append(repeatSteps, repeatStep)
+
+	repeat := Repeat{
+		Steps:  repeatSteps,
+		Repeat: 5,
+	}
+	exerciseStep := Step{
+		Type:   "repeat",
+		Repeat: repeat,
+	}
+	e.Steps = append(e.Steps, exerciseStep)
+
+	res, err := addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() when adding a repeat: %s", err)
+	}
+
+	i, err := res.LastInsertId()
+	e, err = getExercise(i)
+	if len(e.Steps) != originSteps+1 {
+		t.Fatalf("failing to add a repeat %d != %d", e.Steps.Len(),
+			originSteps+1)
+	}
+
+}
