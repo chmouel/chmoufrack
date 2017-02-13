@@ -21,8 +21,8 @@
     <label ng-show="step.effort_type == 'distance'" for="unit" class="control-label col-sm-3">Distance en mètres:</label>
     <label ng-show="step.effort_type == 'time'" for="unit" class="control-label col-sm-3">Temps d'effort:</label>
     <div class="col-sm-3">
-      <input select-on-click type="text" maxlength="9" class="form-control" name="distance" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
-      <input select-on-click type="text" maxlength="9" class="form-control" name="distance" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.time">
+      <input select-on-click type="text" maxlength="9" class="form-control" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length">
+      <input select-on-click type="text" maxlength="9" class="form-control" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.time">
     </div>
   </div>
 

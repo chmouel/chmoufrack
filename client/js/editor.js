@@ -11,7 +11,7 @@ app.controller("Editor", ['$scope', function($scope, $http) {
             },
             {
                 "type": "repeat",
-                "time": 5,
+                "repeat": 5,
                 steps: [
                 {
                     "type": "interval",
