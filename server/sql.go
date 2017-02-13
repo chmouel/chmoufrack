@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"sort"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -68,10 +69,11 @@ var aSample = `
 	DELETE FROM Repeat;
 
 	INSERT INTO Excercise(name) VALUES("WU5k-3x1000-WD5k");
+
 	INSERT INTO Warmup(effort_type, effort, position, excerciseID) VALUES("distance", "5km very easy around", 1, 1);
+	INSERT INTO Repeat(Repeat, position, excerciseID) VALUES(5, 2, 1);
 	INSERT INTO Warmdown(effort_type, effort, position, excerciseID) VALUES("time", "15 mn footing", 3, 1);
 
-	INSERT INTO Repeat(Repeat, position, excerciseID) VALUES(5, 2, 1);
 	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 `
 
@@ -173,10 +175,10 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	repeat := Repeat{}
 	err = DB.QueryRow(getRepeatSQL, excercise.ID).Scan(
 		&repeat.ID,
-		&repeat.Position,
+		&step.Position,
 		&repeat.Repeat)
 	if err != nil {
-		fmt.Println("repeat error")
+		fmt.Printf("repeat error: %s\n", err.Error())
 		return
 	}
 	err = getSteps("repeatID", excercise.ID, &repeatStep)
@@ -187,6 +189,8 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	step.Repeat = repeat
 	steps = append(steps, step)
 	excercise.Steps = steps
+
+	sort.Sort(excercise)
 
 	return
 }
