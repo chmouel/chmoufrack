@@ -57,7 +57,6 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
     };
 
     $scope.addNewIntervals = function(arr) {
-        console.log(arr);
         arr.steps.push({
             "type": "interval",
             "laps": "",
