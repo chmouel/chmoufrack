@@ -3,7 +3,10 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
         var res = $http.get('/v1/excercise/' + $routeParams.name );
 	    res.then(function(response) {
             $scope.excercise = response.data;
-	    });
+	    }, function errorCallBack(response) {
+            $scope.excercise = [];
+            $scope.NotFound = $routeParams.name;
+        });
     }
 
     $scope.effortDistanceUnits = [

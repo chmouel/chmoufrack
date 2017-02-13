@@ -1,4 +1,8 @@
-<div class="editor">
+<div ng-show="NotFound" class="alert alert-danger">
+  Sorry honey, j'ai pas reussi a trouver la séance <strong>{{NotFound}}</strong> dans mon ventre.
+</div>
+
+<div ng-hide="NotFound" class="editor">
   <strong>Editer séance</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
   <input select-on-click ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="excercise.name">
   <span ng-hide="editing">
@@ -34,7 +38,7 @@
 
 </div>
 
-<nav class="navbar navbar-default navbar-xs" role="navigation">
+<nav ng-hide="NotFound" class="navbar navbar-default navbar-xs" role="navigation">
   <div class="navbar-nav navbar-center">
     <button class="btn btn-default navbar-btn">
       <a href class="dropdown-toggle" data-toggle="dropdown">
