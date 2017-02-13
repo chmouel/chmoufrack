@@ -119,6 +119,11 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	var getIntervalSQL = fmt.Sprintf(`SELECT position, laps, length, percentage, rest, effort_type FROM Interval WHERE %s=?`, t)
 
 	rows, err := DB.Query(getWarmupSQL, id)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return
+		}
+	}
 	for rows.Next() {
 		var step = Step{
 			Type: "warmup",
@@ -128,6 +133,11 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	}
 
 	rows, err = DB.Query(getWarmdownSQL, id)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return
+		}
+	}
 	for rows.Next() {
 		var step = Step{
 			Type: "warmdown",
@@ -137,6 +147,11 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	}
 
 	rows, err = DB.Query(getIntervalSQL, id)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return
+		}
+	}
 	for rows.Next() {
 		var step = Step{
 			Type: "interval",
@@ -161,11 +176,14 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 		&excercise.ID,
 		&excercise.Comment)
 	if err != nil {
-		return
+		if err != sql.ErrNoRows {
+			return
+		}
 	}
 
 	err = getSteps("excerciseID", excercise.ID, &steps)
 	if err != nil {
+		fmt.Println("e")
 		return
 	}
 
@@ -178,16 +196,26 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 		&step.Position,
 		&repeat.Repeat)
 	if err != nil {
-		fmt.Printf("repeat error: %s\n", err.Error())
-		return
-	}
-	err = getSteps("repeatID", excercise.ID, &repeatStep)
-	if err != nil {
-		return
+		if err != sql.ErrNoRows {
+			fmt.Printf("repeat error2: %s\n", err.Error())
+		} else {
+			err = nil
+		}
+	} else {
+		err = getSteps("repeatID", excercise.ID, &repeatStep)
+		if err != nil {
+			if err != sql.ErrNoRows {
+				return
+			} else {
+				err = nil
+			}
+		}
 	}
 	repeat.Steps = repeatStep
 	step.Repeat = repeat
-	steps = append(steps, step)
+	if len(repeat.Steps) != 0 {
+		steps = append(steps, step)
+	}
 	excercise.Steps = steps
 
 	sort.Sort(excercise)
@@ -199,6 +227,9 @@ func getAllPrograms() (excercises []Excercise, err error) {
 	var getAllExcercises = `SELECT name from Excercise`
 	rows, err := DB.Query(getAllExcercises)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+		}
 		return
 	}
 
