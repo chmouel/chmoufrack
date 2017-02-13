@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS Interval (
 	percentage tinyint NOT NULL,
 	rest text,
 	effort_type varchar(32) DEFAULT "distance",
+	effort text DEFAULT "", -- storing time in there
 	repeatID integer,
 	exerciseID integer
 );
@@ -71,10 +72,12 @@ var aSample = `
 	INSERT INTO Exercise(name) VALUES("Pyramids Short");
 
 	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 0, 1);
-	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
 	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 2, 1);
 
-	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
+	-- INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
+	-- INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
+
+	INSERT INTO Interval(position, laps, length, percentage, rest, effort_type, exerciseID) VALUES(1, 1, 400, 100, "repos arret", "distance", 1);
 `
 
 func DBConnect() (err error) {
@@ -114,9 +117,9 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 }
 
 func getSteps(t string, id int, steps *[]Step) (err error) {
-	var getWarmupSQL = fmt.Sprintf(`SELECT position, effort, effort_type FROM Warmup WHERE %s=?`, t)
-	var getWarmdownSQL = fmt.Sprintf(`SELECT position, effort, effort_type FROM Warmdown WHERE %s=?`, t)
-	var getIntervalSQL = fmt.Sprintf(`SELECT position, laps, length, percentage, rest, effort_type FROM Interval WHERE %s=?`, t)
+	var getWarmupSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmup WHERE %s=?`, t)
+	var getWarmdownSQL = fmt.Sprintf(`SELECT id, position, effort, effort_type FROM Warmdown WHERE %s=?`, t)
+	var getIntervalSQL = fmt.Sprintf(`SELECT id, position, laps, length, percentage, rest, effort_type, effort FROM Interval WHERE %s=?`, t)
 
 	rows, err := DB.Query(getWarmupSQL, id)
 	if err != nil {
@@ -128,7 +131,7 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 		var step = Step{
 			Type: "warmup",
 		}
-		err = rows.Scan(&step.Position, &step.Effort, &step.EffortType)
+		err = rows.Scan(&step.ID, &step.Position, &step.Effort, &step.EffortType)
 		*steps = append(*steps, step)
 	}
 
@@ -142,7 +145,7 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 		var step = Step{
 			Type: "warmdown",
 		}
-		err = rows.Scan(&step.Position, &step.Effort, &step.EffortType)
+		err = rows.Scan(&step.ID, &step.Position, &step.Effort, &step.EffortType)
 		*steps = append(*steps, step)
 	}
 
@@ -156,7 +159,7 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 		var step = Step{
 			Type: "interval",
 		}
-		err = rows.Scan(&step.Position, &step.Laps, &step.Length, &step.Percentage, &step.Rest, &step.EffortType)
+		err = rows.Scan(&step.ID, &step.Position, &step.Laps, &step.Length, &step.Percentage, &step.Rest, &step.EffortType, &step.Effort)
 		*steps = append(*steps, step)
 	}
 	return
@@ -185,7 +188,7 @@ func getProgram(exerciseID int) (exercise Exercise, err error) {
 
 	err = getSteps("exerciseID", exercise.ID, &steps)
 	if err != nil {
-		fmt.Println("e")
+		fmt.Println(err.Error())
 		return
 	}
 
@@ -254,11 +257,52 @@ func getAllPrograms() (exercises []Exercise, err error) {
 func addProgram(exercise Exercise) (res sql.Result, err error) {
 	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
 	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	res, err = sqlTX(`delete from Warmup where exerciseID=?`, exercise.ID)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	res, err = sqlTX(`delete from Warmdown where exerciseID=?`, exercise.ID)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	res, err = sqlTX(`delete from Interval where exerciseID=?`, exercise.ID)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	for position, step := range exercise.Steps {
+
 		if step.Type == "warmup" {
-			sql = `insert or replace into Warmup (effort_type, effort, position, exerciseID) values (?, ?, ?, ?);`
-			res, err = sqlTX(sql, step.EffortType, step.Effort, position, exercise.ID)
-			fmt.Println("Blah")
+			sql = `insert into Warmup (id, effort_type, effort, position, exerciseID) values (?, ?, ?, ?, ?);`
+			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, exercise.ID)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		} else if step.Type == "warmdown" {
+			sql = `insert into Warmdown (id, effort_type, effort, position, exerciseID) values (?, ?, ?, ?, ?);`
+			res, err = sqlTX(sql, step.ID, step.EffortType, step.Effort, position, exercise.ID)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+		} else if step.Type == "interval" {
+			sql = ``
+			res, err = sqlTX(`
+			insert into Interval (
+			id, position, laps,
+			length, percentage, rest,
+			effort_type, effort, exerciseID) values
+			(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				step.ID, position, step.Laps,
+				step.Length, step.Percentage, step.Rest,
+				step.EffortType, step.Effort, exercise.ID)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 
 		}
 	}
