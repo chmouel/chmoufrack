@@ -25,6 +25,7 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
     ];
 
     $scope.submit = function() {
+        var res = $http.post('/v1/excercise/' + $routeParams.name, $scope.excercise);
         console.log($scope.excercise);
         console.log($scope.excercise.steps[0]);
         console.log($scope.excercise.steps[1]);

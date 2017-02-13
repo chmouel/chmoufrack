@@ -250,3 +250,11 @@ func getAllPrograms() (excercises []Excercise, err error) {
 	}
 	return
 }
+
+func addProgram(excercise Excercise) (err error) {
+	Debug(excercise)
+	Debug(excercise.Steps[0])
+	Debug(excercise.Steps[1])
+	Debug(excercise.Steps[2])
+	return
+}

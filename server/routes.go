@@ -19,6 +19,13 @@ var allRoutes = routes{
 		GETExcercise,
 	},
 	route{
+		"PostExcercise",
+		"POST",
+		"/v1/excercise/{name}",
+		POSTExcercise,
+	},
+	// TODO: remove
+	route{
 		"GETExcerciseS",
 		"GET",
 		"/v1/excercises",
