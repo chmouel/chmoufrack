@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -35,9 +36,14 @@ func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	var err error
 
 	vars := mux.Vars(reader)
-	exerciseName := vars["name"]
+	exerciseID := vars["id"]
 
-	exercise, err = getProgram(exerciseName)
+	i, err := strconv.Atoi(exerciseID)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+
+	exercise, err = getProgram(i)
 	if err != nil {
 		if _, ok := err.(*error404); ok {
 			http.Error(writer, err.Error(), http.StatusNotFound)

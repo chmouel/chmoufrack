@@ -1,4 +1,5 @@
 - name: Pyramids Short
+  id: 1
   comments: |
     Short and intense intervals, usually to gain speed.
   programs:

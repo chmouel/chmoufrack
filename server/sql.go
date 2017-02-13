@@ -162,18 +162,18 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	return
 }
 
-func getProgram(exerciseName string) (exercise Exercise, err error) {
-	var getExerciseSQL = `SELECT id, comment FROM Exercise WHERE name=?`
+func getProgram(exerciseID int) (exercise Exercise, err error) {
+	var getExerciseSQL = `SELECT name, comment FROM Exercise WHERE id=?`
 	var getRepeatSQL = `SELECT id, position, repeat FROM Repeat WHERE exerciseID=?`
 	var steps []Step
 	var repeatStep []Step
 
 	exercise = Exercise{
-		Name: exerciseName,
+		ID: exerciseID,
 	}
 
-	err = DB.QueryRow(getExerciseSQL, exerciseName).Scan(
-		&exercise.ID,
+	err = DB.QueryRow(getExerciseSQL, exerciseID).Scan(
+		&exercise.Name,
 		&exercise.Comment)
 	if err != nil {
 		if err != sql.ErrNoRows {
@@ -227,7 +227,7 @@ func getProgram(exerciseName string) (exercise Exercise, err error) {
 }
 
 func getAllPrograms() (exercises []Exercise, err error) {
-	var getAllExercises = `SELECT name from Exercise`
+	var getAllExercises = `SELECT ID from Exercise`
 	rows, err := DB.Query(getAllExercises)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -238,11 +238,11 @@ func getAllPrograms() (exercises []Exercise, err error) {
 
 	for rows.Next() {
 		e := Exercise{}
-		err = rows.Scan(&e.Name)
+		err = rows.Scan(&e.ID)
 		if err != nil {
 			return
 		}
-		e, err = getProgram(e.Name)
+		e, err = getProgram(e.ID)
 		if err != nil {
 			return
 		}
