@@ -251,7 +251,8 @@ func getAllPrograms() (exercises []Exercise, err error) {
 	return
 }
 
-func addProgram(exercise Exercise) (err error) {
-	fmt.Println(exercise.ID)
+func addProgram(exercise Exercise) (res sql.Result, err error) {
+	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
+	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
 	return
 }
