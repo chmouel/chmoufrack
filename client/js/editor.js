@@ -1,10 +1,16 @@
-app.controller("Editor", ['$scope', '$http', function($scope, $http) {
-    var res = $http.get('/v1/excercises');
-	res.then(function(response) {
-        console.log(response.data);
-        $scope.Excercises = response.data;
-        $scope.excercise = $scope.Excercises[0];
-	});
+app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+    if ($routeParams.name) {
+        var res = $http.get('/v1/excercises');
+	    res.then(function(response) {
+            $scope.Excercises = response.data;
+            angular.forEach($scope.Excercises, function(key, value) {
+                if (key.name == $routeParams.name) {
+                    $scope.excercise = key;
+                    return;
+                }
+            });
+	    });
+    }
 
     $scope.effortDistanceUnits = [
         { name: 'Mètres', value: 'm'},

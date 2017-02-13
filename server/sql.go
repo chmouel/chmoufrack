@@ -68,7 +68,7 @@ var aSample = `
 	DELETE FROM Interval;
 	DELETE FROM Repeat;
 
-	INSERT INTO Excercise(name) VALUES("WU5k-3x1000-WD5k");
+	INSERT INTO Excercise(name) VALUES("Pyramids Short");
 
 	INSERT INTO Warmup(effort_type, effort, position, excerciseID) VALUES("distance", "5km very easy around", 1, 1);
 	INSERT INTO Repeat(Repeat, position, excerciseID) VALUES(5, 2, 1);

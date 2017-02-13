@@ -2,7 +2,7 @@ var app = angular.module("Frack", ["ngRoute", "ngSanitize"]);
 
 app.config(function($routeProvider) {
     $routeProvider
-        .when("/edit", {controller: "Editor", templateUrl: "partials/editor.html"})
+        .when("/edit/:name", {controller: "Editor", templateUrl: "partials/editor.html"})
         .when("/workout/:name", {controller: "FrackController", templateUrl: "partials/frack.html"})
         .when("/workout/:name/vma/:vma", {controller: "FrackController", templateUrl: "partials/frack.html"})
         .otherwise({controller: "FrackController", templateUrl: "partials/selection.html"});
