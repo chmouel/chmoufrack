@@ -225,31 +225,31 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 func addStep(value Step, exerciseType string, position, id int) (
 	res sql.Result, err error) {
 	if value.Type == "warmup" {
-		sql := `INSERT OR REPLACE into Warmup
-			(id, effort_type, effort, position, exerciseID)
-			VALUES (?, ?, ?, ?, ?);`
+		sql := fmt.Sprintf(`INSERT OR REPLACE into Warmup
+			(id, effort_type, effort, position, %s)
+			VALUES (?, ?, ?, ?, ?);`, exerciseType)
 		res, err = sqlTX(sql, value.ID, value.EffortType,
 			value.Effort, position, id)
 		if err != nil {
 			return
 		}
 	} else if value.Type == "warmdown" {
-		sql := `INSERT OR REPLACE into Warmdown
-			(id, effort_type, effort, position, exerciseID)
-			VALUES (?, ?, ?, ?, ?);`
+		sql := fmt.Sprintf(`INSERT OR REPLACE into Warmdown
+			(id, effort_type, effort, position, %s)
+			VALUES (?, ?, ?, ?, ?);`, exerciseType)
 		res, err = sqlTX(sql, value.ID, value.EffortType,
 			value.Effort, position, id)
 		if err != nil {
 			return
 		}
 	} else if value.Type == "interval" {
-		sql := `insert or replace into Interval (
+		sql := fmt.Sprintf(`insert or replace into Interval (
 			id, position, laps,
 			length, percentage, rest,
-			effort_type, effort, exerciseID) values
+			effort_type, effort, %s) values
 			(?, ?, ?,
 			 ?, ?, ?,
-			 ?, ?, ?)`
+			 ?, ?, ?)`, exerciseType)
 		res, err = sqlTX(sql,
 			value.ID, position, value.Laps,
 			value.Length, value.Percentage, value.Rest,

@@ -87,7 +87,7 @@ func TestAddExercise(t *testing.T) {
 	}
 }
 
-func TestAddUpdateExercise(t *testing.T) {
+func TestUpdateExercise(t *testing.T) {
 	setUp()
 	e := newExercise("TestAddUpdate", "easy warmup todoo",
 		"finish strong", 4567)
@@ -136,4 +136,21 @@ func TestAddUpdateExercise(t *testing.T) {
 	if len(e.Steps) != 2 {
 		t.Fatalf("failing to remove a step %d != 2", e.Steps.Len())
 	}
+
+	s := Step{
+		Effort:     "OlaMoto",
+		Type:       "warmdown",
+		EffortType: "distance",
+	}
+	e.Steps = append(e.Steps, s)
+	res, err = addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() when add a new element: %s", err)
+	}
+	i, err = res.LastInsertId()
+	e, err = getExercise(i)
+	if len(e.Steps) != 3 {
+		t.Fatalf("failing to remove a step %d != 3", e.Steps.Len())
+	}
+
 }
