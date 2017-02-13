@@ -70,9 +70,9 @@ var aSample = `
 
 	INSERT INTO Exercise(name) VALUES("Pyramids Short");
 
-	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 1, 1);
-	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 2, 1);
-	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 3, 1);
+	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 0, 1);
+	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
+	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 2, 1);
 
 	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 `
@@ -254,5 +254,13 @@ func getAllPrograms() (exercises []Exercise, err error) {
 func addProgram(exercise Exercise) (res sql.Result, err error) {
 	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
 	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
+	for position, step := range exercise.Steps {
+		if step.Type == "warmup" {
+			sql = `insert or replace into Warmup (effort_type, effort, position, exerciseID) values (?, ?, ?, ?);`
+			res, err = sqlTX(sql, step.EffortType, step.Effort, position, exercise.ID)
+			fmt.Println("Blah")
+
+		}
+	}
 	return
 }
