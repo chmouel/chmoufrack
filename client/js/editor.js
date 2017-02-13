@@ -1,14 +1,8 @@
 app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
     if ($routeParams.name) {
-        var res = $http.get('/v1/excercises');
+        var res = $http.get('/v1/excercise/' + $routeParams.name );
 	    res.then(function(response) {
-            $scope.Excercises = response.data;
-            angular.forEach($scope.Excercises, function(key, value) {
-                if (key.name == $routeParams.name) {
-                    $scope.excercise = key;
-                    return;
-                }
-            });
+            $scope.excercise = response.data;
 	    });
     }
 
