@@ -7,9 +7,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// POSTExcercise ...
-func POSTExcercise(writer http.ResponseWriter, reader *http.Request) {
-	var excercise Excercise
+// POSTExercise ...
+func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
+	var exercise Exercise
 	var err error
 
 	if reader.Body == nil {
@@ -17,27 +17,27 @@ func POSTExcercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	err = json.NewDecoder(reader.Body).Decode(&excercise)
+	err = json.NewDecoder(reader.Body).Decode(&exercise)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_ = addProgram(excercise)
+	_ = addProgram(exercise)
 
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
 	return
 }
 
-func GETExcercise(writer http.ResponseWriter, reader *http.Request) {
-	var excercise Excercise
+func GETExercise(writer http.ResponseWriter, reader *http.Request) {
+	var exercise Exercise
 	var err error
 
 	vars := mux.Vars(reader)
-	excerciseName := vars["name"]
+	exerciseName := vars["name"]
 
-	excercise, err = getProgram(excerciseName)
+	exercise, err = getProgram(exerciseName)
 	if err != nil {
 		if _, ok := err.(*error404); ok {
 			http.Error(writer, err.Error(), http.StatusNotFound)
@@ -47,22 +47,22 @@ func GETExcercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	if err = json.NewEncoder(writer).Encode(excercise); err != nil {
+	if err = json.NewEncoder(writer).Encode(exercise); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
 
-func GETExcerciseS(writer http.ResponseWriter, reader *http.Request) {
-	var excercise []Excercise
+func GETExerciseS(writer http.ResponseWriter, reader *http.Request) {
+	var exercise []Exercise
 	var err error
 
-	excercise, err = getAllPrograms()
+	exercise, err = getAllPrograms()
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err = json.NewEncoder(writer).Encode(excercise); err != nil {
+	if err = json.NewEncoder(writer).Encode(exercise); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }

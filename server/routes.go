@@ -13,22 +13,22 @@ type routes []route
 
 var allRoutes = routes{
 	route{
-		"GETExcercise",
+		"GETExercise",
 		"GET",
-		"/v1/excercise/{name}",
-		GETExcercise,
+		"/v1/exercise/{name}",
+		GETExercise,
 	},
 	route{
-		"PostExcercise",
+		"PostExercise",
 		"POST",
-		"/v1/excercise/{name}",
-		POSTExcercise,
+		"/v1/exercise/{name}",
+		POSTExercise,
 	},
 	// TODO: remove
 	route{
-		"GETExcerciseS",
+		"GETExerciseS",
 		"GET",
-		"/v1/excercises",
-		GETExcerciseS,
+		"/v1/exercises",
+		GETExerciseS,
 	},
 }

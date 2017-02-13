@@ -26,7 +26,7 @@ type Step struct {
 	Position   int    `json:"-"`
 }
 
-type Excercise struct {
+type Exercise struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name,omitempty"`
 	Comment string `json:"comment,omitempty"`

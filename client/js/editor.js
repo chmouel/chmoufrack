@@ -1,10 +1,10 @@
 app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
     if ($routeParams.name) {
-        var res = $http.get('/v1/excercise/' + $routeParams.name );
+        var res = $http.get('/v1/exercise/' + $routeParams.name );
 	    res.then(function(response) {
-            $scope.excercise = response.data;
+            $scope.exercise = response.data;
 	    }, function errorCallBack(response) {
-            $scope.excercise = [];
+            $scope.exercise = [];
             $scope.NotFound = $routeParams.name;
         });
     }
@@ -25,11 +25,11 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
     ];
 
     $scope.submit = function() {
-        var res = $http.post('/v1/excercise/' + $routeParams.name, $scope.excercise);
-        console.log($scope.excercise);
-        console.log($scope.excercise.steps[0]);
-        console.log($scope.excercise.steps[1]);
-        console.log($scope.excercise.steps[2]);
+        var res = $http.post('/v1/exercise/' + $routeParams.name, $scope.exercise);
+        console.log($scope.exercise);
+        console.log($scope.exercise.steps[0]);
+        console.log($scope.exercise.steps[1]);
+        console.log($scope.exercise.steps[2]);
     };
 
     $scope.swapUp = function(index, arr) {

@@ -9,17 +9,17 @@ import (
 )
 
 var sqlTable = `
-DROP TABLE If Exists Excercise;
+DROP TABLE If Exists Exercise;
 DROP TABLE If Exists Warmup;
 DROP TABLE If Exists Warmdown;
 DROP TABLE If Exists Interval;
 DROP TABLE If Exists Repeat;
 
-CREATE TABLE IF NOT EXISTS Excercise (
+CREATE TABLE IF NOT EXISTS Exercise (
 	id integer PRIMARY KEY,
 	name varchar(255),
     comment text DEFAULT "",
-	CONSTRAINT uc_ExcerciseID UNIQUE (name)
+	CONSTRAINT uc_ExerciseID UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS Warmup (
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Warmup (
 	effort_type varchar(32) DEFAULT "distance",
     effort text NOT NULL,
 	repeatID integer,
-	excerciseID integer
+	exerciseID integer
 );
 
 CREATE TABLE IF NOT EXISTS Warmdown (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS Warmdown (
 	effort_type varchar(32) DEFAULT "distance",
     effort text NOT NULL,
 	repeatID integer,
-	excerciseID integer
+	exerciseID integer
 );
 
 CREATE TABLE IF NOT EXISTS Interval (
@@ -49,30 +49,30 @@ CREATE TABLE IF NOT EXISTS Interval (
 	rest text,
 	effort_type varchar(32) DEFAULT "distance",
 	repeatID integer,
-	excerciseID integer
+	exerciseID integer
 );
 
 Create Table IF NOT EXISTS Repeat  (
 	id integer PRIMARY KEY,
 	repeat tinyint,
 	position tinyint DEFAULT 0,
-	excerciseID integer
+	exerciseID integer
 );
 `
 
 //TODO: remove
 var aSample = `
-	DELETE FROM Excercise;
+	DELETE FROM Exercise;
 	DELETE FROM Warmup;
 	DELETE FROM Warmdown;
 	DELETE FROM Interval;
 	DELETE FROM Repeat;
 
-	INSERT INTO Excercise(name) VALUES("Pyramids Short");
+	INSERT INTO Exercise(name) VALUES("Pyramids Short");
 
-	INSERT INTO Warmup(effort_type, effort, position, excerciseID) VALUES("distance", "5km very easy around", 1, 1);
-	INSERT INTO Repeat(Repeat, position, excerciseID) VALUES(5, 2, 1);
-	INSERT INTO Warmdown(effort_type, effort, position, excerciseID) VALUES("time", "15 mn footing", 3, 1);
+	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 1, 1);
+	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 2, 1);
+	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 3, 1);
 
 	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 `
@@ -162,19 +162,19 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 	return
 }
 
-func getProgram(excerciseName string) (excercise Excercise, err error) {
-	var getExcerciseSQL = `SELECT id, comment FROM Excercise WHERE name=?`
-	var getRepeatSQL = `SELECT id, position, repeat FROM Repeat WHERE excerciseID=?`
+func getProgram(exerciseName string) (exercise Exercise, err error) {
+	var getExerciseSQL = `SELECT id, comment FROM Exercise WHERE name=?`
+	var getRepeatSQL = `SELECT id, position, repeat FROM Repeat WHERE exerciseID=?`
 	var steps []Step
 	var repeatStep []Step
 
-	excercise = Excercise{
-		Name: excerciseName,
+	exercise = Exercise{
+		Name: exerciseName,
 	}
 
-	err = DB.QueryRow(getExcerciseSQL, excerciseName).Scan(
-		&excercise.ID,
-		&excercise.Comment)
+	err = DB.QueryRow(getExerciseSQL, exerciseName).Scan(
+		&exercise.ID,
+		&exercise.Comment)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			return
@@ -183,7 +183,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 		return
 	}
 
-	err = getSteps("excerciseID", excercise.ID, &steps)
+	err = getSteps("exerciseID", exercise.ID, &steps)
 	if err != nil {
 		fmt.Println("e")
 		return
@@ -193,7 +193,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 		Type: "repeat",
 	}
 	repeat := Repeat{}
-	err = DB.QueryRow(getRepeatSQL, excercise.ID).Scan(
+	err = DB.QueryRow(getRepeatSQL, exercise.ID).Scan(
 		&repeat.ID,
 		&step.Position,
 		&repeat.Repeat)
@@ -205,7 +205,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 			err = nil
 		}
 	} else {
-		err = getSteps("repeatID", excercise.ID, &repeatStep)
+		err = getSteps("repeatID", exercise.ID, &repeatStep)
 		if err != nil {
 			if err != sql.ErrNoRows {
 				return
@@ -219,16 +219,16 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	if len(repeat.Steps) != 0 {
 		steps = append(steps, step)
 	}
-	excercise.Steps = steps
+	exercise.Steps = steps
 
-	sort.Sort(excercise)
+	sort.Sort(exercise)
 
 	return
 }
 
-func getAllPrograms() (excercises []Excercise, err error) {
-	var getAllExcercises = `SELECT name from Excercise`
-	rows, err := DB.Query(getAllExcercises)
+func getAllPrograms() (exercises []Exercise, err error) {
+	var getAllExercises = `SELECT name from Exercise`
+	rows, err := DB.Query(getAllExercises)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = nil
@@ -237,7 +237,7 @@ func getAllPrograms() (excercises []Excercise, err error) {
 	}
 
 	for rows.Next() {
-		e := Excercise{}
+		e := Exercise{}
 		err = rows.Scan(&e.Name)
 		if err != nil {
 			return
@@ -246,12 +246,12 @@ func getAllPrograms() (excercises []Excercise, err error) {
 		if err != nil {
 			return
 		}
-		excercises = append(excercises, e)
+		exercises = append(exercises, e)
 	}
 	return
 }
 
-func addProgram(excercise Excercise) (err error) {
-	fmt.Println(excercise.ID)
+func addProgram(exercise Exercise) (err error) {
+	fmt.Println(exercise.ID)
 	return
 }
