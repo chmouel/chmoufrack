@@ -27,3 +27,26 @@ app.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
     $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
 }]);
+
+//http://stackoverflow.com/a/36254259
+app.directive('input', [function() {
+    return {
+        restrict: 'E',
+        require: '?ngModel',
+        link: function(scope, element, attrs, ngModel) {
+            if (
+                   'undefined' !== typeof attrs.type
+                && 'number' === attrs.type
+                && ngModel
+            ) {
+                ngModel.$formatters.push(function(modelValue) {
+                    return Number(modelValue);
+                });
+
+                ngModel.$parsers.push(function(viewValue) {
+                    return Number(viewValue);
+                });
+            }
+        }
+    }
+}]);

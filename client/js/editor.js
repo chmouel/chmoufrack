@@ -5,6 +5,7 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
             $scope.exercise = response.data;
             if (!$scope.exercise.steps)
                 $scope.exercise.steps = [];
+            console.log($scope.exercise.steps[1]);
 	    }, function errorCallBack(response) {
             $scope.exercise = new Object();
             $scope.exercise.steps = {};

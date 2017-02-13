@@ -74,10 +74,9 @@ var aSample = `
 	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 0, 1);
 	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 2, 1);
 
-	-- INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
-	-- INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
+	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
+	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 
-	INSERT INTO Interval(position, laps, length, percentage, rest, effort_type, exerciseID) VALUES(1, 1, 400, 100, "repos arret", "distance", 1);
 `
 
 func DBConnect() (err error) {
