@@ -3,9 +3,6 @@ package server
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
 // POSTExercise ...
@@ -24,7 +21,7 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	_, _ = addProgram(exercise)
+	addExercise(exercise)
 
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
@@ -35,38 +32,23 @@ func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	var exercise Exercise
 	var err error
 
-	vars := mux.Vars(reader)
-	exerciseID := vars["id"]
+	// vars := mux.Vars(reader)
+	// exerciseID := vars["id"]
 
-	i, err := strconv.Atoi(exerciseID)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
-	}
+	// i, err := strconv.Atoi(exerciseID)
+	// if err != nil {
+	// 	http.Error(writer, err.Error(), http.StatusBadRequest)
+	// }
 
-	exercise, err = getProgram(i)
-	if err != nil {
-		if _, ok := err.(*error404); ok {
-			http.Error(writer, err.Error(), http.StatusNotFound)
-		} else {
-			http.Error(writer, err.Error(), http.StatusBadRequest)
-		}
-		return
-	}
-
-	if err = json.NewEncoder(writer).Encode(exercise); err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
-	}
-}
-
-func GETExerciseS(writer http.ResponseWriter, reader *http.Request) {
-	var exercise []Exercise
-	var err error
-
-	exercise, err = getAllPrograms()
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
-		return
-	}
+	// exercise, err = getProgram(i)
+	// if err != nil {
+	// 	if _, ok := err.(*error404); ok {
+	// 		http.Error(writer, err.Error(), http.StatusNotFound)
+	// 	} else {
+	// 		http.Error(writer, err.Error(), http.StatusBadRequest)
+	// 	}
+	// 	return
+	// }
 
 	if err = json.NewEncoder(writer).Encode(exercise); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)

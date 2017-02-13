@@ -24,11 +24,4 @@ var allRoutes = routes{
 		"/v1/exercise",
 		POSTExercise,
 	},
-	// TODO: remove
-	route{
-		"GETExerciseS",
-		"GET",
-		"/v1/exercises",
-		GETExerciseS,
-	},
 }
