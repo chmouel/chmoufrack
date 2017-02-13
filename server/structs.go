@@ -1,9 +1,10 @@
 package server
 
 type Repeat struct {
-	ID     int    `json:"-"`
-	Steps  []Step `json:"steps,omitempty"`
-	Repeat int    `json:"repeat,omitempty"`
+	ID       int    `json:"-"`
+	Steps    []Step `json:"steps,omitempty"`
+	Repeat   int    `json:"repeat,omitempty"`
+	Position int    `json:"position,omitempty"`
 }
 
 type Step struct {

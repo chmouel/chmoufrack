@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS Interval (
 Create Table IF NOT EXISTS Repeat  (
 	id integer PRIMARY KEY,
 	repeat tinyint,
+	position tinyint DEFAULT 0,
 	excerciseID integer
 );
 `
@@ -70,7 +71,7 @@ var aSample = `
 	INSERT INTO Warmup(effort_type, effort, position, excerciseID) VALUES("distance", "5km very easy around", 1, 1);
 	INSERT INTO Warmdown(effort_type, effort, position, excerciseID) VALUES("time", "15 mn footing", 3, 1);
 
-	INSERT INTO Repeat(Repeat, excerciseID) VALUES(5, 1);
+	INSERT INTO Repeat(Repeat, position, excerciseID) VALUES(5, 2, 1);
 	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 `
 
@@ -146,7 +147,7 @@ func getSteps(t string, id int, steps *[]Step) (err error) {
 
 func getProgram(excerciseName string) (excercise Excercise, err error) {
 	var getExcerciseSQL = `SELECT id, comment FROM Excercise WHERE name=?`
-	var getRepeatSQL = `SELECT id, repeat FROM Repeat WHERE excerciseID=?`
+	var getRepeatSQL = `SELECT id, position, repeat FROM Repeat WHERE excerciseID=?`
 	var steps []Step
 	var repeatStep []Step
 
@@ -172,6 +173,7 @@ func getProgram(excerciseName string) (excercise Excercise, err error) {
 	repeat := Repeat{}
 	err = DB.QueryRow(getRepeatSQL, excercise.ID).Scan(
 		&repeat.ID,
+		&repeat.Position,
 		&repeat.Repeat)
 	if err != nil {
 		fmt.Println("repeat error")
