@@ -3,8 +3,11 @@ app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $h
         var res = $http.get('/v1/exercise/' + $routeParams.name );
 	    res.then(function(response) {
             $scope.exercise = response.data;
+            if (!$scope.exercise.steps)
+                $scope.exercise.steps = [];
 	    }, function errorCallBack(response) {
-            $scope.exercise = [];
+            $scope.exercise = new Object();
+            $scope.exercise.steps = {};
             $scope.NotFound = $routeParams.name;
         });
     }
