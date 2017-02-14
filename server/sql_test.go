@@ -379,6 +379,23 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 }
 
+func TestNotHere(t *testing.T) {
+	setUp()
+	_, err := DB.Exec(aSample)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = getExercise(50)
+
+	if _, ok := err.(*error404); !ok {
+		t.FailNow()
+	}
+	_, err = getExercise(1)
+	if err != nil {
+		t.FailNow()
+	}
+}
+
 func TestDBInsertOrUpdate(t *testing.T) {
 	var err error
 	DB, err = sql.Open("sqlite3", "/tmp/simple.db")
@@ -412,6 +429,7 @@ Create Table Foo  (
 	err = DB.QueryRow("select t from Foo").Scan(
 		&result,
 	)
+
 	if result != "testGood" {
 		t.Fail()
 	}

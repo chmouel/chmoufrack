@@ -126,15 +126,20 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 func getExercise(ID int64) (exercise Exercise, err error) {
 	var steps []Step
 
-	sql := `SELECT id, name, comment from Exercise where id=?`
-	err = DB.QueryRow(sql, ID).Scan(
+	sqlT := `SELECT id, name, comment from Exercise where id=?`
+	err = DB.QueryRow(sqlT, ID).Scan(
 		&exercise.ID,
 		&exercise.Name,
 		&exercise.Comment,
 	)
 	if err != nil {
+		if err != sql.ErrNoRows {
+			return
+		}
+		err = &error404{"Exercise Not Found"}
 		return
 	}
+
 	err = getSteps("exerciseID", exercise.ID, &steps)
 	if err != nil {
 		fmt.Println(err.Error())
