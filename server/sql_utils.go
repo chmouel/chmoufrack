@@ -177,10 +177,11 @@ func DBConnect(location string) (err error) {
 	}
 
 	_, err = DB.Exec(sqlTable)
-	if err != nil {
-		return
-	}
+	return
+}
 
+func initFixturesDB() (err error) {
 	_, err = DB.Exec(aSample)
 	return
+
 }

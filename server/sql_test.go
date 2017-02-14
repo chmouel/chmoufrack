@@ -380,8 +380,10 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 }
 
 func TestNotHere(t *testing.T) {
+	var err error
 	setUp()
-	_, err := DB.Exec(aSample)
+	initFixturesDB()
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -431,6 +433,67 @@ Create Table Foo  (
 	)
 
 	if result != "testGood" {
+		t.Fail()
+	}
+
+}
+
+func TestUPAndDown(t *testing.T) {
+	setUp()
+
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	var repeatSteps Steps
+	repeatStep1 := Step{
+		Laps:       6,
+		Length:     400,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps = append(repeatSteps, repeatStep1)
+
+	repeatStep2 := Step{
+		Laps:       10,
+		Length:     1000,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps = append(repeatSteps, repeatStep2)
+
+	repeat := Repeat{
+		Steps:  repeatSteps,
+		Repeat: 5,
+	}
+	exerciseStep := Step{
+		Type:   "repeat",
+		Repeat: repeat,
+	}
+	e.Steps = append(e.Steps, exerciseStep)
+	_, err := addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding first repeat: %s", err)
+	}
+	e, err = getExercise(0)
+
+	first := e.Steps[3].Repeat.Steps[0]
+	second := e.Steps[3].Repeat.Steps[1]
+	var inversedSteps Steps
+	inversedSteps = append(inversedSteps, second)
+	inversedSteps = append(inversedSteps, first)
+
+	e.Steps[3].Repeat.Steps = inversedSteps
+	_, err = addExercise(e)
+	e, err = getExercise(0)
+
+	newfirst := e.Steps[3].Repeat.Steps[0]
+	newsecond := e.Steps[3].Repeat.Steps[1]
+
+	if first.Laps == newfirst.Laps {
+		t.Fail()
+	}
+	if second.Laps == newsecond.Laps {
 		t.Fail()
 	}
 

@@ -4,7 +4,7 @@
 
 <div ng-hide="NotFound" class="editor">
   <strong>Editer séance</strong>:  <a href ng-show="editing" ng-click="editing = false"><i class="glyphicon glyphicon-ok"></i></a>
-  <input select-on-click ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name">
+  <input select-on-click ng-show="editing" type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name" required>
   <span ng-hide="editing">
     {{exercise.name}}
   </span>

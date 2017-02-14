@@ -1,5 +1,7 @@
 package server
 
+var DEBUG bool
+
 type error404 struct {
 	s string
 }

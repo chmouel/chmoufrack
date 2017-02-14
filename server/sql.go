@@ -230,8 +230,6 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 			return
 		}
 
-		//fmt.Println(value.Repeat.Steps)
-		// fmt.Println(newID)
 		for position, value := range value.Repeat.Steps {
 			err = addStep(value, "repeatID", position, lastid)
 			if err != nil {
