@@ -372,6 +372,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 
 	e.Steps = removeFromArray(e.Steps, 4)
+	_, err = addExercise(e)
 	e, err = getExercise(0)
 	if len(e.Steps) != 4 {
 		t.Fatalf("removing repeat is not working steps %d != 4", len(e.Steps))

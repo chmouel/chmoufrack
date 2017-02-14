@@ -201,6 +201,16 @@ func cleanupSteps(exerciseType string, id int) (err error) {
 		fmt.Println(err.Error())
 	}
 
+	if exerciseType == "repeatID" {
+		// We don't need to do the repeat stuff if we are in repeat loop
+		return
+	}
+
+	_, err = sqlTX(fmt.Sprintf(`delete from Repeat where %s=?`, exerciseType), id)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	return
 }
 
