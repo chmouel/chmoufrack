@@ -40,6 +40,7 @@ func newExercise(
 		Length:     length2,
 		Percentage: 90,
 		Type:       "interval",
+		EffortType: "distance",
 	}
 	steps = append(steps, step2)
 
@@ -166,6 +167,7 @@ func TestAddGetRepeat(t *testing.T) {
 		Length:     400,
 		Percentage: 100,
 		Type:       "interval",
+		EffortType: "distance",
 	}
 	repeatSteps = append(repeatSteps, repeatStep)
 
@@ -205,6 +207,11 @@ func TestAddGetRepeat(t *testing.T) {
 	if len(e.Steps[3].Repeat.Steps) != 1 {
 		t.Fatalf("failing updating a repeat step %d != 1",
 			len(e.Steps[3].Repeat.Steps))
+	}
+	e, err = getExercise(0)
+	if e.Steps[3].Repeat.Steps[0].Laps != 99 {
+		t.Fatalf("failing updating a repeat laps %d != 99",
+			e.Steps[3].Repeat.Steps[0].Laps)
 	}
 
 }

@@ -50,7 +50,10 @@ CREATE TABLE IF NOT EXISTS Interval (
 	effort_type varchar(32) DEFAULT "distance",
 	effort text DEFAULT "", -- storing time in there
 	repeatID integer,
-	exerciseID integer);
+	exerciseID integer,
+    CHECK(repeatID is not NULL or exerciseID is not NULL)
+)
+;
 
 Create Table IF NOT EXISTS Repeat  (
 	id integer PRIMARY KEY,
@@ -77,6 +80,68 @@ var aSample = `
 	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
 
 `
+
+type ArgsMap map[string]interface{}
+
+func SQLInsertOrUpdate(table string, id int, am ArgsMap) (res sql.Result, err error) {
+	var keys []interface{} = make([]interface{}, 0)
+	var values []interface{} = make([]interface{}, 0)
+	for k, v := range am {
+		keys = append(keys, k)
+		values = append(values, v)
+	}
+
+	c := 1
+	query := "SELECT 1 FROM " + table + " WHERE id=? and "
+	if am["repeatID"] != nil {
+		query += fmt.Sprintf("repeatID=%d", am["repeatID"].(int))
+	}
+	if am["exerciseID"] != nil {
+		query += fmt.Sprintf("exerciseID=%d", am["exerciseID"].(int))
+	}
+
+	var existing int
+	err = DB.QueryRow(query, id).Scan(
+		&existing,
+	)
+
+	if existing == 0 {
+		query = "INSERT INTO " + table + "("
+		c = 1
+		for _, k := range keys {
+			query += `"` + k.(string) + `"`
+			if c != len(am) {
+				query += ","
+			}
+			c += 1
+		}
+		query += ") VALUES ("
+		c = 1
+		for range keys {
+			query += `?`
+			if c != len(am) {
+				query += ","
+			}
+			c += 1
+		}
+		query += ");"
+		res, err = sqlTX(query, values...)
+		return
+	}
+	c = 1
+	query = "UPDATE " + table + " SET "
+	for _, k := range keys {
+		query += k.(string) + "=?"
+		if c != len(am) {
+			query += ", "
+		}
+		c += 1
+	}
+	query += fmt.Sprintf(" WHERE ID=%d", id)
+
+	res, err = sqlTX(query, values...)
+	return
+}
 
 func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	tx, err := DB.Begin()
@@ -256,7 +321,7 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 	}
 
 	for position, value := range exercise.Steps {
-		_, err = addStep(value, "exerciseId", position, exercise.ID)
+		_, err = addStep(value, "exerciseID", position, exercise.ID)
 		if err != nil {
 			return
 		}
@@ -268,38 +333,45 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 func addStep(value Step, exerciseType string, position, targetID int) (
 	res sql.Result, err error) {
 	if value.Type == "warmup" {
-		sql := fmt.Sprintf(`INSERT OR REPLACE into Warmup
-			(id, effort_type, effort, position, %s)
-			VALUES (?, ?, ?, ?, ?);`, exerciseType)
-		res, err = sqlTX(sql, value.ID, value.EffortType,
-			value.Effort, position, targetID)
+		am := ArgsMap{
+			"effort_type": value.EffortType,
+			"effort":      value.Effort,
+			"position":    position,
+		}
+		am[exerciseType] = targetID
+
+		res, err = SQLInsertOrUpdate("Warmup", value.ID, am)
 		if err != nil {
 			return
 		}
 	} else if value.Type == "warmdown" {
-		sql := fmt.Sprintf(`INSERT OR REPLACE into Warmdown
-			(id, effort_type, effort, position, %s)
-			VALUES (?, ?, ?, ?, ?);`, exerciseType)
-		res, err = sqlTX(sql, value.ID, value.EffortType,
-			value.Effort, position, targetID)
+		am := ArgsMap{
+			"effort_type": value.EffortType,
+			"effort":      value.Effort,
+			"position":    position,
+		}
+		am[exerciseType] = targetID
+
+		res, err = SQLInsertOrUpdate("Warmdown", value.ID, am)
 		if err != nil {
 			return
 		}
 	} else if value.Type == "interval" {
-		sql := fmt.Sprintf(`insert or replace into Interval (
-			position, laps,
-			length, percentage, rest,
-			effort_type, effort, %s) values
-			(?, ?, ?,
-			 ?, ?, ?,
-			 ?, ?)`, exerciseType)
-		res, err = sqlTX(sql,
-			position, value.Laps,
-			value.Length, value.Percentage, value.Rest,
-			value.EffortType, value.Effort, targetID)
+		am := ArgsMap{
+			"position":    position,
+			"laps":        value.Laps,
+			"length":      value.Length,
+			"percentage":  value.Percentage,
+			"rest":        value.Rest,
+			"effort_type": value.EffortType,
+			"effort":      value.Effort}
+		am[exerciseType] = targetID
+		res, err = SQLInsertOrUpdate("Interval", value.ID, am)
+
 		if err != nil {
 			return
 		}
+
 	} else if value.Type == "repeat" {
 		sql := `insert or replace into Repeat
 				(ID, repeat, position, exerciseId) values
@@ -311,7 +383,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 			return
 		}
 		for position, value := range value.Repeat.Steps {
-			_, err = addStep(value, "repeatId", position, targetID)
+			_, err = addStep(value, "repeatID", position, targetID)
 			if err != nil {
 				return
 			}
