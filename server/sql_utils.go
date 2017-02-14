@@ -169,9 +169,9 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	return
 }
 
-func DBConnect() (err error) {
+func DBConnect(location string) (err error) {
 	// TODO: proper sqlite location
-	DB, err = sql.Open("sqlite3", "/tmp/a.db")
+	DB, err = sql.Open("sqlite3", location)
 	if err != nil {
 		return
 	}
