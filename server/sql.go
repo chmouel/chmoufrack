@@ -50,8 +50,7 @@ CREATE TABLE IF NOT EXISTS Interval (
 	effort_type varchar(32) DEFAULT "distance",
 	effort text DEFAULT "", -- storing time in there
 	repeatID integer,
-	exerciseID integer
-);
+	exerciseID integer);
 
 Create Table IF NOT EXISTS Repeat  (
 	id integer PRIMARY KEY,
@@ -134,21 +133,11 @@ func cleanupSteps(exerciseType string, id int) (res sql.Result, err error) {
 	return
 }
 
-func getExercise(ID int64) (exercise Exercise, err error) {
-	sql := `SELECT id, name, comment from Exercise where id=?`
-	err = DB.QueryRow(sql, ID).Scan(
-		&exercise.ID,
-		&exercise.Name,
-		&exercise.Comment,
-	)
-	if err != nil {
-		return
-	}
-
-	getWarmupSQL := `SELECT id, position, effort,
+func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
+	getWarmupSQL := fmt.Sprintf(`SELECT id, position, effort,
 					 effort_type FROM Warmup
-					 WHERE exerciseID=?`
-	rows, err := DB.Query(getWarmupSQL, ID)
+					 WHERE %s=?`, exerciseType)
+	rows, err := DB.Query(getWarmupSQL, targetID)
 	for rows.Next() {
 		var step = Step{
 			Type: "warmup",
@@ -159,13 +148,13 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 		if err != nil {
 			return
 		}
-		exercise.Steps = append(exercise.Steps, step)
+		*steps = append(*steps, step)
 	}
 
-	getWarmdownSQL := `SELECT id, position, effort,
+	getWarmdownSQL := fmt.Sprintf(`SELECT id, position, effort,
 					 effort_type FROM Warmdown
-					 WHERE exerciseID=?`
-	rows, err = DB.Query(getWarmdownSQL, ID)
+					 WHERE %s=?`, exerciseType)
+	rows, err = DB.Query(getWarmdownSQL, targetID)
 	for rows.Next() {
 		var step = Step{
 			Type: "warmdown",
@@ -176,14 +165,16 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 		if err != nil {
 			return
 		}
-		exercise.Steps = append(exercise.Steps, step)
+		*steps = append(*steps, step)
 	}
 
-	getIntervalSQL := `SELECT id, position, laps, length,
+	getIntervalSQL := fmt.Sprintf(`SELECT id, position, laps, length,
 					   percentage, rest, effort_type,
-					   effort FROM Interval WHERE exerciseID=?`
-	rows, err = DB.Query(getIntervalSQL, ID)
+					   effort FROM Interval WHERE %s=?`, exerciseType)
+
+	rows, err = DB.Query(getIntervalSQL, targetID)
 	for rows.Next() {
+
 		step := Step{
 			Type: "interval",
 		}
@@ -193,21 +184,60 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 		if err != nil {
 			return
 		}
-		exercise.Steps = append(exercise.Steps, step)
+		*steps = append(*steps, step)
 	}
 
-	getRepeatSQL := `SELECT id, repeat from Repeat where exerciseID=?`
-	rows, err = DB.Query(getRepeatSQL, ID)
+	if exerciseType == "repeatID" {
+		// We don't need to do the repeat stuff if we are in repeat loop
+		return
+	}
+
+	//TODO: cleanup
+	getRepeatSQL := `SELECT id, repeat, position from Repeat where exerciseID=?`
+	rows, err = DB.Query(getRepeatSQL, targetID)
 	for rows.Next() {
+		//TODO: cleanup
 		step := Step{
 			Type: "repeat",
 		}
-		err = rows.Scan(&step.ID, &step.Repeat.ID)
+
+		err = rows.Scan(&step.Repeat.ID, &step.Repeat.Repeat,
+			&step.Position)
 		if err != nil {
 			return
 		}
-		exercise.Steps = append(exercise.Steps, step)
+
+		var repeatSteps []Step
+		err = getSteps("repeatID", step.Repeat.ID, &repeatSteps)
+		if err != nil {
+			return
+		}
+		step.Repeat.Steps = repeatSteps
+
+		*steps = append(*steps, step)
 	}
+
+	return
+}
+
+func getExercise(ID int64) (exercise Exercise, err error) {
+	var steps []Step
+
+	sql := `SELECT id, name, comment from Exercise where id=?`
+	err = DB.QueryRow(sql, ID).Scan(
+		&exercise.ID,
+		&exercise.Name,
+		&exercise.Comment,
+	)
+	if err != nil {
+		return
+	}
+	err = getSteps("exerciseID", exercise.ID, &steps)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	exercise.Steps = steps
 
 	sort.Sort(exercise)
 	return
@@ -235,14 +265,14 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 	return
 }
 
-func addStep(value Step, exerciseType string, position, id int) (
+func addStep(value Step, exerciseType string, position, targetID int) (
 	res sql.Result, err error) {
 	if value.Type == "warmup" {
 		sql := fmt.Sprintf(`INSERT OR REPLACE into Warmup
 			(id, effort_type, effort, position, %s)
 			VALUES (?, ?, ?, ?, ?);`, exerciseType)
 		res, err = sqlTX(sql, value.ID, value.EffortType,
-			value.Effort, position, id)
+			value.Effort, position, targetID)
 		if err != nil {
 			return
 		}
@@ -251,22 +281,22 @@ func addStep(value Step, exerciseType string, position, id int) (
 			(id, effort_type, effort, position, %s)
 			VALUES (?, ?, ?, ?, ?);`, exerciseType)
 		res, err = sqlTX(sql, value.ID, value.EffortType,
-			value.Effort, position, id)
+			value.Effort, position, targetID)
 		if err != nil {
 			return
 		}
 	} else if value.Type == "interval" {
 		sql := fmt.Sprintf(`insert or replace into Interval (
-			id, position, laps,
+			position, laps,
 			length, percentage, rest,
 			effort_type, effort, %s) values
 			(?, ?, ?,
 			 ?, ?, ?,
-			 ?, ?, ?)`, exerciseType)
+			 ?, ?)`, exerciseType)
 		res, err = sqlTX(sql,
-			value.ID, position, value.Laps,
+			position, value.Laps,
 			value.Length, value.Percentage, value.Rest,
-			value.EffortType, value.Effort, id)
+			value.EffortType, value.Effort, targetID)
 		if err != nil {
 			return
 		}
@@ -276,9 +306,15 @@ func addStep(value Step, exerciseType string, position, id int) (
 				(?, ?, ?, ?);`
 		res, err = sqlTX(sql,
 			value.Repeat.ID, value.Repeat.Repeat,
-			position, id)
+			position, targetID)
 		if err != nil {
 			return
+		}
+		for position, value := range value.Repeat.Steps {
+			_, err = addStep(value, "repeatId", position, targetID)
+			if err != nil {
+				return
+			}
 		}
 	}
 	return

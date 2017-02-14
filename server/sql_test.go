@@ -179,20 +179,31 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 	e.Steps = append(e.Steps, exerciseStep)
 
-	res, err := addExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when adding a repeat: %s", err)
 	}
 
-	i, err := res.LastInsertId()
-	e, err = getExercise(i)
+	e, err = getExercise(0)
 	if len(e.Steps) != originSteps+1 {
 		t.Fatalf("failing to add a repeat %d != %d", e.Steps.Len(),
 			originSteps+1)
 	}
 
+	// This should test positioning too
 	if len(e.Steps[3].Repeat.Steps) != 1 {
 		t.Fatalf("failing to getAdd a repeat step %d != 1",
+			len(e.Steps[3].Repeat.Steps))
+	}
+
+	e.Steps[3].Repeat.Steps[0].Laps = 99
+	_, err = addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() when adding updating a repeat step: %s", err)
+	}
+	e, err = getExercise(0)
+	if len(e.Steps[3].Repeat.Steps) != 1 {
+		t.Fatalf("failing updating a repeat step %d != 1",
 			len(e.Steps[3].Repeat.Steps))
 	}
 
