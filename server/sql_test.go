@@ -231,3 +231,83 @@ func TestAddGetRepeat(t *testing.T) {
 		t.Fatalf("addExercise() failing to remove field: %s", err)
 	}
 }
+
+func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
+	setUp()
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+
+	var repeatSteps Steps
+	repeatStep1 := Step{
+		Laps:       6,
+		Length:     400,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps = append(repeatSteps, repeatStep1)
+
+	repeat := Repeat{
+		Steps:  repeatSteps,
+		Repeat: 5,
+	}
+	exerciseStep := Step{
+		Type:   "repeat",
+		Repeat: repeat,
+	}
+	e.Steps = append(e.Steps, exerciseStep)
+	_, err := addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding first repeat: %s", err)
+	}
+	e, err = getExercise(0)
+
+	var repeatSteps2 Steps
+	repeatStep2 := Step{
+		Laps:       10,
+		Length:     1000,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps2 = append(repeatSteps2, repeatStep2)
+	repeat = Repeat{
+		Steps:  repeatSteps2,
+		Repeat: 5,
+	}
+	exerciseStep = Step{
+		Type:   "repeat",
+		Repeat: repeat,
+	}
+	e.Steps = append(e.Steps, exerciseStep)
+	_, err = addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding second repeat: %s", err)
+	}
+
+	e, err = getExercise(0)
+	if len(e.Steps) != 5 {
+		t.Fatalf("addExercise() when adding second repeat %s!=5", len(e.Steps))
+	}
+
+	e.Steps[3].Repeat.Steps[0].Length = 999
+	_, err = addExercise(e)
+	if err != nil {
+		t.Fatal(err)
+	}
+	e, err = getExercise(0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if e.Steps[3].Repeat.Steps[0].Length != 999 {
+		t.Fatalf("failing to update repeat")
+	}
+	if len(e.Steps[4].Repeat.Steps) != 1 {
+		t.Fatalf("failing to update repeat")
+	}
+
+	if e.Steps[4].Repeat.Steps[0].Length == 999 {
+		t.Fatalf("failing to update repeat")
+	}
+}

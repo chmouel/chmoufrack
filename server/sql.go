@@ -374,23 +374,29 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 		}
 
 	} else if value.Type == "repeat" {
-		sql := `insert or replace into Repeat
-				(ID, repeat, position, exerciseId) values
-				(?, ?, ?, ?);`
-		res, err = sqlTX(sql,
-			value.Repeat.ID, value.Repeat.Repeat,
-			position, targetID)
+		var newID int64
+
+		am := ArgsMap{
+			"position": position,
+			"repeat":   value.Repeat.Repeat}
+		am[exerciseType] = targetID
+		res, err = SQLInsertOrUpdate("Repeat", value.Repeat.ID, am)
 		if err != nil {
 			return
 		}
 
-		res, err = cleanupSteps("repeatID", value.Repeat.ID)
+		newID, err = res.LastInsertId()
+		if err != nil {
+			return
+		}
+
+		res, err = cleanupSteps("repeatID", value.ID)
 		if err != nil {
 			return
 		}
 
 		for position, value := range value.Repeat.Steps {
-			_, err = addStep(value, "repeatID", position, targetID)
+			_, err = addStep(value, "repeatID", position, int(newID))
 			if err != nil {
 				return
 			}
