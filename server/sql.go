@@ -83,7 +83,10 @@ var aSample = `
 
 type ArgsMap map[string]interface{}
 
-func SQLInsertOrUpdate(table string, id int, am ArgsMap) (res sql.Result, err error) {
+func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error) {
+	var newID int64
+	var res sql.Result
+
 	var keys []interface{} = make([]interface{}, 0)
 	var values []interface{} = make([]interface{}, 0)
 	for k, v := range am {
@@ -126,6 +129,8 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (res sql.Result, err er
 		}
 		query += ");"
 		res, err = sqlTX(query, values...)
+		newID, _ = res.LastInsertId()
+		lastid = int(newID)
 		return
 	}
 
@@ -139,8 +144,8 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (res sql.Result, err er
 		c += 1
 	}
 	query += fmt.Sprintf(" WHERE ID=%d", id)
-
 	res, err = sqlTX(query, values...)
+	lastid = id
 	return
 }
 
@@ -181,17 +186,17 @@ func DBConnect() (err error) {
 	return
 }
 
-func cleanupSteps(exerciseType string, id int) (res sql.Result, err error) {
-	res, err = sqlTX(fmt.Sprintf(`delete from Warmup where %s=?`, exerciseType), id)
+func cleanupSteps(exerciseType string, id int) (err error) {
+	_, err = sqlTX(fmt.Sprintf(`delete from Warmup where %s=?`, exerciseType), id)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	res, err = sqlTX(fmt.Sprintf(`delete from Warmdown where %s=?`, exerciseType), id)
+	_, err = sqlTX(fmt.Sprintf(`delete from Warmdown where %s=?`, exerciseType), id)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	res, err = sqlTX(fmt.Sprintf(`delete from Interval where %s=?`, exerciseType), id)
+	_, err = sqlTX(fmt.Sprintf(`delete from Interval where %s=?`, exerciseType), id)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -316,13 +321,13 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 		return
 	}
 
-	res, err = cleanupSteps("exerciseID", exercise.ID)
+	err = cleanupSteps("exerciseID", exercise.ID)
 	if err != nil {
 		return
 	}
 
 	for position, value := range exercise.Steps {
-		_, err = addStep(value, "exerciseID", position, exercise.ID)
+		err = addStep(value, "exerciseID", position, exercise.ID)
 		if err != nil {
 			return
 		}
@@ -331,8 +336,7 @@ func addExercise(exercise Exercise) (res sql.Result, err error) {
 	return
 }
 
-func addStep(value Step, exerciseType string, position, targetID int) (
-	res sql.Result, err error) {
+func addStep(value Step, exerciseType string, position, targetID int) (err error) {
 	if value.Type == "warmup" {
 		am := ArgsMap{
 			"effort_type": value.EffortType,
@@ -341,7 +345,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 		}
 		am[exerciseType] = targetID
 
-		res, err = SQLInsertOrUpdate("Warmup", value.ID, am)
+		_, err = SQLInsertOrUpdate("Warmup", value.ID, am)
 		if err != nil {
 			return
 		}
@@ -353,7 +357,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 		}
 		am[exerciseType] = targetID
 
-		res, err = SQLInsertOrUpdate("Warmdown", value.ID, am)
+		_, err = SQLInsertOrUpdate("Warmdown", value.ID, am)
 		if err != nil {
 			return
 		}
@@ -367,36 +371,32 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 			"effort_type": value.EffortType,
 			"effort":      value.Effort}
 		am[exerciseType] = targetID
-		res, err = SQLInsertOrUpdate("Interval", value.ID, am)
+		_, err = SQLInsertOrUpdate("Interval", value.ID, am)
 
 		if err != nil {
 			return
 		}
 
 	} else if value.Type == "repeat" {
-		var newID int64
-
+		var lastid int
 		am := ArgsMap{
 			"position": position,
 			"repeat":   value.Repeat.Repeat}
 		am[exerciseType] = targetID
-		res, err = SQLInsertOrUpdate("Repeat", value.Repeat.ID, am)
+		lastid, err = SQLInsertOrUpdate("Repeat", value.Repeat.ID, am)
 		if err != nil {
 			return
 		}
 
-		newID, err = res.LastInsertId()
+		err = cleanupSteps("repeatID", value.Repeat.ID)
 		if err != nil {
 			return
 		}
 
-		res, err = cleanupSteps("repeatID", value.ID)
-		if err != nil {
-			return
-		}
-
+		//fmt.Println(value.Repeat.Steps)
+		// fmt.Println(newID)
 		for position, value := range value.Repeat.Steps {
-			_, err = addStep(value, "repeatID", position, int(newID))
+			err = addStep(value, "repeatID", position, lastid)
 			if err != nil {
 				return
 			}
