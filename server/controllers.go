@@ -21,7 +21,11 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	addExercise(exercise)
+	_, err = addExercise(exercise)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	writer.WriteHeader(http.StatusCreated)
