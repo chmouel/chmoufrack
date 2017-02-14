@@ -378,3 +378,42 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 		t.Fatalf("removing repeat is not working steps %d != 4", len(e.Steps))
 	}
 }
+
+func TestDBInsertOrUpdate(t *testing.T) {
+	var err error
+	DB, err = sql.Open("sqlite3", "/tmp/simple.db")
+	defer DB.Close()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tsql := `
+DROP Table IF EXISTS Foo;
+Create Table Foo  (
+	id integer PRIMARY KEY,
+	t text
+);`
+	_, err = DB.Exec(tsql)
+	if err != nil {
+		log.Fatal(err)
+	}
+	am := ArgsMap{
+		"t": "test1",
+	}
+	_, err = SQLInsertOrUpdate("Foo", 1, am)
+	if err != nil {
+		t.Fatal(err)
+	}
+	am["t"] = "testGood"
+	_, err = SQLInsertOrUpdate("Foo", 1, am)
+
+	var result string
+	err = DB.QueryRow("select t from Foo").Scan(
+		&result,
+	)
+	if result != "testGood" {
+		t.Fail()
+	}
+
+}
