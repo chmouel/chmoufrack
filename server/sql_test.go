@@ -148,6 +148,7 @@ func TestUpdateExercise(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when add a new element: %s", err)
 	}
+
 	i, err = res.LastInsertId()
 	e, err = getExercise(i)
 	if len(e.Steps) != 3 {
@@ -198,11 +199,17 @@ func TestAddGetRepeat(t *testing.T) {
 			len(e.Steps[3].Repeat.Steps))
 	}
 
+	if e.Steps[3].Repeat.Steps[0].Laps != 6 {
+		t.Fatalf("failing to get step field %s != 6",
+			e.Steps[3].Repeat.Steps[0].Laps)
+	}
+
 	e.Steps[3].Repeat.Steps[0].Laps = 99
 	_, err = addExercise(e)
 	if err != nil {
-		t.Fatalf("addExercise() when adding updating a repeat step: %s", err)
+		t.Fatalf("addExercise() updating a repeat step: %s", err)
 	}
+
 	e, err = getExercise(0)
 	if len(e.Steps[3].Repeat.Steps) != 1 {
 		t.Fatalf("failing updating a repeat step %d != 1",
@@ -214,4 +221,13 @@ func TestAddGetRepeat(t *testing.T) {
 			e.Steps[3].Repeat.Steps[0].Laps)
 	}
 
+	e.Steps[3].Repeat.Steps = removeFromArray(e.Steps[3].Repeat.Steps, 0)
+	_, err = addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() when removing from field failed: %s", err)
+	}
+	e, err = getExercise(0)
+	if len(e.Steps[3].Repeat.Steps) != 0 {
+		t.Fatalf("addExercise() failing to remove field: %s", err)
+	}
 }

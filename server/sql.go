@@ -128,6 +128,7 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (res sql.Result, err er
 		res, err = sqlTX(query, values...)
 		return
 	}
+
 	c = 1
 	query = "UPDATE " + table + " SET "
 	for _, k := range keys {
@@ -382,6 +383,12 @@ func addStep(value Step, exerciseType string, position, targetID int) (
 		if err != nil {
 			return
 		}
+
+		res, err = cleanupSteps("repeatID", value.Repeat.ID)
+		if err != nil {
+			return
+		}
+
 		for position, value := range value.Repeat.Steps {
 			_, err = addStep(value, "repeatID", position, targetID)
 			if err != nil {
