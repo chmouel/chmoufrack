@@ -404,7 +404,7 @@ func TestUPAndDown(t *testing.T) {
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 	var repeatSteps Steps
 	repeatStep1 := Step{
-		Laps:       6,
+		Laps:       5,
 		Length:     400,
 		Percentage: 100,
 		Type:       "interval",
@@ -420,6 +420,15 @@ func TestUPAndDown(t *testing.T) {
 		EffortType: "distance",
 	}
 	repeatSteps = append(repeatSteps, repeatStep2)
+
+	repeatStep3 := Step{
+		Laps:       15,
+		Length:     1000,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps = append(repeatSteps, repeatStep3)
 
 	repeat := Repeat{
 		Steps:  repeatSteps,
@@ -439,9 +448,11 @@ func TestUPAndDown(t *testing.T) {
 
 	first := e.Steps[3].Repeat.Steps[0]
 	second := e.Steps[3].Repeat.Steps[1]
+	third := e.Steps[3].Repeat.Steps[2]
 	var inversedSteps Steps
-	inversedSteps = append(inversedSteps, second)
+	inversedSteps = append(inversedSteps, third)
 	inversedSteps = append(inversedSteps, first)
+	inversedSteps = append(inversedSteps, second)
 
 	e.Steps[3].Repeat.Steps = inversedSteps
 	_, err = addExercise(e)
@@ -449,12 +460,18 @@ func TestUPAndDown(t *testing.T) {
 
 	newfirst := e.Steps[3].Repeat.Steps[0]
 	newsecond := e.Steps[3].Repeat.Steps[1]
+	newthird := e.Steps[3].Repeat.Steps[2]
 
-	if first.Laps == newfirst.Laps {
-		t.Fail()
+	if third.Laps != newfirst.Laps {
+		t.Fatal("Old third should be in position first")
 	}
-	if second.Laps == newsecond.Laps {
-		t.Fail()
+
+	if first.Laps != newsecond.Laps {
+		t.Fatal("Old first should be in second position")
+	}
+	if second.Laps != newthird.Laps {
+		t.Fatal("Old firssecond should be in third position")
+
 	}
 
 }
