@@ -11,6 +11,11 @@ import (
 )
 
 func main() {
+	_staticHTML := os.Getenv("FRACK_STATIC_HTML")
+	if _staticHTML == "" {
+		_staticHTML = "client"
+	}
+
 	_location := os.Getenv("FRACK_DB")
 	if _location == "" {
 		_location = "./frack.db"
@@ -21,6 +26,7 @@ func main() {
 	}
 	dblocation := flag.String("dblocation", _location, "sqlite db location")
 	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
+	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
 
 	flag.Parse()
 
@@ -39,5 +45,5 @@ func main() {
 		return
 	}
 
-	server.Serve()
+	server.Serve(*staticHTML)
 }

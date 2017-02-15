@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -24,7 +25,7 @@ func logger(inner http.Handler, name string) http.Handler {
 	})
 }
 
-func router() *mux.Router {
+func router(staticDir string) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	for _, route := range allRoutes {
@@ -36,14 +37,16 @@ func router() *mux.Router {
 			Name(route.Name).Handler(handler)
 	}
 
-	s := http.StripPrefix("/", http.FileServer(http.Dir("../client")))
+	s := http.StripPrefix("/", http.FileServer(http.Dir(staticDir)))
 	router.PathPrefix("/").Handler(s)
 
 	return router
 }
 
-func Serve() {
-	router := router()
+func Serve(staticDir string) {
+	port := "8080"
+	router := router(staticDir)
 	// TODO(chmou): setting
-	log.Fatal(http.ListenAndServe(":8080", router))
+	fmt.Printf("Serving on port %s with static dir %s\n", port, staticDir)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
