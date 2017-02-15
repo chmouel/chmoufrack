@@ -117,6 +117,8 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 		}
 		step.Repeat.Steps = repeatSteps
 
+		sort.Sort(step.Repeat.Steps)
+
 		*steps = append(*steps, step)
 	}
 
@@ -181,6 +183,9 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 			"position":    position,
 		}
 		am[exerciseType] = targetID
+		if exerciseType == "repeatID" {
+			fmt.Printf("REPEAT POSITION: %d %+v\n", position, am)
+		}
 
 		_, err = SQLInsertOrUpdate("Warmup", value.ID, am)
 		if err != nil {
