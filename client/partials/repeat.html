@@ -26,8 +26,6 @@
 
       <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
 
-      <span ng-show="step.type == 'repeat'" ng-include="'partials/repeat.html'"></span>
-
       <div class="text-center">
         <a href ng-click="swapUp($index, orig)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
         <a href ng-click="swapDown($index, orig)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
