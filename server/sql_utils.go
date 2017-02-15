@@ -1,9 +1,6 @@
 package server
 
-import (
-	"database/sql"
-	"fmt"
-)
+import "database/sql"
 
 var sqlTable = `
 DROP TABLE If Exists Exercise;
@@ -92,59 +89,31 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 		values = append(values, v)
 	}
 
-	query := "SELECT 1 FROM " + table + " WHERE id=? "
-	if am["repeatID"] != nil {
-		query += fmt.Sprintf("and repeatID=%d", am["repeatID"].(int))
-	} else if am["exerciseID"] != nil {
-		query += fmt.Sprintf("and exerciseID=%d", am["exerciseID"].(int))
-	}
-
-	var existing int
-	err = DB.QueryRow(query, id).Scan(
-		&existing,
-	)
-
-	if existing == 0 {
-		query = "INSERT INTO " + table + "("
-		c = 1
-		for _, k := range keys {
-			query += `"` + k.(string) + `"`
-			if c != len(am) {
-				query += ","
-			}
-			c += 1
-		}
-		query += ") VALUES ("
-		c = 1
-		for range keys {
-			query += `?`
-			if c != len(am) {
-				query += ","
-			}
-			c += 1
-		}
-		query += ");"
-		res, err = sqlTX(query, values...)
-		if err != nil {
-			return
-		}
-		newID, _ = res.LastInsertId()
-		lastid = int(newID)
-		return
-	}
-
+	query := "INSERT INTO " + table + "("
 	c = 1
-	query = "UPDATE " + table + " SET "
 	for _, k := range keys {
-		query += k.(string) + "=?"
+		query += `"` + k.(string) + `"`
 		if c != len(am) {
-			query += ", "
+			query += ","
 		}
 		c += 1
 	}
-	query += fmt.Sprintf(" WHERE ID=%d", id)
+	query += ") VALUES ("
+	c = 1
+	for range keys {
+		query += `?`
+		if c != len(am) {
+			query += ","
+		}
+		c += 1
+	}
+	query += ");"
 	res, err = sqlTX(query, values...)
-	lastid = id
+	if err != nil {
+		return
+	}
+	newID, _ = res.LastInsertId()
+	lastid = int(newID)
 	return
 }
 
