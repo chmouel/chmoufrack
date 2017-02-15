@@ -382,7 +382,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 func TestNotHere(t *testing.T) {
 	var err error
 	setUp()
-	initFixturesDB()
+	InitFixturesDB()
 
 	if err != nil {
 		log.Fatal(err)

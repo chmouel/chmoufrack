@@ -180,7 +180,7 @@ func DBConnect(location string) (err error) {
 	return
 }
 
-func initFixturesDB() (err error) {
+func InitFixturesDB() (err error) {
 	_, err = DB.Exec(aSample)
 	return
 
