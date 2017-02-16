@@ -1,7 +1,6 @@
 package server
 
 import (
-	"database/sql"
 	"log"
 	"testing"
 )
@@ -13,10 +12,11 @@ func removeFromArray(slice []Step, s int) []Step {
 func setUp() {
 	var err error
 
-	DB, err = sql.Open("sqlite3", "/tmp/test.db")
+	err = DBConnect("/tmp/test.db")
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	_, err = DB.Exec(sqlTable)
 	if err != nil {
 		log.Fatal(err)
