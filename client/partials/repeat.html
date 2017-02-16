@@ -22,7 +22,9 @@
   <span ng-init="orig = step.repeat">
     <div class="step" ng-repeat="step in step.repeat.steps">
 
-      <span ng-show="step.type == 'warmup' || step.type == 'warmdown'" ng-include="'partials/workupdown.html'"></span>
+      <span ng-show="step.type == 'warmup'" ng-include="'partials/warmup.html'"></span>
+
+      <span ng-show="step.type == 'warmdown'" ng-include="'partials/warmdown.html'"></span>
 
       <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
 
