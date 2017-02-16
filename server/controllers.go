@@ -24,6 +24,11 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
+	if exercise.Name == "" { // TODO: proper validation
+		http.Error(writer, "Name is invalid in json", http.StatusUnprocessableEntity)
+		return
+	}
+
 	_, err = addExercise(exercise)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
