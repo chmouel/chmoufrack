@@ -1,4 +1,4 @@
-<form data-toggle="validator" role="form">
+<form name="workupdown" novalidate>
   <span ng-if="step.type == 'warmup'" class="label label-warning">Échauffement</span>
   <span ng-if="step.type == 'warmdown'" class="label label-default">Récupération</span>
   <div class="input-group">
@@ -6,6 +6,6 @@
       <i ng-if="step.type == 'warmup'" class="glyphicon glyphicon-hand-up"></i>
       <i ng-if="step.type == 'warmdown'" class="glyphicon glyphicon-hand-down"></i>
     </span>
-    <input select-on-click ng-model="step.effort" type="text" class="form-control" placeholder="Distance ou temps">
+    <input name="effort-distance-temps" select-on-click ng-model="step.effort" type="text" class="form-control" placeholder="Distance ou temps">
   </div>
 </form>
