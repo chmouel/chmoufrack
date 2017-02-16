@@ -22,11 +22,11 @@
   <span ng-init="orig = step.repeat">
     <div class="step" ng-repeat="step in step.repeat.steps">
 
-      <span ng-show="step.type == 'warmup'" ng-include="'partials/warmup.html'"></span>
+      <span ng-show="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
 
-      <span ng-show="step.type == 'warmdown'" ng-include="'partials/warmdown.html'"></span>
+      <span ng-show="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
 
-      <span ng-show="step.type == 'interval'" ng-include="'partials/intervals.html'"></span>
+      <span ng-show="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
 
       <div class="text-center">
         <a href ng-click="swapUp($index, orig)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>

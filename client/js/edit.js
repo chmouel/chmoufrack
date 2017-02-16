@@ -1,4 +1,4 @@
-app.controller("Editor", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+app.controller("EditController", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
     console.log($scope);
     if ($routeParams.name) {
         var res = $http.get('/v1/exercise/' + $routeParams.name );
