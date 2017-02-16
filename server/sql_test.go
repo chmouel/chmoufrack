@@ -312,6 +312,36 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 }
 
+func TestGetAllExercices(t *testing.T) {
+	setUp()
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	_, err := addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	exercises, err := getAllExercises()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(exercises) != 1 {
+		t.Fatal("did not get all exercises")
+	}
+
+}
+
+func TestGetAllExercicesNotFound(t *testing.T) {
+	setUp()
+	exercises, err := getAllExercises()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(exercises) != 0 {
+		t.Fatal("did not get all exercises")
+	}
+
+}
+
 func TestAddGetRepeatDoublon(t *testing.T) {
 	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)

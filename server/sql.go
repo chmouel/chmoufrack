@@ -183,9 +183,6 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 			"position":    position,
 		}
 		am[exerciseType] = targetID
-		if exerciseType == "repeatID" {
-			fmt.Printf("REPEAT POSITION: %d %+v\n", position, am)
-		}
 
 		_, err = SQLInsertOrUpdate("Warmup", value.ID, am)
 		if err != nil {
@@ -241,6 +238,25 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 				return
 			}
 		}
+	}
+	return
+}
+
+func getAllExercises() (exercises []Exercise, err error) {
+	var getAllExercises = `SELECT ID from Exercise`
+	rows, err := DB.Query(getAllExercises)
+
+	for rows.Next() {
+		e := Exercise{}
+		err = rows.Scan(&e.ID)
+		if err != nil {
+			return
+		}
+		e, err = getExercise(int64(e.ID))
+		if err != nil {
+			return
+		}
+		exercises = append(exercises, e)
 	}
 	return
 }
