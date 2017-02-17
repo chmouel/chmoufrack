@@ -28,6 +28,7 @@ func main() {
 	dblocation := flag.String("dblocation", _location, "sqlite db location")
 	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
 	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
+	serverPort := flag.Int("port", 8080, "DB Port")
 
 	flag.Parse()
 
@@ -53,5 +54,5 @@ func main() {
 		return
 	}
 
-	server.Serve(*staticHTML)
+	server.Serve(*staticHTML, *serverPort)
 }

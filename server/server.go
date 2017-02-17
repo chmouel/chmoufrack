@@ -43,10 +43,9 @@ func router(staticDir string) *mux.Router {
 	return router
 }
 
-func Serve(staticDir string) {
-	port := "8080"
+func Serve(staticDir string, port int) {
 	router := router(staticDir)
 	// TODO(chmou): setting
-	fmt.Printf("Serving on port %s with static dir %s\n", port, staticDir)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	fmt.Printf("Serving on port %d with static dir %s\n", port, staticDir)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), router))
 }
