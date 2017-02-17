@@ -1,9 +1,12 @@
 package server
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/davecgh/go-spew/spew"
 )
@@ -38,4 +41,12 @@ func Debug(a ...interface{}) {
 	}
 	defer f.Close()
 	spew.Fdump(f, a...)
+}
+
+// TempFileName generates a temporary filename for use in testing or whatever
+// http://stackoverflow.com/a/28005931
+func TempFileName(suffix string) string {
+	randBytes := make([]byte, 16)
+	rand.Read(randBytes)
+	return filepath.Join(os.TempDir(), hex.EncodeToString(randBytes)+suffix)
 }

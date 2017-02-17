@@ -10,7 +10,6 @@ import (
 )
 
 func TestGETExercise(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	_, err := addExercise(e)
@@ -36,7 +35,11 @@ func TestGETExercise(t *testing.T) {
 }
 
 func TestGETExerciseNotFound(t *testing.T) {
-	setUp()
+	_, err := DB.Exec("DELETE FROM Exercise")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
 	resp, err := http.Get(server.URL + "/v1/exercise/0")
 	if err != nil {
@@ -50,7 +53,6 @@ func TestGETExerciseNotFound(t *testing.T) {
 }
 
 func TestGETExerciseBadReq(t *testing.T) {
-	setUp()
 	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
 	resp, err := http.Get(server.URL + "/v1/exercise/xxx")
 	if err != nil {
@@ -64,7 +66,6 @@ func TestGETExerciseBadReq(t *testing.T) {
 }
 
 func TestGETExercises(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	_, err := addExercise(e)
@@ -99,7 +100,6 @@ func TestGETExercises(t *testing.T) {
 }
 
 func TestPostExcercise(t *testing.T) {
-	setUp()
 	exercise := `{
   "id": 0,
   "name": "Test1",
@@ -163,7 +163,6 @@ func TestPostExcercise(t *testing.T) {
 }
 
 func TestPostEmpty(t *testing.T) {
-	setUp()
 	exercise := ""
 
 	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise))
@@ -183,7 +182,6 @@ func TestPostEmpty(t *testing.T) {
 }
 
 func TestPostNoting(t *testing.T) {
-	setUp()
 	req, err := http.NewRequest("POST", "/v1/exercise", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -201,7 +199,6 @@ func TestPostNoting(t *testing.T) {
 }
 
 func TestPostBadContent(t *testing.T) {
-	setUp()
 	exercise := `{"hello": "moto"}`
 	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise))
 	if err != nil {

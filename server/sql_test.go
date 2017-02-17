@@ -1,26 +1,9 @@
 package server
 
-import (
-	"log"
-	"testing"
-)
+import "testing"
 
 func removeFromArray(slice []Step, s int) []Step {
 	return append(slice[:s], slice[s+1:]...)
-}
-
-func setUp() {
-	var err error
-
-	err = DBConnect("/tmp/test.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = DB.Exec(sqlTable)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func newExercise(
@@ -60,7 +43,6 @@ func newExercise(
 }
 
 func TestAddExercise(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	res, err := addExercise(e)
@@ -89,7 +71,6 @@ func TestAddExercise(t *testing.T) {
 }
 
 func TestUpdateExercise(t *testing.T) {
-	setUp()
 	e := newExercise("TestAddUpdate", "easy warmup todoo",
 		"finish strong", 4567)
 
@@ -158,7 +139,6 @@ func TestUpdateExercise(t *testing.T) {
 }
 
 func TestAddGetRepeat(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 	originSteps := len(e.Steps)
 
@@ -233,7 +213,6 @@ func TestAddGetRepeat(t *testing.T) {
 }
 
 func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	var repeatSteps Steps
@@ -313,7 +292,6 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 }
 
 func TestGetAllExercices(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 	_, err := addExercise(e)
 	if err != nil {
@@ -331,7 +309,11 @@ func TestGetAllExercices(t *testing.T) {
 }
 
 func TestGetAllExercicesNotFound(t *testing.T) {
-	setUp()
+	_, err := DB.Exec("DELETE FROM Exercise")
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	exercises, err := getAllExercises()
 	if err != nil {
 		t.Fatal(err)
@@ -343,7 +325,6 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 }
 
 func TestAddGetRepeatDoublon(t *testing.T) {
-	setUp()
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	var repeatSteps Steps
@@ -411,7 +392,6 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 
 func TestNotHere(t *testing.T) {
 	var err error
-	setUp()
 	err = InitFixturesDB()
 	if err != nil {
 		t.FailNow()
@@ -428,7 +408,6 @@ func TestNotHere(t *testing.T) {
 }
 
 func TestUPAndDown(t *testing.T) {
-	setUp()
 
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 	var repeatSteps Steps
