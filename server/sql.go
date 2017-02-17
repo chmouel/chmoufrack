@@ -125,6 +125,20 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 	return
 }
 
+func getIdOfExerciseName(name string) (id int, err error) {
+	sqlT := `SELECT id from Exercise where name=?`
+	err = DB.QueryRow(sqlT, name).Scan(
+		&id,
+	)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return
+		}
+		err = &error404{"Exercise " + name + " Not Found"}
+	}
+	return
+}
+
 func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
 

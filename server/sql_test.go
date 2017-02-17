@@ -316,6 +316,26 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 }
 
+func TestGetByName(t *testing.T) {
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	_, err := AddExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+	i, err := getIdOfExerciseName("Test1")
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	e, err = getExercise(i)
+	if err != nil {
+		t.Fatalf("getExercise() failed: %s", err)
+	}
+	if e.Name != "Test1" {
+		t.Fatal("Failed to TestGetByName")
+	}
+}
+
 func TestGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 

@@ -39,7 +39,7 @@ func main() {
 	}
 
 	if *initDBbool {
-		fmt.Println("InitDB")
+		fmt.Println("Adding Fixtures to DB")
 		err := server.InitFixturesDB()
 		if err != nil {
 			log.Fatal(err)

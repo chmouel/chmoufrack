@@ -43,17 +43,25 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	var exercise Exercise
 	var err error
-
+	var i, id int
 	vars := mux.Vars(reader)
 	exerciseID := vars["id"]
 
-	i, err := strconv.Atoi(exerciseID)
-	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
-		return
+	if i, err = strconv.Atoi(exerciseID); err == nil {
+		id = i
+	} else {
+		id, err = getIdOfExerciseName(exerciseID)
+		if err != nil {
+			if _, ok := err.(*error404); ok {
+				http.Error(writer, err.Error(), http.StatusNotFound)
+			} else {
+				http.Error(writer, err.Error(), http.StatusBadRequest)
+			}
+			return
+		}
 	}
 
-	exercise, err = getExercise(int(i))
+	exercise, err = getExercise(id)
 	if err != nil {
 		if _, ok := err.(*error404); ok {
 			http.Error(writer, err.Error(), http.StatusNotFound)

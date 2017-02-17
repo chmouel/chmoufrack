@@ -36,6 +36,26 @@ func TestGETExercise(t *testing.T) {
 	}
 }
 
+func TestGETExerciseByName(t *testing.T) {
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	_, err := AddExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	resp, err := http.Get(server.URL + "/v1/exercise/Test1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var exercise Exercise
+	if err = json.NewDecoder(resp.Body).Decode(&exercise); err != nil {
+		t.Fatal("Could not decode body, not proper json.")
+	}
+	if exercise.Name != "Test1" {
+		t.Fatalf("TestGetexercisebyname failed %s != Test1.", exercise.Name)
+	}
+}
+
 func TestGETExerciseNotFound(t *testing.T) {
 	_, err := DB.Exec("DELETE FROM Exercise")
 	if err != nil {
@@ -51,19 +71,6 @@ func TestGETExerciseNotFound(t *testing.T) {
 	if status := resp.StatusCode; status != http.StatusNotFound {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNotFound)
-	}
-}
-
-func TestGETExerciseBadReq(t *testing.T) {
-	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
-	resp, err := http.Get(server.URL + "/v1/exercise/xxx")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if status := resp.StatusCode; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
 	}
 }
 
