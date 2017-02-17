@@ -4,21 +4,9 @@ app.controller('ProgramIndexController', ['$scope', function($scope) {
     for (var p of $scope.programs) {
         $scope.programIndex[p.name] = Object();
         $scope.programIndex[p.name]["name"] = p.name;
-        $scope.programIndex[p.name]["totalWorkout"] = p.programs.length;
+        $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
         $scope.programIndex[p.name]["comment"] = p.comment;
-
-        $scope.programIndex[p.name]["totalLength"] = 0;
-        $scope.programIndex[p.name]["totalSeconds"] = 0;
-
-        for (var w of p.programs) {
-            $scope.programIndex[p.name]["totalLength"] += (w.laps * w.length);
-            $scope.programIndex[p.name]["totalSeconds"] += (w.seconds);
-        }
-        if ($scope.programIndex[p.name]["totalSeconds"] > 60) {
-            $scope.programIndex[p.name]["totalSeconds"] = Number(($scope.programIndex[p.name]["totalSeconds"] / 60));
-            $scope.programIndex[p.name]["totalSeconds"] = $scope.programIndex[p.name]["totalSeconds"].toString().replace(".", "mn");
-        }
-        $scope.programIndex[p.name]["totalTrackLap"] = $scope.programIndex[p.name]["totalLength"] / 400;
+        $scope.programIndex[p.name]["id"] = p.id;
     }
 }]);
 

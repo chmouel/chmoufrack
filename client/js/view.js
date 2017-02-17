@@ -26,9 +26,9 @@ app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http'
     }
 
     if (!$scope.programs) {
-        var res = $http.get('config/frack.yaml');
+        var res = $http.get('v1/exercises');
 	    res.then(function succesCB(r) {
-            $scope.programs = jsyaml.load(r.data);;
+            $scope.programs = r.data;
             $scope.programNames = [];
             for (var p of $scope.programs)
                 $scope.programNames.push(p.name);

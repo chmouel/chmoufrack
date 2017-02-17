@@ -1,20 +1,15 @@
 <div ng-controller="CalculController">
-  <div ng-repeat="w in program.programs">
+  <div ng-repeat="w in program.steps">
 
-    <div ng-if="w.repeat" class="block-repeat">
+    <div ng-if="w.type == 'repeat'" class="block-repeat">
       <div class="block-header">
         <img width="28px" height="24px" src="img/repeat.png"/>
         <strong>Répétitions</strong> {{w.repeat.repeat}} fois
       </div>
 
-        <div ng-init="repetion=true" ng-repeat="w in w.repeat.workouts">
+        <div ng-init="repetion=true" ng-repeat="w in w.repeat.steps">
           <div ng-include="'html/view/workout.html'">
           </div>
-        </div>
-
-        <div ng-if="w.repeat.rest" class="workout-step rest">
-          <strong>Repos à la fin des répétitions:</strong> <span
-          class="text-muted">{{w.repeat.rest}}</span>
         </div>
     </div>
 
@@ -23,11 +18,11 @@
       </div>
     </div>
 
-    <div ng-if="w.warmup" class="workout-step warmup">
-      <strong>Échauffement:</strong>&nbsp;{{w.warmup}}
+    <div ng-if="w.type == 'warmup'" class="workout-step warmup">
+      <strong>Échauffement:</strong>&nbsp;{{w.effort}}
     </div>
-    <div ng-if="w.warmdown" class="workout-step warmdown">
-      <strong>Récupération:</strong>&nbsp;{{w.warmdown}}
+    <div ng-if="w.type == 'warmdown'" class="workout-step warmdown">
+      <strong>Récupération:</strong>&nbsp;{{w.effort}}
     </div>
 
   </div>

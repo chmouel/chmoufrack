@@ -28,7 +28,7 @@
   <div ng-if="w.rest" class="text-center rest2">
     <strong>Repos
       <span ng-show="w.laps == 1 || repetion">après cet exercice</span>
-      <span ng-if="!repetion && w.laps > 1">entre chaque répétition</span>:
+      <span ng-show="!repetion && w.laps > 1">entre chaque répétition</span>:
     </strong>
     <span class="text-muted">{{w.rest}}</span>
   </div>
