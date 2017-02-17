@@ -6,25 +6,27 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
 func TestGETExercise(t *testing.T) {
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	_, err := AddExercise(e)
+	i, err := AddExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
+	ai := strconv.Itoa(i)
 
 	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
-	resp, err := http.Get(server.URL + "/v1/exercise/0")
+	resp, err := http.Get(server.URL + "/v1/exercise/" + ai)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if status := resp.StatusCode; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
+		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
@@ -41,7 +43,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 	}
 
 	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
-	resp, err := http.Get(server.URL + "/v1/exercise/0")
+	resp, err := http.Get(server.URL + "/v1/exercise/1200")
 	if err != nil {
 		t.Fatal(err)
 	}

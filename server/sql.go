@@ -125,7 +125,7 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 	return
 }
 
-func getExercise(ID int64) (exercise Exercise, err error) {
+func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
 
 	sqlT := `SELECT id, name, comment from Exercise where id=?`
@@ -138,7 +138,7 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 		if err != sql.ErrNoRows {
 			return
 		}
-		err = &error404{"Exercise Not Found"}
+		err = &error404{"Exercise " + exercise.Name + " Not Found"}
 		return
 	}
 
@@ -153,20 +153,33 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 	return
 }
 
-func AddExercise(exercise Exercise) (res sql.Result, err error) {
-	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
-	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
+func AddExercise(exercise Exercise) (lastid int, err error) {
+	if exercise.Name != "" {
+		sqlT := `SELECT id from Exercise where name=?`
+		err = DB.QueryRow(sqlT, exercise.Name).Scan(
+			&exercise.ID,
+		)
+		if err != nil && err != sql.ErrNoRows {
+			return
+		}
+	}
+
+	am := ArgsMap{
+		"name":    exercise.Name,
+		"comment": exercise.Comment,
+	}
+	lastid, err = SQLInsertOrUpdate("Exercise", exercise.ID, am)
 	if err != nil {
 		return
 	}
 
-	err = cleanupSteps("exerciseID", exercise.ID)
+	err = cleanupSteps("exerciseID", lastid)
 	if err != nil {
 		return
 	}
 
 	for position, value := range exercise.Steps {
-		err = addStep(value, "exerciseID", position, exercise.ID)
+		err = addStep(value, "exerciseID", position, lastid)
 		if err != nil {
 			return
 		}
@@ -252,7 +265,7 @@ func getAllExercises() (exercises []Exercise, err error) {
 		if err != nil {
 			return
 		}
-		e, err = getExercise(int64(e.ID))
+		e, err = getExercise(e.ID)
 		if err != nil {
 			return
 		}

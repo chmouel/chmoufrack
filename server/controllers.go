@@ -47,13 +47,13 @@ func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	vars := mux.Vars(reader)
 	exerciseID := vars["id"]
 
-	i, err := strconv.ParseInt(exerciseID, 10, 64)
+	i, err := strconv.Atoi(exerciseID)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	exercise, err = getExercise(i)
+	exercise, err = getExercise(int(i))
 	if err != nil {
 		if _, ok := err.(*error404); ok {
 			http.Error(writer, err.Error(), http.StatusNotFound)

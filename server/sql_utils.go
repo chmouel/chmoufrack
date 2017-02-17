@@ -73,8 +73,8 @@ type ArgsMap map[string]interface{}
 
 func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error) {
 	var c int
-	var newID int64
 	var res sql.Result
+	var begin, query string
 
 	var keys []interface{} = make([]interface{}, 0)
 	var values []interface{} = make([]interface{}, 0)
@@ -83,7 +83,13 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 		values = append(values, v)
 	}
 
-	query := "INSERT INTO " + table + "("
+	if id != 0 {
+		begin = "INSERT OR REPLACE INTO "
+	} else {
+		begin = "INSERT INTO "
+	}
+
+	query = begin + table + "("
 	c = 1
 	for _, k := range keys {
 		query += `"` + k.(string) + `"`
@@ -106,8 +112,9 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 	if err != nil {
 		return
 	}
-	newID, _ = res.LastInsertId()
-	lastid = int(newID)
+
+	n, _ := res.LastInsertId()
+	lastid = int(n)
 	return
 }
 
