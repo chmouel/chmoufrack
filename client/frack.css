@@ -15,6 +15,7 @@
 
 .tableComment {
     border: 1px solid;
+    border-style: dotted;
     padding: 10px;
 }
 
