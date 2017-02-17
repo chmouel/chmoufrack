@@ -210,8 +210,8 @@ func TestPostBadContent(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusUnprocessableEntity {
+	if status := rr.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusUnprocessableEntity)
+			status, http.StatusBadRequest)
 	}
 }
