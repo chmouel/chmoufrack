@@ -24,6 +24,7 @@ func main() {
 	if os.Getenv("FRACK_INIT_DB") != "" {
 		_initDB = true
 	}
+	yamlImport := flag.String("yamlImport", "", "Import a yaml file in DB")
 	dblocation := flag.String("dblocation", _location, "sqlite db location")
 	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
 	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
@@ -32,6 +33,10 @@ func main() {
 
 	fmt.Printf("Using DB from %s\n", *dblocation)
 	err := server.DBConnect(*dblocation)
+	if err != nil {
+		log.Fatalf("Cannot conntect to %s %s", *dblocation, err.Error())
+	}
+
 	if *initDBbool {
 		fmt.Println("InitDB")
 		err := server.InitFixturesDB()
@@ -40,8 +45,11 @@ func main() {
 		}
 	}
 
-	if err != nil {
-		fmt.Printf("repeat error: %s\n", err.Error())
+	if *yamlImport != "" {
+		err := YAMLImport(*yamlImport)
+		if err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
 

@@ -12,7 +12,7 @@ import (
 func TestGETExercise(t *testing.T) {
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	_, err := addExercise(e)
+	_, err := AddExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -68,7 +68,7 @@ func TestGETExerciseBadReq(t *testing.T) {
 func TestGETExercises(t *testing.T) {
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	_, err := addExercise(e)
+	_, err := AddExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}

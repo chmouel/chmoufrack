@@ -29,7 +29,7 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	_, err = addExercise(exercise)
+	_, err = AddExercise(exercise)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return

@@ -153,7 +153,7 @@ func getExercise(ID int64) (exercise Exercise, err error) {
 	return
 }
 
-func addExercise(exercise Exercise) (res sql.Result, err error) {
+func AddExercise(exercise Exercise) (res sql.Result, err error) {
 	sql := `insert or replace into Exercise (ID, name, comment) values (?, ?, ?);`
 	res, err = sqlTX(sql, exercise.ID, exercise.Name, exercise.Comment)
 	if err != nil {
