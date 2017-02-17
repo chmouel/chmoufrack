@@ -50,6 +50,7 @@ func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	i, err := strconv.ParseInt(exerciseID, 10, 64)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	exercise, err = getExercise(i)
