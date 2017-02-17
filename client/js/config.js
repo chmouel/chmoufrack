@@ -2,6 +2,7 @@ var app = angular.module("Frack", ["ngRoute", "ngSanitize"]);
 
 app.config(function($routeProvider) {
     $routeProvider
+        .when("/add", {controller: "EditController", templateUrl: "html/edit/editor.html"})
         .when("/edit/:name", {controller: "EditController", templateUrl: "html/edit/editor.html"})
         .when("/workout/:name", {controller: "ViewController", templateUrl: "html/view/view.html"})
         .when("/workout/:name/vma/:vma", {controller: "ViewController", templateUrl: "html/view/view.html"})

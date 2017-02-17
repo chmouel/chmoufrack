@@ -1,11 +1,11 @@
 app.controller("EditController", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-    console.log($scope);
+    $scope.exercise = Object();
+    $scope.exercise.steps = [];
+
     if ($routeParams.name) {
         var res = $http.get('/v1/exercise/' + $routeParams.name );
 	    res.then(function(response) {
             $scope.exercise = response.data;
-            if (!$scope.exercise.steps)
-                $scope.exercise.steps = [];
 	    }, function errorCallBack(response) {
             $scope.exercise = new Object();
             $scope.exercise.steps = {};
