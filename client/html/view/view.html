@@ -1,6 +1,5 @@
 <div ng-controller="CalculController">
   <div ng-repeat="w in program.steps">
-
     <div ng-if="w.type == 'repeat'" class="block-repeat">
       <div class="block-header">
         <img width="28px" height="24px" src="img/repeat.png"/>
@@ -8,13 +7,13 @@
       </div>
 
         <div ng-init="repetion=true" ng-repeat="w in w.repeat.steps">
-          <div ng-include="'html/view/workout.html'">
+          <div ng-include="'html/view/interval.html'">
           </div>
         </div>
     </div>
 
-    <div ng-repeat="w in w.workouts">
-      <div ng-include="'html/view/workout.html'">
+    <div ng-if="w.type == 'interval'">
+      <div ng-include="'html/view/interval.html'">
       </div>
     </div>
 
