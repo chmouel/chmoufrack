@@ -31,7 +31,15 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', function($s
     $scope.submit = function() {
         console.log($scope.exercise);
         var res = $http.post('/v1/exercise', $scope.exercise);
+        $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
     };
+
+    $scope.delete = function() {
+        console.log($scope.exercise);
+        var res = $http.delete('/v1/exercise/' + $scope.exercise.name);
+        $(location).attr('href', '/');
+    };
+
 
     $scope.swapUp = function(index, arr) {
         var item = arr.steps.splice(index, 1);
