@@ -130,12 +130,19 @@ func getIdOfExerciseName(name string) (id int, err error) {
 	err = DB.QueryRow(sqlT, name).Scan(
 		&id,
 	)
+
 	if err != nil {
 		if err != sql.ErrNoRows {
 			return
 		}
 		err = &error404{"Exercise " + name + " Not Found"}
 	}
+	return
+}
+
+func deleteExercise(ID int) (err error) {
+	sqlT := `DELETE From Exercise where id=?`
+	_, err = sqlTX(sqlT, ID)
 	return
 }
 

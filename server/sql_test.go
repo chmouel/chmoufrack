@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -336,6 +337,24 @@ func TestGetByName(t *testing.T) {
 	}
 }
 
+func TestDBDeleteExercise(t *testing.T) {
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	i, err := AddExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	err = deleteExercise(i)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	e, err = getExercise(i)
+	if _, ok := err.(*error404); !ok {
+		fmt.Println(err)
+	}
+}
+
 func TestGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 
@@ -368,7 +387,6 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 	if len(exercises) != 0 {
 		t.Fatal("did not get all exercises")
 	}
-
 }
 
 func TestAddGetRepeatDoublon(t *testing.T) {

@@ -19,6 +19,12 @@ var allRoutes = routes{
 		GETExercise,
 	},
 	route{
+		"DeleteExercise",
+		"DELETE",
+		"/v1/exercise/{id}",
+		DeleteExercise,
+	},
+	route{
 		"PostExercise",
 		"POST",
 		"/v1/exercise",

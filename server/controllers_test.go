@@ -74,6 +74,29 @@ func TestGETExerciseNotFound(t *testing.T) {
 	}
 }
 
+func TestDeleteExercise(t *testing.T) {
+	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+
+	_, err := AddExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/Test1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status := resp.StatusCode; status != http.StatusNoContent {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusNoContent)
+	}
+}
+
 func TestGETExercises(t *testing.T) {
 	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 

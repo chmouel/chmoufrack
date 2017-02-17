@@ -40,6 +40,40 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 	return
 }
 
+func DeleteExercise(writer http.ResponseWriter, reader *http.Request) {
+	var err error
+	var i, id int
+	vars := mux.Vars(reader)
+	exerciseID := vars["id"]
+	if i, err = strconv.Atoi(exerciseID); err == nil {
+		id = i
+	} else {
+		id, err = getIdOfExerciseName(exerciseID)
+
+		if err != nil {
+			if _, ok := err.(*error404); ok {
+				http.Error(writer, err.Error(), http.StatusNotFound)
+			} else {
+				http.Error(writer, err.Error(), http.StatusBadRequest)
+			}
+			return
+		}
+	}
+
+	err = deleteExercise(id)
+	if err != nil {
+		if _, ok := err.(*error404); ok {
+			http.Error(writer, err.Error(), http.StatusNotFound)
+		} else {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	writer.WriteHeader(http.StatusNoContent)
+}
+
 func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 	var exercise Exercise
 	var err error
