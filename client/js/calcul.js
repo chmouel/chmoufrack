@@ -1,10 +1,13 @@
 app.controller('ProgramIndexController', ['$scope', function($scope) {
     $scope.programIndex = Object();
+    console.log($scope.programs);
 
     for (var p of $scope.programs) {
         $scope.programIndex[p.name] = Object();
         $scope.programIndex[p.name]["name"] = p.name;
-        $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
+        if (p.steps) {
+            $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
+        }
         $scope.programIndex[p.name]["comment"] = p.comment;
         $scope.programIndex[p.name]["id"] = p.id;
     }
