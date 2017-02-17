@@ -3,6 +3,10 @@ app.controller('ProgramIndexController', ['$scope', function($scope) {
     console.log($scope.programs);
 
     for (var p of $scope.programs) {
+        if (p.name == "") {
+            console.log("Invalid workout");
+            continue;
+        }
         $scope.programIndex[p.name] = Object();
         $scope.programIndex[p.name]["name"] = p.name;
         if (p.steps) {
