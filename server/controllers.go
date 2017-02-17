@@ -69,16 +69,16 @@ func GETExercise(writer http.ResponseWriter, reader *http.Request) {
 }
 
 func GETExercises(writer http.ResponseWriter, reader *http.Request) {
-	var exercise []Exercise
+	var exercises []Exercise
 	var err error
 
-	exercise, err = getAllExercises()
+	exercises, err = getAllExercises()
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err = json.NewEncoder(writer).Encode(exercise); err != nil {
+	if err = json.NewEncoder(writer).Encode(exercises); err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
 }
