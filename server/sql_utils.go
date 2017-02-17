@@ -3,12 +3,6 @@ package server
 import "database/sql"
 
 var sqlTable = `
-DROP TABLE If Exists Exercise;
-DROP TABLE If Exists Warmup;
-DROP TABLE If Exists Warmdown;
-DROP TABLE If Exists Interval;
-DROP TABLE If Exists Repeat;
-
 CREATE TABLE IF NOT EXISTS Exercise (
 	id integer PRIMARY KEY,
 	name varchar(255),
