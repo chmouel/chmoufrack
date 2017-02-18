@@ -17,8 +17,13 @@
 <br/>
 
 
+<div ng-hide="step.repeat.steps.length" class="alert alert-info">
+  <strong>Pas d'exercise ajouter encore</strong>, clique sur l'icone plus <i class="glyphicon glyphicon-plus"></i> pour en rajouter un.
+</div>
+
 <div class="block-repeat">
   <!-- TODO: commonalize with editor.html -->
+
   <span ng-init="orig = step.repeat">
     <div class="step" ng-repeat="step in step.repeat.steps">
       <div class="text-center">
