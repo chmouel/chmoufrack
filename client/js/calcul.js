@@ -1,7 +1,16 @@
-app.controller('ProgramIndexController', ['$scope', function($scope) {
+app.factory('rest', function($http) {
+    var getExercises = function() {
+        // Angular $http() and then() both return promises themselves
+        return $http({method:"GET", url:"v1/exercises"}).then(function(result){
+            return result.data;
+        });
+    };
+    return { getExercises: getExercises };
+});
+
+app.controller('ProgramIndexController', ['$scope', 'rest', function($scope, rest) {
     $scope.programIndex = Object();
     console.log($scope.programs);
-
     for (var p of $scope.programs) {
         if (p.name == "") {
             console.log("Invalid workout");
