@@ -1,6 +1,4 @@
 app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http', 'rest', function($scope, $location, $routeParams, $http, rest) {
-    console.log(rest);
-
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
@@ -27,13 +25,15 @@ app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http'
         $scope.vmaWanted = $scope.allVMAS;
     }
 
-    var myPromise = rest.getExercises();
-    myPromise.then(function(result) {
-        $scope.programs = result;
-        $scope.programNames = [];
-        for (var p of $scope.programs)
-            $scope.programNames.push(p.name);
-    });
+    if (!$scope.programs) {
+        var myPromise = rest.getExercises();
+        myPromise.then(function(data) {
+            $scope.programs = data;
+            $scope.programNames = [];
+            for (var p of $scope.programs)
+                $scope.programNames.push(p.name);
+        });
+    };
 
     $scope.submit = function(tourl) {
         var t = "", p ="";

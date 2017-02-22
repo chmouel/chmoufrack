@@ -1,4 +1,4 @@
-app.controller("EditController", ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', function($scope, $http, $routeParams, rest) {
     $scope.exercise = Object();
     $scope.exercise.steps = [];
 
@@ -29,17 +29,23 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', function($s
     ];
 
     $scope.submit = function() {
-        console.log($scope.exercise);
+        // NOTE(chmou): If a rename delete the old one
+        if ($scope.exercise.name != $routeParams.name) {
+            $scope.delete($routeParams.name);
+        }
         var res = $http.post('/v1/exercise', $scope.exercise);
         $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
     };
 
-    $scope.delete = function() {
-        console.log($scope.exercise);
-        var res = $http.delete('/v1/exercise/' + $scope.exercise.name);
-        $(location).attr('href', '/');
-    };
+    $scope.delete = function(t, r) {
+        if (!t) t = $scope.exercise.name;
 
+        var myPromise = rest.deleteExercise(t);
+        myPromise.then(function(result) {
+            $(location).attr('href', '/');
+            return;
+        });
+    };
 
     $scope.swapUp = function(index, arr) {
         var item = arr.steps.splice(index, 1);
