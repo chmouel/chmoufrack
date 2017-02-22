@@ -6,6 +6,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
+	"io/ioutil"
+	"strings"
 )
 
 // POSTExercise ...
@@ -18,7 +21,8 @@ func POSTExercise(writer http.ResponseWriter, reader *http.Request) {
 		return
 	}
 
-	err = json.NewDecoder(reader.Body).Decode(&exercise)
+	x, _ := ioutil.ReadAll(reader.Body)
+	err = json.NewDecoder(strings.NewReader(string(x))).Decode(&exercise)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return

@@ -18,7 +18,7 @@ type Step struct {
 	Length     int    `json:"length,omitempty"`
 	Percentage int    `json:"percentage,omitempty"`
 	Type       string `json:"type,omitempty"`
-	Repeat     Repeat `json:"repeat,omitempty"`
+	Repeat     Repeats `json:"repeat,omitempty"`
 	Rest       string `json:"rest,omitempty"`
 	Position   int    `json:"-"`
 }
@@ -30,10 +30,10 @@ type Exercise struct {
 	Steps   `json:"steps,omitempty"`
 }
 
-type Repeat struct {
-	ID     int   `json:"id"`
-	Steps  Steps `json:"steps,omitempty"`
-	Repeat int   `json:"repeat,omitempty"`
+type Repeats struct {
+	ID      int   `json:"id"`
+	Steps   Steps `json:"steps,omitempty"`
+	Repeats int   `json:"repeat,omitempty"`
 }
 
 type Steps []Step

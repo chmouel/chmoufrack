@@ -16,26 +16,25 @@ func main() {
 		_staticHTML = "client"
 	}
 
-	_location := os.Getenv("FRACK_DB")
-	if _location == "" {
-		_location = "./frack.db"
-	}
+	_db_location := os.Getenv("FRACK_DB")
 	_initDB := false
 	if os.Getenv("FRACK_INIT_DB") != "" {
 		_initDB = true
 	}
 	yamlImport := flag.String("yamlImport", "", "Import a yaml file in DB")
-	dblocation := flag.String("dblocation", _location, "sqlite db location")
+	db := flag.String("db", _db_location, "DB Connexion detail")
 	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
 	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
 	serverPort := flag.Int("port", 8080, "DB Port")
 
 	flag.Parse()
 
-	fmt.Printf("Using DB from %s\n", *dblocation)
-	err := server.DBConnect(*dblocation)
+	if *db == "" {
+		log.Fatal("You need to specify a MySQL DB cnx with -db")
+	}
+	err := server.DBConnect(*db, *initDBbool)
 	if err != nil {
-		log.Fatalf("Cannot conntect to %s %s", *dblocation, err.Error())
+		log.Fatalf("Cannot connect to mysql: %s", err.Error())
 	}
 
 	if *initDBbool {

@@ -132,6 +132,12 @@ func TestGETExercises(t *testing.T) {
 }
 
 func TestPostExcercise(t *testing.T) {
+	// TODO(chmou): need to be moved in constructor
+	_, err := sqlTX("DELETE FROM Exercise")
+	if err != nil {
+		t.Fatal("Could not cleanup all exercises")
+	}
+
 	exercise := `{
   "id": 0,
   "name": "Test1",
@@ -142,7 +148,7 @@ func TestPostExcercise(t *testing.T) {
       "effort": "easy warmup todoo",
       "effort_type": "distance",
       "type": "warmup",
-      "repeat": {
+      "repeats": {
         "id": 0
       }
     },
@@ -153,7 +159,7 @@ func TestPostExcercise(t *testing.T) {
       "length": 1234,
       "percentage": 90,
       "type": "interval",
-      "repeat": {
+      "repeats": {
         "id": 0
       }
     },
@@ -162,7 +168,7 @@ func TestPostExcercise(t *testing.T) {
       "effort": "finish strong",
       "effort_type": "distance",
       "type": "warmdown",
-      "repeat": {
+      "repeats": {
         "id": 0
       }
     }
@@ -189,8 +195,8 @@ func TestPostExcercise(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(exercises) != 1 {
-		t.Fatal("did not get all exercises")
+	if len(exercises) == 0 {
+		t.Fatal("did not get new exercises")
 	}
 }
 

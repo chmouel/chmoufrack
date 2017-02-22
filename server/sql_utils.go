@@ -1,63 +1,87 @@
 package server
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
+
+	_ "github.com/mattn/go-sqlite3"
+)
 
 var sqlTable = `
 CREATE TABLE IF NOT EXISTS Exercise (
-	id integer PRIMARY KEY,
-	name varchar(255),
-    comment text DEFAULT "",
-	CONSTRAINT uc_ExerciseID UNIQUE (name)
+	ID int NOT NULL AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+    comment text,
+    PRIMARY KEY(ID)
 );
 
 CREATE TABLE IF NOT EXISTS Warmup (
-	id integer PRIMARY KEY,
+	id int NOT NULL AUTO_INCREMENT,
 	position tinyint DEFAULT 0,
 	effort_type varchar(32) DEFAULT "distance",
     effort text NOT NULL,
 	repeatID integer,
-	exerciseID integer
+	exerciseID integer,
+    PRIMARY KEY(ID)
 );
 
 CREATE TABLE IF NOT EXISTS Warmdown (
-	id integer PRIMARY KEY,
+	id int NOT NULL AUTO_INCREMENT,
 	position tinyint DEFAULT 0,
 	effort_type varchar(32) DEFAULT "distance",
     effort text NOT NULL,
 	repeatID integer,
-	exerciseID integer
+	exerciseID integer,
+    PRIMARY KEY(ID)
 );
 
-CREATE TABLE IF NOT EXISTS Interval (
-	id integer PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Intervals (
+	id int NOT NULL AUTO_INCREMENT,
 	position tinyint DEFAULT 0,
 	laps tinyint NOT NULL,
     length INTEGER NOT NULL,
 	percentage tinyint NOT NULL,
 	rest text,
 	effort_type varchar(32) DEFAULT "distance",
-	effort text DEFAULT "", -- storing time in there
+	effort text, -- storing time in there
 	repeatID integer,
 	exerciseID integer,
-    CHECK(repeatID is not NULL or exerciseID is not NULL)
-)
-;
+    CHECK(repeatID is not NULL or exerciseID is not NULL),
+    PRIMARY KEY(ID)
+);
 
-Create Table IF NOT EXISTS Repeat  (
-	id integer PRIMARY KEY,
-	repeat tinyint,
+CREATE TABLE IF NOT EXISTS Repeats  (
+	id int NOT NULL AUTO_INCREMENT,
+	repeats tinyint,
 	position tinyint DEFAULT 0,
-	exerciseID integer
+	exerciseID integer,
+    PRIMARY KEY(ID)
 );
 `
 
 //TODO: remove
-var aSample = `
+var SQLDropTable = `
+SET FOREIGN_KEY_CHECKS = 0;
+SET GROUP_CONCAT_MAX_LEN=32768;
+SET @tables = NULL;
+SELECT GROUP_CONCAT(table_name) INTO @tables
+  FROM information_schema.tables
+  WHERE table_schema = (SELECT DATABASE());
+SELECT IFNULL(@tables,'dummy') INTO @tables;
+
+SET @tables = CONCAT('DROP TABLE IF EXISTS ', @tables);
+PREPARE stmt FROM @tables;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+SET FOREIGN_KEY_CHECKS = 1;`
+
+var SQLresetDB = `
 	DELETE FROM Exercise;
 	DELETE FROM Warmup;
 	DELETE FROM Warmdown;
-	DELETE FROM Interval;
-	DELETE FROM Repeat;`
+	DELETE FROM Intervals;
+	DELETE FROM Repeats;`
 
 type ArgsMap map[string]interface{}
 
@@ -110,7 +134,7 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 	}
 
 	if id != 0 {
-		begin = "INSERT OR REPLACE INTO "
+		begin = "REPLACE INTO "
 	} else {
 		begin = "INSERT INTO "
 	}
@@ -118,7 +142,7 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 	query = begin + table + "("
 	c = 1
 	for _, k := range keys {
-		query += `"` + k.(string) + `"`
+		query += k.(string)
 		if c != len(am) {
 			query += ","
 		}
@@ -134,6 +158,7 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 		c += 1
 	}
 	query += ");"
+
 	res, err = sqlTX(query, values...)
 	if err != nil {
 		return
@@ -165,11 +190,18 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	return
 }
 
-func DBConnect(location string) (err error) {
-	// TODO: proper sqlite location
-	DB, err = sql.Open("sqlite3", location)
+func DBConnect(dbconnection string, reset bool) (err error) {
+	DB, err = sql.Open("mysql", dbconnection+"?multiStatements=true")
+
 	if err != nil {
 		return
+	}
+
+	if reset {
+		_, err = DB.Exec(SQLDropTable)
+		if err != nil {
+			return
+		}
 	}
 
 	_, err = DB.Exec(sqlTable)
@@ -177,7 +209,7 @@ func DBConnect(location string) (err error) {
 }
 
 func InitFixturesDB() (err error) {
-	_, err = DB.Exec(aSample)
+	_, err = DB.Exec(SQLresetDB)
 
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
@@ -191,9 +223,9 @@ func InitFixturesDB() (err error) {
 	}
 	repeatSteps = append(repeatSteps, repeatStep)
 
-	repeat := Repeat{
-		Steps:  repeatSteps,
-		Repeat: 5,
+	repeat := Repeats{
+		Steps:   repeatSteps,
+		Repeats: 5,
 	}
 	exerciseStep := Step{
 		Type:   "repeat",
@@ -206,5 +238,4 @@ func InitFixturesDB() (err error) {
 		return
 	}
 	return
-
 }

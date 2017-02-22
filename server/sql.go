@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"sort"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func cleanupSteps(exerciseType string, id int) (err error) {
@@ -18,7 +16,7 @@ func cleanupSteps(exerciseType string, id int) (err error) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	_, err = sqlTX(fmt.Sprintf(`delete from Interval where %s=?`, exerciseType), id)
+	_, err = sqlTX(fmt.Sprintf(`delete from Intervals where %s=?`, exerciseType), id)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -28,7 +26,7 @@ func cleanupSteps(exerciseType string, id int) (err error) {
 		return
 	}
 
-	_, err = sqlTX(fmt.Sprintf(`delete from Repeat where %s=?`, exerciseType), id)
+	_, err = sqlTX(fmt.Sprintf(`delete from Repeats where %s=?`, exerciseType), id)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -41,6 +39,7 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 					 effort_type FROM Warmup
 					 WHERE %s=?`, exerciseType)
 	rows, err := DB.Query(getWarmupSQL, targetID)
+
 	for rows.Next() {
 		var step = Step{
 			Type: "warmup",
@@ -71,20 +70,26 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 		*steps = append(*steps, step)
 	}
 
-	getIntervalSQL := fmt.Sprintf(`SELECT id, position, laps, length,
+	query := fmt.Sprintf(`SELECT id, position, laps, length,
 					   percentage, rest, effort_type,
-					   effort FROM Interval WHERE %s=?`, exerciseType)
-
+					   effort FROM Intervals WHERE %s=?`, exerciseType)
+	getIntervalSQL := query
 	rows, err = DB.Query(getIntervalSQL, targetID)
 	for rows.Next() {
-
+		var nEffort sql.NullString
 		step := Step{
 			Type: "interval",
 		}
 		err = rows.Scan(&step.ID, &step.Position, &step.Laps,
 			&step.Length, &step.Percentage, &step.Rest,
-			&step.EffortType, &step.Effort)
+			&step.EffortType, &nEffort)
+
+		if nEffort.Valid {
+			step.Effort = nEffort.String
+		}
+
 		if err != nil {
+			fmt.Printf("%+v\n", step.Effort)
 			return
 		}
 		*steps = append(*steps, step)
@@ -96,7 +101,7 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 	}
 
 	//TODO: cleanup
-	getRepeatSQL := `SELECT id, repeat, position from Repeat where exerciseID=?`
+	getRepeatSQL := `SELECT id, repeats, position from Repeats where exerciseID=?`
 	rows, err = DB.Query(getRepeatSQL, targetID)
 	for rows.Next() {
 		//TODO: cleanup
@@ -104,7 +109,7 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 			Type: "repeat",
 		}
 
-		err = rows.Scan(&step.Repeat.ID, &step.Repeat.Repeat,
+		err = rows.Scan(&step.Repeat.ID, &step.Repeat.Repeats,
 			&step.Position)
 		if err != nil {
 			return
@@ -148,13 +153,19 @@ func deleteExercise(ID int) (err error) {
 
 func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
+	var nComment sql.NullString
 
 	sqlT := `SELECT id, name, comment from Exercise where id=?`
 	err = DB.QueryRow(sqlT, ID).Scan(
 		&exercise.ID,
 		&exercise.Name,
-		&exercise.Comment,
+		&nComment,
 	)
+
+	if nComment.Valid {
+		exercise.Comment = nComment.String
+	}
+
 	if err != nil {
 		if err != sql.ErrNoRows {
 			return
@@ -244,7 +255,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 			"effort_type": value.EffortType,
 			"effort":      value.Effort}
 		am[exerciseType] = targetID
-		_, err = SQLInsertOrUpdate("Interval", value.ID, am)
+		_, err = SQLInsertOrUpdate("Intervals", value.ID, am)
 
 		if err != nil {
 			return
@@ -254,9 +265,9 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 		var lastid int
 		am := ArgsMap{
 			"position": position,
-			"repeat":   value.Repeat.Repeat}
+			"repeats":  value.Repeat.Repeats}
 		am[exerciseType] = targetID
-		lastid, err = SQLInsertOrUpdate("Repeat", value.Repeat.ID, am)
+		lastid, err = SQLInsertOrUpdate("Repeats", value.Repeat.ID, am)
 		if err != nil {
 			return
 		}
@@ -279,7 +290,6 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 func getAllExercises() (exercises []Exercise, err error) {
 	var getAllExercises = `SELECT ID from Exercise`
 	rows, err := DB.Query(getAllExercises)
-
 	for rows.Next() {
 		e := Exercise{}
 		err = rows.Scan(&e.ID)

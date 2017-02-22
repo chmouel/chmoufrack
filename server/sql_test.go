@@ -142,9 +142,9 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 	repeatSteps = append(repeatSteps, repeatStep)
 
-	repeat := Repeat{
+	repeat := Repeats{
 		Steps:  repeatSteps,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep := Step{
 		Type:   "repeat",
@@ -215,9 +215,9 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 	repeatSteps = append(repeatSteps, repeatStep1)
 
-	repeat := Repeat{
+	repeat := Repeats{
 		Steps:  repeatSteps,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep := Step{
 		Type:   "repeat",
@@ -240,9 +240,9 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 		EffortType: "distance",
 	}
 	repeatSteps2 = append(repeatSteps2, repeatStep2)
-	repeat = Repeat{
+	repeat = Repeats{
 		Steps:  repeatSteps2,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep = Step{
 		Type:   "repeat",
@@ -366,9 +366,9 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 	repeatSteps = append(repeatSteps, repeatStep1)
 
-	repeat := Repeat{
+	repeat := Repeats{
 		Steps:  repeatSteps,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep := Step{
 		Type:   "repeat",
@@ -391,9 +391,9 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 		EffortType: "distance",
 	}
 	repeatSteps2 = append(repeatSteps2, repeatStep2)
-	repeat = Repeat{
+	repeat = Repeats{
 		Steps:  repeatSteps2,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep = Step{
 		Type:   "repeat",
@@ -430,10 +430,6 @@ func TestNotHere(t *testing.T) {
 	if _, ok := err.(*error404); !ok {
 		t.FailNow()
 	}
-	_, err = getExercise(1)
-	if err != nil {
-		t.FailNow()
-	}
 }
 
 func TestUPAndDown(t *testing.T) {
@@ -467,9 +463,9 @@ func TestUPAndDown(t *testing.T) {
 	}
 	repeatSteps = append(repeatSteps, repeatStep3)
 
-	repeat := Repeat{
+	repeat := Repeats{
 		Steps:  repeatSteps,
-		Repeat: 5,
+		Repeats: 5,
 	}
 	exerciseStep := Step{
 		Type:   "repeat",
