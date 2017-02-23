@@ -57,19 +57,45 @@ var aSample = `
 	DELETE FROM Warmup;
 	DELETE FROM Warmdown;
 	DELETE FROM Interval;
-	DELETE FROM Repeat;
-
-	INSERT INTO Exercise(name) VALUES("Pyramids Short");
-
-	INSERT INTO Warmup(effort_type, effort, position, exerciseID) VALUES("distance", "5km very easy around", 0, 1);
-	INSERT INTO Warmdown(effort_type, effort, position, exerciseID) VALUES("time", "15 mn footing", 2, 1);
-
-	INSERT INTO Repeat(Repeat, position, exerciseID) VALUES(5, 1, 1);
-	INSERT INTO Interval(laps, length, percentage, rest, effort_type, repeatID) VALUES(6, 1000, 90, "400m active", "distance", 1);
-
-`
+	DELETE FROM Repeat;`
 
 type ArgsMap map[string]interface{}
+
+func createSampleExercise(
+	exerciceName, warmupEffort, warmdownEffort string,
+	length2 int) (e Exercise) {
+	var steps Steps
+
+	step1 := Step{
+		Type:       "warmup",
+		Effort:     warmupEffort,
+		EffortType: "distance",
+	}
+	steps = append(steps, step1)
+
+	step2 := Step{
+		Laps:       3,
+		Length:     length2,
+		Percentage: 90,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	steps = append(steps, step2)
+
+	step3 := Step{
+		Effort:     warmdownEffort,
+		Type:       "warmdown",
+		EffortType: "distance",
+	}
+	steps = append(steps, step3)
+
+	e = Exercise{
+		Name:    exerciceName,
+		Comment: "NoComment",
+		Steps:   steps,
+	}
+	return
+}
 
 func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error) {
 	var c int
@@ -152,6 +178,33 @@ func DBConnect(location string) (err error) {
 
 func InitFixturesDB() (err error) {
 	_, err = DB.Exec(aSample)
+
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+
+	var repeatSteps Steps
+	repeatStep := Step{
+		Laps:       6,
+		Length:     400,
+		Percentage: 100,
+		Type:       "interval",
+		EffortType: "distance",
+	}
+	repeatSteps = append(repeatSteps, repeatStep)
+
+	repeat := Repeat{
+		Steps:  repeatSteps,
+		Repeat: 5,
+	}
+	exerciseStep := Step{
+		Type:   "repeat",
+		Repeat: repeat,
+	}
+	e.Steps = append(e.Steps, exerciseStep)
+
+	_, err = AddExercise(e)
+	if err != nil {
+		return
+	}
 	return
 
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func TestGETExercise(t *testing.T) {
-	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	i, err := AddExercise(e)
 	if err != nil {
@@ -37,7 +37,7 @@ func TestGETExercise(t *testing.T) {
 }
 
 func TestGETExerciseByName(t *testing.T) {
-	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 	_, err := AddExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -75,7 +75,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 }
 
 func TestDeleteExercise(t *testing.T) {
-	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	_, err := AddExercise(e)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestDeleteExercise(t *testing.T) {
 }
 
 func TestGETExercises(t *testing.T) {
-	e := newExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	_, err := AddExercise(e)
 	if err != nil {
