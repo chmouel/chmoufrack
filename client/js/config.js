@@ -49,7 +49,7 @@ app.directive('input', [function() {
                 });
             }
         }
-    }
+    };
 }]);
 
 app.factory('rest', function($http) {

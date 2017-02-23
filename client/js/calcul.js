@@ -1,21 +1,24 @@
 app.controller('ProgramIndexController', ['$scope', 'rest', function($scope, rest) {
     $scope.programIndex = Object();
-    for (var p of $scope.programs) {
-        if (p.name == "") {
-            console.log("Invalid workout");
-            continue;
+    var myPromise = rest.getExercises();
+    myPromise.then(function(data) {
+        for (var p of data) {
+                if (p.name == "") {
+                    console.log("Invalid workout");
+                    continue;
+                }
+                $scope.programIndex[p.name] = Object();
+                $scope.programIndex[p.name]["name"] = p.name;
+                if (p.steps) {
+                    $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
+                }
+                $scope.programIndex[p.name]["comment"] = p.comment;
+                $scope.programIndex[p.name]["id"] = p.id;
         }
-        $scope.programIndex[p.name] = Object();
-        $scope.programIndex[p.name]["name"] = p.name;
-        if (p.steps) {
-            $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
-        }
-        $scope.programIndex[p.name]["comment"] = p.comment;
-        $scope.programIndex[p.name]["id"] = p.id;
-    }
+    });
 }]);
 
-app.controller('CalculController', ['$scope', function($scope) {
+app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
     var trackLength = 400;
 
     function calculDistanceForSeconds(vma, seconds, percentage) {
@@ -115,8 +118,10 @@ app.controller('CalculController', ['$scope', function($scope) {
         return res;
     };
 
-    for (var program of $scope.programs) {
-        if (program.name != $scope.selectedProgram) continue;
-        $scope.program = program;
-    }
+    var myPromise = rest.getExercises();
+    myPromise.then(function(data) {
+        for (var program of data) {
+            if (program.name != $scope.selectedProgram) continue;
+            $scope.program = program;
+        }});
 }]);
