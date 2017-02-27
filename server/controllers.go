@@ -18,6 +18,10 @@ func handle_error_nf_bad(c *gin.Context, err error) {
 func POSTExercise(c *gin.Context) {
 	var exercise Exercise
 
+	if fbID, err := strconv.Atoi(c.Query("FBid")); err == nil {
+		exercise.FBid = fbID
+	}
+
 	if err := c.Bind(&exercise); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

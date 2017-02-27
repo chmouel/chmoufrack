@@ -202,6 +202,7 @@ func AddExercise(exercise Exercise) (lastid int, err error) {
 		"name":    exercise.Name,
 		"comment": exercise.Comment,
 		"id":      exercise.ID,
+		"fbID":    exercise.FBid,
 	}
 	lastid, err = SQLInsertOrUpdate("Exercise", exercise.ID, am)
 	if err != nil {

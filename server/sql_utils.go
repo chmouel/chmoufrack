@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Exercise (
 	ID int NOT NULL AUTO_INCREMENT,
 	name varchar(255) NOT NULL,
     comment text,
+	fbID int NOT NULL,
     PRIMARY KEY(ID)
 );
 
@@ -115,6 +116,7 @@ func createSampleExercise(
 		Name:    exerciceName,
 		Comment: "NoComment",
 		Steps:   steps,
+		FBid:    1234,
 	}
 	return
 }

@@ -28,6 +28,7 @@ type Exercise struct {
 	Name    string `json:"name,omitempty" binding:"required"`
 	Comment string `json:"comment,omitempty"`
 	Steps   `json:"steps,omitempty"`
+	FBid    int `json:"fbid"`
 }
 
 type Repeats struct {
