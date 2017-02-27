@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"sort"
 )
@@ -186,19 +187,21 @@ func getExercise(ID int) (exercise Exercise, err error) {
 }
 
 func AddExercise(exercise Exercise) (lastid int, err error) {
-	if exercise.Name != "" {
-		sqlT := `SELECT id from Exercise where name=?`
-		err = DB.QueryRow(sqlT, exercise.Name).Scan(
-			&exercise.ID,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return
-		}
+	if exercise.Name == "" {
+		return -1, errors.New("You need to specify an exercise Name")
+	}
+	sqlT := `SELECT id from Exercise where name=?`
+	err = DB.QueryRow(sqlT, exercise.Name).Scan(
+		&exercise.ID,
+	)
+	if err != nil && err != sql.ErrNoRows {
+		return
 	}
 
 	am := ArgsMap{
 		"name":    exercise.Name,
 		"comment": exercise.Comment,
+		"id":      exercise.ID,
 	}
 	lastid, err = SQLInsertOrUpdate("Exercise", exercise.ID, am)
 	if err != nil {

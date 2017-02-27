@@ -138,48 +138,32 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal("Could not cleanup all exercises")
 	}
 
-	exercise := `{
-  "id": 0,
-  "name": "Test1",
-  "comment": "NoComment",
-  "steps": [
-    {
-      "id": 1,
-      "effort": "easy warmup todoo",
-      "effort_type": "distance",
-      "type": "warmup",
-      "repeats": {
-        "id": 0
-      }
-    },
-    {
-      "id": 1,
-      "effort_type": "distance",
-      "laps": 3,
-      "length": 1234,
-      "percentage": 90,
-      "type": "interval",
-      "repeats": {
-        "id": 0
-      }
-    },
-    {
-      "id": 1,
-      "effort": "finish strong",
-      "effort_type": "distance",
-      "type": "warmdown",
-      "repeats": {
-        "id": 0
-      }
-    }
-  ]
-}`
+	exercise1 := `{"name": "Test1",
+ "comment": "NoComment",
+ "steps": [{
+     "effort": "easy warmup todoo",
+     "effort_type": "distance",
+     "type": "warmup"
+ },{
+     "effort_type": "distance",
+     "laps": 3,
+     "length": 1234,
+     "percentage": 90,
+     "type": "interval"
+ },{
+     "effort": "finish strong",
+     "effort_type": "distance",
+     "type": "warmdown"
+ }]}`
 
-	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise))
+	exercise_updated := `{"name": "Test1",
+ "comment": "Updaated",
+ "steps": []}`
+
+	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise1))
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(POSTExercise)
 
@@ -195,8 +179,30 @@ func TestPostExcercise(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(exercises) == 0 {
-		t.Fatal("did not get new exercises")
+	if len(exercises) != 1 {
+		t.Fatal("did not have a new exercise created")
+	}
+
+	req, err = http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise_updated))
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr = httptest.NewRecorder()
+	handler = http.HandlerFunc(POSTExercise)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusCreated {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusCreated)
+	}
+
+	exercises, err = getAllExercises()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(exercises) != 1 {
+		t.Fatal("We should have only one excercise since it was an update")
 	}
 }
 
