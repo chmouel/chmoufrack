@@ -58,10 +58,15 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
     };
 
     $scope.removeStep = function(index, arr) {
+        if (!arr.steps)
+            arr.steps = [];
         arr.steps.splice(index, 1);
     };
 
     $scope.addNewWarmupWarmdown = function(t, arr) {
+        if (!arr.steps)
+            arr.steps = [];
+
         arr.steps.push({
             "type": t,
             "effort_type": "distance",
@@ -70,6 +75,9 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
     };
 
     $scope.addNewRepeat = function(arr) {
+        if (!arr.steps)
+            arr.steps = [];
+
         arr.steps.push({
             "type": "repeat",
             "repeat": {steps: [], repeat: 0}
@@ -78,6 +86,9 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
 
 
     $scope.addNewIntervals = function(arr) {
+        if (!arr.steps)
+            arr.steps = [];
+
         arr.steps.push({
             "type": "interval",
             "laps": "",
