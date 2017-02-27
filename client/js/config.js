@@ -54,7 +54,7 @@ app.directive('input', [function() {
 
 app.factory('rest', function($http) {
     var deleteExercise = function(t) {
-        return $http({method:"DELETE", url:"v1/exercise/" +  t}).then(function(result){
+        return $http({method:"DELETE", url:"/v1/exercise/" +  t}).then(function(result){
             return;
         });
     };
@@ -62,7 +62,7 @@ app.factory('rest', function($http) {
     var counter = 0;
     var getExercises = function() {
         // Angular $http() and then() both return promises themselves
-        return $http({method:"GET", url:"v1/exercises"}).then(function(result){
+        return $http({method:"GET", url:"/v1/exercises"}).then(function(result){
             if (typeof(result.data) === 'string' &&
                 result.data.trim() == "null" && counter < 3) {
                 console.log("retry");

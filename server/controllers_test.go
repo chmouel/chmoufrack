@@ -4,6 +4,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -19,7 +20,7 @@ func TestGETExercise(t *testing.T) {
 	}
 	ai := strconv.Itoa(i)
 
-	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
 	resp, err := http.Get(server.URL + "/v1/exercise/" + ai)
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +43,7 @@ func TestGETExerciseByName(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
-	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
 	resp, err := http.Get(server.URL + "/v1/exercise/Test1")
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +63,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
 	resp, err := http.Get(server.URL + "/v1/exercise/1200")
 	if err != nil {
 		t.Fatal(err)
@@ -82,7 +83,7 @@ func TestDeleteExercise(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	server := httptest.NewServer(router("./")) //Creating new server with the user handlers
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
 	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/Test1", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -105,23 +106,24 @@ func TestGETExercises(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	req, err := http.NewRequest("GET", "/v1/exercises", nil)
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("GET", server.URL+"/v1/exercises", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(GETExercises)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
+	if status := resp.StatusCode; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
 	var exercises []Exercise
-	if err = json.NewDecoder(rr.Body).Decode(&exercises); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&exercises); err != nil {
 		t.Fatal("Could not decode body, not proper json.")
 	}
 
@@ -139,39 +141,45 @@ func TestPostExcercise(t *testing.T) {
 	}
 
 	exercise1 := `{"name": "Test1",
- "comment": "NoComment",
- "steps": [{
-     "effort": "easy warmup todoo",
-     "effort_type": "distance",
-     "type": "warmup"
- },{
-     "effort_type": "distance",
-     "laps": 3,
-     "length": 1234,
-     "percentage": 90,
-     "type": "interval"
- },{
-     "effort": "finish strong",
-     "effort_type": "distance",
-     "type": "warmdown"
- }]}`
+	"comment": "NoComment",
+	"steps": [{
+	    "effort": "easy warmup todoo",
+	    "effort_type": "distance",
+	    "type": "warmup"
+	},{
+	    "effort_type": "distance",
+	    "laps": 3,
+	    "length": 1234,
+	    "percentage": 90,
+	    "type": "interval"
+	},{
+	    "effort": "finish strong",
+	    "effort_type": "distance",
+	    "type": "warmdown"
+	}]}`
 
 	exercise_updated := `{"name": "Test1",
  "comment": "Updaated",
  "steps": []}`
 
-	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise1))
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise1))
 	if err != nil {
 		t.Fatal(err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(POSTExercise)
+	req.Header.Set("Content-Type", "application/json")
 
-	handler.ServeHTTP(rr, req)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if status := rr.Code; status != http.StatusCreated {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusCreated)
+	if status := resp.StatusCode; status != http.StatusCreated {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
+			status, http.StatusCreated, buf)
+		return
 	}
 
 	//check in DB if it was really made
@@ -183,18 +191,22 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal("did not have a new exercise created")
 	}
 
-	req, err = http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise_updated))
+	req, err = http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_updated))
+	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	rr = httptest.NewRecorder()
-	handler = http.HandlerFunc(POSTExercise)
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusCreated {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusCreated)
+	if status := resp.StatusCode; status != http.StatusCreated {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
+			status, http.StatusCreated, buf)
+		return
 	}
 
 	exercises, err = getAllExercises()
@@ -206,56 +218,68 @@ func TestPostExcercise(t *testing.T) {
 	}
 }
 
-func TestPostEmpty(t *testing.T) {
-	exercise := ""
+func TestPostBadJSON(t *testing.T) {
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString("HALLLLO!!!"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
 
-	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise))
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(POSTExercise)
-
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
+	if status := resp.StatusCode; status != http.StatusBadRequest {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
+			status, http.StatusBadRequest, buf)
+		return
 	}
 }
 
 func TestPostNoting(t *testing.T) {
-	req, err := http.NewRequest("POST", "/v1/exercise", nil)
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(POSTExercise)
-
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	if status := resp.StatusCode; status != http.StatusBadRequest {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
+			status, http.StatusBadRequest, buf)
+		return
+	}
+
 }
 
 func TestPostBadContent(t *testing.T) {
 	exercise := `{"hello": "moto"}`
-	req, err := http.NewRequest("POST", "/v1/exercise", bytes.NewBufferString(exercise))
+	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(POSTExercise)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
+	if status := resp.StatusCode; status != http.StatusBadRequest {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
+			status, http.StatusBadRequest, buf)
+		return
 	}
 }

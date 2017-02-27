@@ -11,21 +11,21 @@ func (e *error404) Error() string {
 }
 
 type Step struct {
-	ID         int    `json:"id"`
-	Effort     string `json:"effort,omitempty"`
-	EffortType string `json:"effort_type,omitempty"`
-	Laps       int    `json:"laps,omitempty"`
-	Length     int    `json:"length,omitempty"`
-	Percentage int    `json:"percentage,omitempty"`
-	Type       string `json:"type,omitempty"`
+	ID         int     `json:"id"`
+	Effort     string  `json:"effort,omitempty"`
+	EffortType string  `json:"effort_type,omitempty"`
+	Laps       int     `json:"laps,omitempty"`
+	Length     int     `json:"length,omitempty"`
+	Percentage int     `json:"percentage,omitempty"`
+	Type       string  `json:"type,omitempty"`
 	Repeat     Repeats `json:"repeat,omitempty"`
-	Rest       string `json:"rest,omitempty"`
-	Position   int    `json:"-"`
+	Rest       string  `json:"rest,omitempty"`
+	Position   int     `json:"-"`
 }
 
 type Exercise struct {
 	ID      int    `json:"id"`
-	Name    string `json:"name,omitempty"`
+	Name    string `json:"name,omitempty" binding:"required"`
 	Comment string `json:"comment,omitempty"`
 	Steps   `json:"steps,omitempty"`
 }
