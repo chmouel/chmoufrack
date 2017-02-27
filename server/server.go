@@ -28,8 +28,15 @@ func setupRoutes(staticDir string) *gin.Engine {
 	return router
 }
 
-func Serve(staticDir string, port int) {
+func Serve(staticDir string, port int, debug bool) {
 	sPort := fmt.Sprintf(":%d", port)
+
+	if debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	router := setupRoutes(staticDir)
 
 	fmt.Printf("Serving on %s with static dir %s\n", sPort, staticDir)

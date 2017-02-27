@@ -26,6 +26,7 @@ func main() {
 	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
 	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
 	serverPort := flag.Int("port", 8080, "DB Port")
+	debug := flag.Bool("debug", false, "DB Port")
 
 	flag.Parse()
 
@@ -53,5 +54,5 @@ func main() {
 		return
 	}
 
-	server.Serve(*staticHTML, *serverPort)
+	server.Serve(*staticHTML, *serverPort, *debug)
 }
