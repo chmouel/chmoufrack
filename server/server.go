@@ -5,8 +5,32 @@ import (
 	"log"
 	"net/http"
 
+	fb "github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
 )
+
+func FBCheck() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fbid := c.Query("FBid")
+		token := c.Query("token")
+
+		if fbid == "" || token == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a fbid or token for this query"})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		_, err := fb.Get("/"+fbid, fb.Params{
+			"access_token": token,
+		})
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Next()
+	}
+}
 
 func setupRoutes(staticDir string) *gin.Engine {
 	router := gin.Default()
@@ -20,8 +44,9 @@ func setupRoutes(staticDir string) *gin.Engine {
 
 	v1 := router.Group("/v1")
 	{
-		v1.POST("/exercise", POSTExercise)
-		v1.DELETE("/exercise/:id", DeleteExercise)
+		v1.GET("/test", FBCheck())
+		v1.POST("/exercise", FBCheck(), POSTExercise)
+		v1.DELETE("/exercise/:id", FBCheck(), DeleteExercise)
 		v1.GET("/exercise/:id", GETExercise)
 		v1.GET("/exercises", GETExercises)
 	}
