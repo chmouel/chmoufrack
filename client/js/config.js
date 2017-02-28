@@ -77,7 +77,13 @@ app.factory('userInfo', function($facebook, $q) {
             var deferred = $q.defer();
             self.get().then(
                 function(u) {
-                    deferred.resolve('FBtoken=' + u.auth.accessToken + "&fbID=" + u.id);
+                    var req = {
+                        url: 'fbID=' + u.id,
+                        headers: {
+                            'Authorization': "Bearer " + u.auth.accessToken
+                        }
+                    };
+                    deferred.resolve(req);
                 }
             );
             return deferred.promise;
@@ -124,9 +130,11 @@ app.factory('rest', function($http, userInfo) {
 
     var submitExercise = function(exercise) {
         return userInfo.getURLarg().then(
-            function(urlarg) {
-                var url = '/v1/exercise?' + urlarg;
-                return $http.post(url, exercise);
+            function(req) {
+                req['url'] = '/v1/exercise?' + req.url;
+                req['method'] = 'POST';
+                req['data'] = exercise;
+                return $http(req);
             });
     };
     return {

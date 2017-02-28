@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	fb "github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
@@ -18,7 +19,11 @@ func FBCheck() gin.HandlerFunc {
 			return
 		}
 		fbid := c.Query("fbID")
-		token := c.Query("FBtoken")
+		token := c.Request.Header["Authorization"][0]
+
+		if len(token) > 6 && strings.ToUpper(token[0:6]) == "BEARER" {
+			token = token[7:]
+		}
 
 		if fbid == "" || token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a fbid or token for this query"})
