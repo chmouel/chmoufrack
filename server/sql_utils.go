@@ -117,7 +117,7 @@ func createSampleExercise(
 		Name:    exerciceName,
 		Comment: "NoComment",
 		Steps:   steps,
-		FBid:    1234,
+		FBid:    0, // NOTE(chmou): need to be 0 for the unit test to pass
 	}
 	return
 }

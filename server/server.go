@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	fb "github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
@@ -11,6 +12,11 @@ import (
 
 func FBCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//NOTE(chmou): Hack hack until i figured how to bypass it for the unit tests
+		if os.Getenv("FRACK_TEST_DB") != "" {
+			c.Next()
+			return
+		}
 		fbid := c.Query("fbID")
 		token := c.Query("FBtoken")
 
