@@ -12,7 +12,7 @@ import (
 func FBCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		fbid := c.Query("FBid")
-		token := c.Query("token")
+		token := c.Query("FBtoken")
 
 		if fbid == "" || token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a fbid or token for this query"})

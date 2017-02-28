@@ -1,4 +1,20 @@
-var app = angular.module("Frack", ["ngRoute", "ngSanitize"]);
+var app = angular.module("Frack", ["ngRoute", "ngSanitize", "ngFacebook"]);
+app.config(['$facebookProvider', function($facebookProvider) {
+    $facebookProvider.setAppId('3518596602').setPermissions(['email']);
+}]);
+
+app.run(['$rootScope', '$window', function($rootScope, $window) {
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    $rootScope.$on('fb.load', function() {
+      $window.dispatchEvent(new Event('fb.load'));
+    });
+}]);
 
 app.config(function($routeProvider) {
     $routeProvider
@@ -52,7 +68,31 @@ app.directive('input', [function() {
     };
 }]);
 
-app.factory('rest', function($http) {
+app.factory('userInfo', function($facebook, $q) {
+    function UserInfoService() {
+        var self = this;
+        self.userInfo = null;
+
+        self.get = function() {
+            var deferred = $q.defer();
+            if(self.userInfo !== null) {
+                deferred.resolve(self.userInfo);
+            } else {
+                $facebook.api('/me').then(function(user) {
+                    var auth = $facebook.getAuthResponse();
+                    self.userInfo = user;
+                    self.userInfo['auth'] = auth;
+
+                    deferred.resolve(self.userInfo);
+                });
+            }
+            return deferred.promise;
+        };
+    };
+    return new UserInfoService();
+});
+
+app.factory('rest', function($http, userInfo) {
     var deleteExercise = function(t) {
         return $http({method:"DELETE", url:"/v1/exercise/" +  t}).then(function(result){
             return;
@@ -71,8 +111,16 @@ app.factory('rest', function($http) {
             return result.data;
         });
     };
+
+    var submitExercise = function(exercise) {
+        userInfo.get().then(
+            function(u) {
+                return $http({method:"POST", url:"/v1/exercise", exercise});
+            });
+    };
     return {
         getExercises: getExercises,
-        deleteExercise: deleteExercise
+        deleteExercise: deleteExercise,
+        submitExercise: submitExercise
     };
 });

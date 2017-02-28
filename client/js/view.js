@@ -1,4 +1,4 @@
-app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http', 'rest', function($scope, $location, $routeParams, $http, rest) {
+app.controller("ViewController", function($scope, $location, $routeParams, $http, rest, $facebook) {
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
@@ -6,6 +6,16 @@ app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http'
     var item = quoteSource[Math.floor(Math.random()*quoteSource.length)];
     $scope.quote = item.quote;
     $scope.quote_author = item.name;
+
+    $scope.fbLogin = function() {
+        $facebook.login();
+        $scope.logged=true;
+    };
+
+    $scope.$on('event:social-sign-in-success', function(event, userDetails) {
+        rest.fbInfo = userDetails;
+        $scope.logged = userDetails;
+    });
 
     if ($routeParams.name) {
         $scope.selectedProgram = $routeParams.name;
@@ -53,4 +63,4 @@ app.controller("ViewController", ['$scope', '$location', '$routeParams', '$http'
         return true; //make emacs happy
     };
 
-}]);
+});

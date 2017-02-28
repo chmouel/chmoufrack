@@ -1,6 +1,12 @@
-app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', function($scope, $http, $routeParams, rest) {
+app.controller("EditController", function($scope, $http, $routeParams, rest, userInfo) {
     $scope.exercise = Object();
     $scope.exercise.steps = [];
+
+    //TODO: proper error page
+    // if (!$facebook.isConnected()) {
+    //     console.error("You should be logged to access this page");
+    //     return;
+    // }
 
     if ($routeParams.name) {
         var res = $http.get('/v1/exercise/' + $routeParams.name );
@@ -29,12 +35,23 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
     ];
 
     $scope.submit = function() {
+        if (!$scope.logged) {
+            console.error("You should have login to be able to do this here?");
+        }
+
         // NOTE(chmou): If a rename delete the old one
         if ($scope.exercise.name != $routeParams.name) {
             $scope.delete($routeParams.name);
         }
-        var res = $http.post('/v1/exercise', $scope.exercise);
-        $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
+
+        userInfo.get().then(
+            function(u) {
+                var url = '/v1/exercise?FBtoken=' + u.auth.accessToken + "&FBid=" + u.id;
+                return $http.post(url, $scope.exercise);
+            })
+         .then(function (result) {
+             $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
+         });
     };
 
     $scope.delete = function(t, r) {
@@ -84,7 +101,6 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
         });
     };
 
-
     $scope.addNewIntervals = function(arr) {
         if (!arr.steps)
             arr.steps = [];
@@ -100,7 +116,7 @@ app.controller("EditController", ['$scope', '$http', '$routeParams', 'rest', fun
     };
 
 
-}]);
+});
 
 app.directive('selectOnClick', function () {
     return {
