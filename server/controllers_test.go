@@ -4,12 +4,25 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"testing"
 )
+
+func test_check_created(resp *http.Response, expected int) (err error) {
+	if status := resp.StatusCode; status != expected {
+		buf := bytes.NewBuffer(nil)
+		io.Copy(buf, resp.Body)
+		err = errors.New(
+			fmt.Sprintf("handler returned wrong status code: expected %v received %v, error: %s",
+				expected, status, buf))
+	}
+	return
+}
 
 func TestGETExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
@@ -174,12 +187,8 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := resp.StatusCode; status != http.StatusCreated {
-		buf := bytes.NewBuffer(nil)
-		io.Copy(buf, resp.Body)
-		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
-			status, http.StatusCreated, buf)
-		return
+	if err = test_check_created(resp, http.StatusCreated); err != nil {
+		t.Errorf(err.Error())
 	}
 
 	//check in DB if it was really made
@@ -201,12 +210,8 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := resp.StatusCode; status != http.StatusCreated {
-		buf := bytes.NewBuffer(nil)
-		io.Copy(buf, resp.Body)
-		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
-			status, http.StatusCreated, buf)
-		return
+	if err = test_check_created(resp, http.StatusCreated); err != nil {
+		t.Errorf(err.Error())
 	}
 
 	exercises, err = getAllExercises()
@@ -231,12 +236,8 @@ func TestPostBadJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := resp.StatusCode; status != http.StatusBadRequest {
-		buf := bytes.NewBuffer(nil)
-		io.Copy(buf, resp.Body)
-		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
-			status, http.StatusBadRequest, buf)
-		return
+	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+		t.Errorf(err.Error())
 	}
 }
 
@@ -252,14 +253,9 @@ func TestPostNoting(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := resp.StatusCode; status != http.StatusBadRequest {
-		buf := bytes.NewBuffer(nil)
-		io.Copy(buf, resp.Body)
-		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
-			status, http.StatusBadRequest, buf)
-		return
+	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+		t.Errorf(err.Error())
 	}
-
 }
 
 func TestPostBadContent(t *testing.T) {
@@ -275,11 +271,7 @@ func TestPostBadContent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if status := resp.StatusCode; status != http.StatusBadRequest {
-		buf := bytes.NewBuffer(nil)
-		io.Copy(buf, resp.Body)
-		t.Errorf("handler returned wrong status code: got %v want %v, error: %s",
-			status, http.StatusBadRequest, buf)
-		return
+	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+		t.Errorf(err.Error())
 	}
 }

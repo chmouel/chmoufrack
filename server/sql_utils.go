@@ -211,7 +211,6 @@ func DBConnect(dbconnection string, reset bool) (err error) {
 
 func InitFixturesDB() (err error) {
 	_, err = DB.Exec(SQLresetDB)
-
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
 	var repeatSteps Steps
