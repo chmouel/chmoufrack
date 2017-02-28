@@ -11,7 +11,7 @@ import (
 
 func FBCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fbid := c.Query("FBid")
+		fbid := c.Query("fbID")
 		token := c.Query("FBtoken")
 
 		if fbid == "" || token == "" {

@@ -17,17 +17,20 @@ func handle_error_nf_bad(c *gin.Context, err error) {
 
 func POSTExercise(c *gin.Context) {
 	var exercise Exercise
+	var err error
+	var fbID int
 
-	if fbID, err := strconv.Atoi(c.Query("FBid")); err == nil {
-		exercise.FBid = fbID
+	if fbID, err = strconv.Atoi(c.Query("fbID")); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	if err := c.Bind(&exercise); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	exercise.FBid = fbID
 
-	_, err := AddExercise(exercise)
+	_, err = AddExercise(exercise)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

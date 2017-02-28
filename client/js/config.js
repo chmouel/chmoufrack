@@ -77,7 +77,7 @@ app.factory('userInfo', function($facebook, $q) {
             var deferred = $q.defer();
             self.get().then(
                 function(u) {
-                    deferred.resolve('FBtoken=' + u.auth.accessToken + "&FBid=" + u.id);
+                    deferred.resolve('FBtoken=' + u.auth.accessToken + "&fbID=" + u.id);
                 }
             );
             return deferred.promise;

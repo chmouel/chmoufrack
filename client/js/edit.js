@@ -46,7 +46,8 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
         }
 
         rest.submitExercise($scope.exercise).then(function (result) {
-            $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
+            //$(location).attr('href', '/#!/workout/' + $scope.exercise.name);
+            return;
         });
     };
 
