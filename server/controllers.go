@@ -22,8 +22,10 @@ func POSTExercise(c *gin.Context) {
 	var err error
 	var fbID int
 
-	if fbID, err = strconv.Atoi(c.Query("fbID")); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if c.Query("fbID") != "" {
+		if fbID, err = strconv.Atoi(c.Query("fbID")); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 	}
 
 	if err := c.Bind(&exercise); err != nil {
