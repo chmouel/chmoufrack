@@ -110,9 +110,12 @@ app.factory('userInfo', function($facebook, $q) {
 
 app.factory('rest', function($http, userInfo) {
     var deleteExercise = function(t) {
-        return $http({method:"DELETE", url:"/v1/exercise/" +  t}).then(function(result){
-            return;
-        });
+        return userInfo.getURLarg().then(
+            function(req) {
+                req['url'] = '/v1/exercise/' + t + '?' + req.url;
+                req['method'] = 'DELETE';
+                return $http(req);
+            });
     };
 
     var counter = 0;

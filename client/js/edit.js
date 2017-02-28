@@ -54,8 +54,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     $scope.delete = function(t, r) {
         if (!t) t = $scope.exercise.name;
 
-        var myPromise = rest.deleteExercise(t);
-        myPromise.then(function(result) {
+        rest.deleteExercise(t).then(function (result) {
             $(location).attr('href', '/');
             return;
         });
