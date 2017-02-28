@@ -147,12 +147,6 @@ func TestGETExercises(t *testing.T) {
 }
 
 func TestPostExcercise(t *testing.T) {
-	// TODO(chmou): need to be moved in constructor
-	_, err := sqlTX("DELETE FROM Exercise")
-	if err != nil {
-		t.Fatal("Could not cleanup all exercises")
-	}
-
 	exercise1 := `{"name": "Test1",
 	"comment": "NoComment",
 	"steps": [{
