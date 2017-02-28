@@ -10,6 +10,8 @@ import (
 func handle_error_nf_bad(c *gin.Context, err error) {
 	if _, ok := err.(*error404); ok {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	} else if _, ok := err.(*errorUnauthorized); ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -32,7 +34,7 @@ func POSTExercise(c *gin.Context) {
 
 	_, err = AddExercise(exercise)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		handle_error_nf_bad(c, err)
 		return
 	}
 	c.Status(http.StatusCreated)

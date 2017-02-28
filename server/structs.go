@@ -2,6 +2,14 @@ package server
 
 var DEBUG bool
 
+type errorUnauthorized struct {
+	s string
+}
+
+func (e *errorUnauthorized) Error() string {
+	return e.s
+}
+
 type error404 struct {
 	s string
 }

@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS Exercise (
 	name varchar(255) NOT NULL,
     comment text,
 	fbID bigint NOT NULL,
-    PRIMARY KEY(ID)
+    PRIMARY KEY(ID),
+	CONSTRAINT uc_U UNIQUE (ID,name,fbID)
 );
 
 CREATE TABLE IF NOT EXISTS Warmup (

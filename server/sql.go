@@ -187,24 +187,34 @@ func getExercise(ID int) (exercise Exercise, err error) {
 }
 
 func AddExercise(exercise Exercise) (lastid int, err error) {
+	var oldFbID int
+	var oldId = 0
 	if exercise.Name == "" {
 		return -1, errors.New("You need to specify an exercise Name")
 	}
-	sqlT := `SELECT id from Exercise where name=?`
+	sqlT := `SELECT id,fbID from Exercise where name=?`
 	err = DB.QueryRow(sqlT, exercise.Name).Scan(
-		&exercise.ID,
+		&oldId,
+		&oldFbID,
 	)
 	if err != nil && err != sql.ErrNoRows {
 		return
 	}
 
+	//TODO: better ACL than that
+	if oldFbID != 0 && exercise.FBid != oldFbID {
+		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
+	}
+
 	am := ArgsMap{
 		"name":    exercise.Name,
 		"comment": exercise.Comment,
-		"id":      exercise.ID,
 		"fbID":    exercise.FBid,
 	}
-	lastid, err = SQLInsertOrUpdate("Exercise", exercise.ID, am)
+	if oldId != 0 {
+		am["id"] = oldId
+	}
+	lastid, err = SQLInsertOrUpdate("Exercise", oldId, am)
 	if err != nil {
 		return
 	}
