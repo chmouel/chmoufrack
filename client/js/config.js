@@ -113,9 +113,10 @@ app.factory('rest', function($http, userInfo) {
     };
 
     var submitExercise = function(exercise) {
-        userInfo.get().then(
+        return userInfo.get().then(
             function(u) {
-                return $http({method:"POST", url:"/v1/exercise", exercise});
+                var url = '/v1/exercise?FBtoken=' + u.auth.accessToken + "&FBid=" + u.id;
+                return $http.post(url, exercise);
             });
     };
     return {

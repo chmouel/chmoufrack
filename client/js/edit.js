@@ -37,6 +37,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     $scope.submit = function() {
         if (!$scope.logged) {
             console.error("You should have login to be able to do this here?");
+            return;
         }
 
         // NOTE(chmou): If a rename delete the old one
@@ -44,14 +45,9 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
             $scope.delete($routeParams.name);
         }
 
-        userInfo.get().then(
-            function(u) {
-                var url = '/v1/exercise?FBtoken=' + u.auth.accessToken + "&FBid=" + u.id;
-                return $http.post(url, $scope.exercise);
-            })
-         .then(function (result) {
-             $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
-         });
+        rest.submitExercise($scope.exercise).then(function (result) {
+            $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
+        });
     };
 
     $scope.delete = function(t, r) {
