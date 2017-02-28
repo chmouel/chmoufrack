@@ -73,6 +73,16 @@ app.factory('userInfo', function($facebook, $q) {
         var self = this;
         self.userInfo = null;
 
+        self.getURLarg = function() {
+            var deferred = $q.defer();
+            self.get().then(
+                function(u) {
+                    deferred.resolve('FBtoken=' + u.auth.accessToken + "&FBid=" + u.id);
+                }
+            );
+            return deferred.promise;
+        };
+
         self.get = function() {
             var deferred = $q.defer();
             if(self.userInfo !== null) {
@@ -113,9 +123,9 @@ app.factory('rest', function($http, userInfo) {
     };
 
     var submitExercise = function(exercise) {
-        return userInfo.get().then(
-            function(u) {
-                var url = '/v1/exercise?FBtoken=' + u.auth.accessToken + "&FBid=" + u.id;
+        return userInfo.getURLarg().then(
+            function(urlarg) {
+                var url = '/v1/exercise?' + urlarg;
                 return $http.post(url, exercise);
             });
     };
