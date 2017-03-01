@@ -11,7 +11,7 @@ func removeFromArray(slice []Step, s int) []Step {
 }
 
 func TestAddExercise(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 
 	i, err := addExercise(e)
 	if err != nil {
@@ -28,8 +28,8 @@ func TestAddExercise(t *testing.T) {
 	if e.Steps[0].Effort != "easy warmup todoo" {
 		t.Fatalf("%s != easy warmup todoo", e.Steps[0].Effort)
 	}
-	if e.Steps[1].Length != 1234 {
-		t.Fatalf("%s != 1234", int(e.Steps[1].Length))
+	if e.Steps[1].Length != 1000 {
+		t.Fatalf("%s != 1000", int(e.Steps[1].Length))
 	}
 	if e.Steps[2].Effort != "finish strong" {
 		t.Fatalf("%s != finish strong", e.Steps[2].Effort)
@@ -37,7 +37,7 @@ func TestAddExercise(t *testing.T) {
 }
 
 func TestAddExerciseAndID(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	oldid, err := addExercise(e)
 	if err != nil {
 		log.Fatal()
@@ -47,7 +47,7 @@ func TestAddExerciseAndID(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	e = createSampleExercise("Test2", "easy warmup todoo", "finish strong", 1234)
+	e = createSampleExercise("Test2", "easy warmup todoo", "finish strong", 1000, 1234)
 	newid, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -64,8 +64,7 @@ func TestAddExerciseAndID(t *testing.T) {
 }
 
 func TestUpdateExercise(t *testing.T) {
-	e := createSampleExercise("TestAddUpdate", "easy warmup todoo",
-		"finish strong", 4567)
+	e := createSampleExercise("TestAddUpdate", "easy warmup todoo", "finish strong", 4567, 1234)
 
 	_, err := addExercise(e)
 	if err != nil {
@@ -129,7 +128,7 @@ func TestUpdateExercise(t *testing.T) {
 }
 
 func TestAddGetRepeat(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	originSteps := len(e.Steps)
 
 	var repeatSteps Steps
@@ -203,7 +202,7 @@ func TestAddGetRepeat(t *testing.T) {
 }
 
 func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 
 	var repeatSteps Steps
 	repeatStep1 := Step{
@@ -282,7 +281,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 }
 
 func TestGetByName(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -302,7 +301,7 @@ func TestGetByName(t *testing.T) {
 }
 
 func TestDBDeleteExercise(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -322,7 +321,7 @@ func TestDBDeleteExercise(t *testing.T) {
 func TestGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -354,7 +353,7 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 }
 
 func TestAddGetRepeatDoublon(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 
 	var repeatSteps Steps
 	repeatStep1 := Step{
@@ -421,7 +420,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 
 func TestNotHere(t *testing.T) {
 	var err error
-	err = InitFixturesDB()
+	err = InitFixturesDB(1234)
 	if err != nil {
 		t.FailNow()
 	}
@@ -434,7 +433,7 @@ func TestNotHere(t *testing.T) {
 
 func TestUPAndDown(t *testing.T) {
 
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, 1234)
 	var repeatSteps Steps
 	repeatStep1 := Step{
 		Laps:       5,

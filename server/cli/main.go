@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strconv"
 
 	"os"
 
@@ -17,14 +18,12 @@ func main() {
 	}
 
 	_db_location := os.Getenv("FRACK_DB")
-	_initDB := false
-	if os.Getenv("FRACK_INIT_DB") != "" {
-		_initDB = true
-	}
+	_initDB := os.Getenv("FRACK_INIT_DB")
+
 	yamlExport := flag.Bool("export", false, "Export a yaml file in DB")
 	yamlImport := flag.String("import", "", "Import a yaml file in DB")
 	db := flag.String("db", _db_location, "DB Connexion detail")
-	initDBbool := flag.Bool("initDB", _initDB, "init DB with samples DATA")
+	initDBbool := flag.String("initDB", _initDB, "init DB with samples DATA, the arg is the facebook id")
 	staticHTML := flag.String("staticHTML", _staticHTML, "client static html location")
 	serverPort := flag.Int("port", 8080, "DB Port")
 	debug := flag.Bool("debug", false, "DB Port")
@@ -39,9 +38,13 @@ func main() {
 		log.Fatalf("Cannot connect to mysql: %s", err.Error())
 	}
 
-	if *initDBbool {
+	if *initDBbool != "" {
+		facebookId, err := strconv.Atoi(*initDBbool)
+		if err != nil {
+			log.Fatal(err)
+		}
 		fmt.Println("Adding Fixtures to DB")
-		err := server.InitFixturesDB()
+		err = server.InitFixturesDB(facebookId)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -13,7 +13,7 @@ func TestMain(m *testing.M) {
 	}
 	ACL = false
 
-	err := DBConnect(dblocation, true)
+	err := DBConnect(dblocation, "1234")
 	if err != nil {
 		log.Fatal(err)
 	}

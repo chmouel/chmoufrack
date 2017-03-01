@@ -85,9 +85,7 @@ var SQLresetDB = `
 
 type ArgsMap map[string]interface{}
 
-func createSampleExercise(
-	exerciceName, warmupEffort, warmdownEffort string,
-	length2 int) (e Exercise) {
+func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, facebookid int) (e Exercise) {
 	var steps Steps
 
 	step1 := Step{
@@ -99,7 +97,7 @@ func createSampleExercise(
 
 	step2 := Step{
 		Laps:       3,
-		Length:     length2,
+		Length:     length,
 		Percentage: 90,
 		Type:       "interval",
 		EffortType: "distance",
@@ -117,7 +115,7 @@ func createSampleExercise(
 		Name:    exerciceName,
 		Comment: "NoComment",
 		Steps:   steps,
-		FBid:    1234,
+		FBid:    facebookid,
 	}
 	return
 }
@@ -191,14 +189,14 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	return
 }
 
-func DBConnect(dbconnection string, reset bool) (err error) {
+func DBConnect(dbconnection string, reset string) (err error) {
 	DB, err = sql.Open("mysql", dbconnection+"?multiStatements=true")
 
 	if err != nil {
 		return
 	}
 
-	if reset {
+	if reset != "" {
 		_, err = DB.Exec(SQLDropTable)
 		if err != nil {
 			return
@@ -209,9 +207,9 @@ func DBConnect(dbconnection string, reset bool) (err error) {
 	return
 }
 
-func InitFixturesDB() (err error) {
+func InitFixturesDB(facebookid int) (err error) {
 	_, err = DB.Exec(SQLresetDB)
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, facebookid)
 
 	var repeatSteps Steps
 	repeatStep := Step{
