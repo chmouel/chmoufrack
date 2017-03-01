@@ -95,17 +95,17 @@
           </a>
         </div>
         <div class="col-md-4 text-right">
-          <a ng-show="!logged" ng-click="fbLogin()" href>
+          <a ng-show="!fbLogged" ng-click="fbLogin()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i><i> Connexion avec Facebook</i>
             </button>
           </a>
-	      <span ng-show="logged">
+          <a ng-show="fbLogged" ng-click="fbLogout()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i>
-              <i>Salut {{logged.name}}</i>
+              <i>Salut {{fbLogged.name}}</i>
             </button>
-          </span>
+          </a>
         </div>
       </div>
 
