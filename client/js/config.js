@@ -71,33 +71,31 @@ app.directive('input', [function() {
 app.factory('userInfo', function($facebook, $q) {
     function UserInfoService() {
         var self = this;
-        self.userInfo = null;
 
         self.getURLarg = function() {
             var deferred = $q.defer();
-            self.get().then(
-                function(u) {
+            self.get().then(function(u) {
                     var req = {
                         url: 'fbID=' + u.id,
                         headers: {
                             'Authorization': "Bearer " + u.auth.accessToken
                         }
                     };
-                    deferred.resolve(req);
-                }
-            );
+                deferred.resolve(req);
+            });
             return deferred.promise;
         };
 
         self.get = function() {
+            var userInfo = new Object();
             var deferred = $q.defer();
             $facebook.cachedApi('/me').then(function(user) {
                 var auth = $facebook.getAuthResponse();
-                self.userInfo = user;
-                self.userInfo['auth'] = auth;
-
-                deferred.resolve(self.userInfo);
+                userInfo = user;
+                userInfo['auth'] = auth;
+                deferred.resolve(userInfo);
             });
+
             return deferred.promise;
         };
     };

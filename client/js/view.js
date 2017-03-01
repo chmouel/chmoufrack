@@ -1,4 +1,4 @@
-app.controller("ViewController", function($scope, $location, $routeParams, $http, rest, $facebook) {
+app.controller("ViewController", function($scope, $location, $routeParams, $http, rest, $facebook, userInfo) {
     $scope.vmaWanted = [];
     $scope.allVMAS = range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
@@ -9,12 +9,12 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
 
     $scope.fbLogin = function() {
         $facebook.login();
-        $scope.logged=true;
     };
 
-    $scope.$on('event:social-sign-in-success', function(event, userDetails) {
-        rest.fbInfo = userDetails;
-        $scope.logged = userDetails;
+    $scope.$on('fb.auth.login', function(event, userDetails) {
+        userInfo.get().then(function(u) {
+            $scope.logged=u;
+        });
     });
 
     if ($routeParams.name) {
