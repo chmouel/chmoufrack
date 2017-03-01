@@ -3,17 +3,19 @@ app.controller('ProgramIndexController', ['$scope', 'rest', function($scope, res
     var myPromise = rest.getExercises();
     myPromise.then(function(data) {
         for (var p of data) {
-                if (p.name == "") {
-                    console.log("Invalid workout");
-                    continue;
-                }
-                $scope.programIndex[p.name] = Object();
-                $scope.programIndex[p.name]["name"] = p.name;
-                if (p.steps) {
-                    $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
-                }
-                $scope.programIndex[p.name]["comment"] = p.comment;
-                $scope.programIndex[p.name]["id"] = p.id;
+            if (p.name == "") {
+                console.log("Invalid workout");
+                continue;
+            }
+            $scope.programIndex[p.name] = Object();
+            $scope.programIndex[p.name]["name"] = p.name;
+            if (p.steps) {
+                $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
+            }
+            $scope.programIndex[p.name]["comment"] = p.comment;
+            $scope.programIndex[p.name]["id"] = p.id;
+            $scope.programIndex[p.name]["fbID"] = p.fbID;
+
         }
     });
 }]);

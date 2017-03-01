@@ -155,10 +155,11 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
 	var nComment sql.NullString
 
-	sqlT := `SELECT id, name, comment from Exercise where id=?`
+	sqlT := `SELECT id, name, fbID, comment from Exercise where id=?`
 	err = DB.QueryRow(sqlT, ID).Scan(
 		&exercise.ID,
 		&exercise.Name,
+		&exercise.FBid,
 		&nComment,
 	)
 
