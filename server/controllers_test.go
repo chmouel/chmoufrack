@@ -186,7 +186,7 @@ func TestPostExcercise(t *testing.T) {
 	}
 
 	//check in DB if it was really made
-	exercises, err := getAllExercises()
+	exercises, err := GetAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestPostExcercise(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	exercises, err = getAllExercises()
+	exercises, err = GetAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}

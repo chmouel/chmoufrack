@@ -92,7 +92,7 @@ func GETExercises(c *gin.Context) {
 	var exercises []Exercise
 	var err error
 
-	exercises, err = getAllExercises()
+	exercises, err = GetAllExercises()
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return

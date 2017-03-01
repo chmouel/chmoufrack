@@ -143,7 +143,7 @@ func TestAddGetRepeat(t *testing.T) {
 	repeatSteps = append(repeatSteps, repeatStep)
 
 	repeat := Repeats{
-		Steps:  repeatSteps,
+		Steps:   repeatSteps,
 		Repeats: 5,
 	}
 	exerciseStep := Step{
@@ -216,7 +216,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	repeatSteps = append(repeatSteps, repeatStep1)
 
 	repeat := Repeats{
-		Steps:  repeatSteps,
+		Steps:   repeatSteps,
 		Repeats: 5,
 	}
 	exerciseStep := Step{
@@ -241,7 +241,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 	repeatSteps2 = append(repeatSteps2, repeatStep2)
 	repeat = Repeats{
-		Steps:  repeatSteps2,
+		Steps:   repeatSteps2,
 		Repeats: 5,
 	}
 	exerciseStep = Step{
@@ -328,7 +328,7 @@ func TestGetAllExercices(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	exercises, err := getAllExercises()
+	exercises, err := GetAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -344,7 +344,7 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	exercises, err := getAllExercises()
+	exercises, err := GetAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -367,7 +367,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	repeatSteps = append(repeatSteps, repeatStep1)
 
 	repeat := Repeats{
-		Steps:  repeatSteps,
+		Steps:   repeatSteps,
 		Repeats: 5,
 	}
 	exerciseStep := Step{
@@ -392,7 +392,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 	repeatSteps2 = append(repeatSteps2, repeatStep2)
 	repeat = Repeats{
-		Steps:  repeatSteps2,
+		Steps:   repeatSteps2,
 		Repeats: 5,
 	}
 	exerciseStep = Step{
@@ -464,7 +464,7 @@ func TestUPAndDown(t *testing.T) {
 	repeatSteps = append(repeatSteps, repeatStep3)
 
 	repeat := Repeats{
-		Steps:  repeatSteps,
+		Steps:   repeatSteps,
 		Repeats: 5,
 	}
 	exerciseStep := Step{

@@ -1,6 +1,6 @@
 package server
 
-var DEBUG bool
+var ACL = true
 
 type errorUnauthorized struct {
 	s string
@@ -20,29 +20,29 @@ func (e *error404) Error() string {
 
 type Step struct {
 	ID         int     `json:"id"`
-	Effort     string  `json:"effort,omitempty"`
-	EffortType string  `json:"effort_type,omitempty"`
-	Laps       int     `json:"laps,omitempty"`
-	Length     int     `json:"length,omitempty"`
-	Percentage int     `json:"percentage,omitempty"`
-	Type       string  `json:"type,omitempty"`
-	Repeat     Repeats `json:"repeat,omitempty"`
-	Rest       string  `json:"rest,omitempty"`
+	Effort     string  `json:"effort,omitempty" yaml:"effort,omitempty"`
+	EffortType string  `json:"effort_type,omitempty" yaml:"effort_type,omitempty"`
+	Laps       int     `json:"laps,omitempty" yaml:"laps,omitempty"`
+	Length     int     `json:"length,omitempty" yaml:"length,omitempty"`
+	Percentage int     `json:"percentage,omitempty" yaml:"percentage,omitempty"`
+	Type       string  `json:"type,omitempty" yaml:"type,omitempty"`
+	Repeat     Repeats `json:"repeat,omitempty" yaml:"repeat,omitempty"`
+	Rest       string  `json:"rest,omitempty" yaml:"rest,omitempty"`
 	Position   int     `json:"-"`
 }
 
 type Exercise struct {
 	ID      int    `json:"id"`
-	Name    string `json:"name,omitempty" binding:"required"`
-	Comment string `json:"comment,omitempty"`
+	Name    string `json:"name" binding:"required"`
+	Comment string `json:"comment,omitempty" yaml:"comment,omitempty"`
 	Steps   `json:"steps,omitempty"`
 	FBid    int `json:"fbID"`
 }
 
 type Repeats struct {
 	ID      int   `json:"id"`
-	Steps   Steps `json:"steps,omitempty"`
-	Repeats int   `json:"repeat,omitempty"`
+	Steps   Steps `json:"steps,omitempty" yaml:"steps,omitempty"`
+	Repeats int   `json:"repeat,omitempty" yaml:"repeat,omitempty" `
 }
 
 type Steps []Step

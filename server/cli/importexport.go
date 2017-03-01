@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -9,8 +10,24 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-func YAMLImport(filename string) (err error) {
+func yAMLExport() (err error) {
+	exercises, err := server.GetAllExercises()
+	if err != nil {
+		return
+	}
+
+	d, err := yaml.Marshal(exercises)
+	if err != nil {
+		return
+	}
+	fmt.Println(string(d))
+	return
+}
+
+func yAMLImport(filename string) (err error) {
 	var exercises []server.Exercise
+
+	server.ACL = false
 
 	source, err := ioutil.ReadFile(filename)
 	if err != nil {

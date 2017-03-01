@@ -202,7 +202,7 @@ func AddExercise(exercise Exercise) (lastid int, err error) {
 	}
 
 	//TODO: better ACL than that
-	if oldFbID != 0 && exercise.FBid != oldFbID {
+	if ACL && oldFbID != 0 && exercise.FBid != oldFbID {
 		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
 	}
 
@@ -301,7 +301,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 	return
 }
 
-func getAllExercises() (exercises []Exercise, err error) {
+func GetAllExercises() (exercises []Exercise, err error) {
 	var getAllExercises = `SELECT ID from Exercise`
 	rows, err := DB.Query(getAllExercises)
 	for rows.Next() {
