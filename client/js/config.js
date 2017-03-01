@@ -1,7 +1,11 @@
 var app = angular.module("Frack", ["ngRoute", "ngSanitize", "ngFacebook"]);
-app.config(['$facebookProvider', function($facebookProvider) {
-    $facebookProvider.setAppId('3518596602').setPermissions(['email']);
-}]);
+app.config(function($facebookProvider) {
+    var fbID = 871188203021217;
+    if (window.location.host == "localhost:8080") {
+        fbID = 3518596602;
+    }
+    $facebookProvider.setAppId(fbID).setPermissions(['email']);
+});
 
 app.run(['$rootScope', '$window', function($rootScope, $window) {
     (function(d, s, id) {
