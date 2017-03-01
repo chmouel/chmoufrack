@@ -10,16 +10,16 @@ import (
 func cleanupSteps(exerciseType string, id int) (err error) {
 	_, err = sqlTX(fmt.Sprintf(`delete from Warmup where %s=?`, exerciseType), id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return
 	}
 
 	_, err = sqlTX(fmt.Sprintf(`delete from Warmdown where %s=?`, exerciseType), id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return
 	}
 	_, err = sqlTX(fmt.Sprintf(`delete from Intervals where %s=?`, exerciseType), id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return
 	}
 
 	if exerciseType == "repeatID" {
@@ -29,7 +29,7 @@ func cleanupSteps(exerciseType string, id int) (err error) {
 
 	_, err = sqlTX(fmt.Sprintf(`delete from Repeats where %s=?`, exerciseType), id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return
 	}
 
 	return
@@ -90,7 +90,6 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 		}
 
 		if err != nil {
-			fmt.Printf("%+v\n", step.Effort)
 			return
 		}
 		*steps = append(*steps, step)
