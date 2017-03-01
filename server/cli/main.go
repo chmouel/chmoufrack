@@ -48,7 +48,7 @@ func main() {
 	}
 
 	if *yamlExport {
-		err := yAMLExport()
+		err := server.YAMLExport()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -56,7 +56,7 @@ func main() {
 	}
 
 	if *yamlImport != "" {
-		err := yAMLImport(*yamlImport)
+		err := server.YAMLImport(*yamlImport)
 		if err != nil {
 			log.Fatal(err)
 		}

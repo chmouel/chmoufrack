@@ -1,17 +1,15 @@
-package main
+package server
 
 import (
 	"fmt"
 	"io/ioutil"
 	"log"
 
-	"github.com/chmouel/chmoufrack/server"
-
 	yaml "gopkg.in/yaml.v2"
 )
 
-func yAMLExport() (err error) {
-	exercises, err := server.GetAllExercises()
+func YAMLExport() (err error) {
+	exercises, err := getAllExercises()
 	if err != nil {
 		return
 	}
@@ -24,10 +22,10 @@ func yAMLExport() (err error) {
 	return
 }
 
-func yAMLImport(filename string) (err error) {
-	var exercises []server.Exercise
+func YAMLImport(filename string) (err error) {
+	var exercises []Exercise
 
-	server.ACL = false
+	ACL = false
 
 	source, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -41,7 +39,7 @@ func yAMLImport(filename string) (err error) {
 
 	for k, e := range exercises {
 		e.ID = k
-		_, err := server.AddExercise(e)
+		_, err := addExercise(e)
 		if err != nil {
 			log.Fatal(err)
 		}

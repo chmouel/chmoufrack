@@ -27,7 +27,7 @@ func test_check_created(resp *http.Response, expected int) (err error) {
 func TestGETExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -52,7 +52,7 @@ func TestGETExercise(t *testing.T) {
 
 func TestGETExerciseByName(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -91,7 +91,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 func TestDeleteExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -114,7 +114,7 @@ func TestDeleteExercise(t *testing.T) {
 func TestGETExercises(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -186,7 +186,7 @@ func TestPostExcercise(t *testing.T) {
 	}
 
 	//check in DB if it was really made
-	exercises, err := GetAllExercises()
+	exercises, err := getAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestPostExcercise(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	exercises, err = GetAllExercises()
+	exercises, err = getAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}

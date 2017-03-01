@@ -233,7 +233,7 @@ func InitFixturesDB() (err error) {
 	}
 	e.Steps = append(e.Steps, exerciseStep)
 
-	_, err = AddExercise(e)
+	_, err = addExercise(e)
 	if err != nil {
 		return
 	}

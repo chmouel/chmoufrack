@@ -34,7 +34,7 @@ func POSTExercise(c *gin.Context) {
 	}
 	exercise.FBid = fbID
 
-	_, err = AddExercise(exercise)
+	_, err = addExercise(exercise)
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return
@@ -92,7 +92,7 @@ func GETExercises(c *gin.Context) {
 	var exercises []Exercise
 	var err error
 
-	exercises, err = GetAllExercises()
+	exercises, err = getAllExercises()
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return

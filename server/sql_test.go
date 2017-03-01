@@ -13,7 +13,7 @@ func removeFromArray(slice []Step, s int) []Step {
 func TestAddExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
 
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -38,7 +38,7 @@ func TestAddExercise(t *testing.T) {
 
 func TestAddExerciseAndID(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
-	oldid, err := AddExercise(e)
+	oldid, err := addExercise(e)
 	if err != nil {
 		log.Fatal()
 	}
@@ -48,7 +48,7 @@ func TestAddExerciseAndID(t *testing.T) {
 	}
 
 	e = createSampleExercise("Test2", "easy warmup todoo", "finish strong", 1234)
-	newid, err := AddExercise(e)
+	newid, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -67,7 +67,7 @@ func TestUpdateExercise(t *testing.T) {
 	e := createSampleExercise("TestAddUpdate", "easy warmup todoo",
 		"finish strong", 4567)
 
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addProgram() failed: %s", err)
 	}
@@ -77,7 +77,7 @@ func TestUpdateExercise(t *testing.T) {
 	e.Steps[1].Length = 999
 	e.Steps[2].Effort = "New2"
 
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when updating failed: %s", err)
 	}
@@ -101,7 +101,7 @@ func TestUpdateExercise(t *testing.T) {
 	}
 
 	e.Steps = removeFromArray(e.Steps, 2)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when removing failed: %s", err)
 	}
@@ -116,7 +116,7 @@ func TestUpdateExercise(t *testing.T) {
 		EffortType: "distance",
 	}
 	e.Steps = append(e.Steps, s)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when add a new element: %s", err)
 	}
@@ -152,7 +152,7 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 	e.Steps = append(e.Steps, exerciseStep)
 
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when adding a repeat: %s", err)
 	}
@@ -175,7 +175,7 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 
 	e.Steps[3].Repeat.Steps[0].Laps = 99
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() updating a repeat step: %s", err)
 	}
@@ -192,7 +192,7 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 
 	e.Steps[3].Repeat.Steps = removeFromArray(e.Steps[3].Repeat.Steps, 0)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() when removing from field failed: %s", err)
 	}
@@ -224,7 +224,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 		Repeat: repeat,
 	}
 	e.Steps = append(e.Steps, exerciseStep)
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
@@ -249,7 +249,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 		Repeat: repeat,
 	}
 	e.Steps = append(e.Steps, exerciseStep)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 
 	if err != nil {
 		t.Fatalf("addExercise() when adding second repeat: %s", err)
@@ -261,7 +261,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 
 	e.Steps[3].Repeat.Steps[0].Length = 999
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -283,7 +283,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 
 func TestGetByName(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -303,7 +303,7 @@ func TestGetByName(t *testing.T) {
 
 func TestDBDeleteExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
@@ -323,12 +323,12 @@ func TestGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1234)
-	_, err := AddExercise(e)
+	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	exercises, err := GetAllExercises()
+	exercises, err := getAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -344,7 +344,7 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	exercises, err := GetAllExercises()
+	exercises, err := getAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -375,7 +375,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 		Repeat: repeat,
 	}
 	e.Steps = append(e.Steps, exerciseStep)
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
@@ -400,7 +400,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 		Repeat: repeat,
 	}
 	e.Steps = append(e.Steps, exerciseStep)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 
 	if err != nil {
 		t.Fatalf("addExercise() when adding second repeat: %s", err)
@@ -412,7 +412,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 
 	e.Steps = removeFromArray(e.Steps, 4)
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	e, err = getExercise(i)
 	if len(e.Steps) != 4 {
 		t.Fatalf("removing repeat is not working steps %d != 4", len(e.Steps))
@@ -472,7 +472,7 @@ func TestUPAndDown(t *testing.T) {
 		Repeat: repeat,
 	}
 	e.Steps = append(e.Steps, exerciseStep)
-	i, err := AddExercise(e)
+	i, err := addExercise(e)
 
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
@@ -488,7 +488,7 @@ func TestUPAndDown(t *testing.T) {
 	inversedSteps = append(inversedSteps, second)
 
 	e.Steps[3].Repeat.Steps = inversedSteps
-	i, err = AddExercise(e)
+	i, err = addExercise(e)
 	e, err = getExercise(i)
 
 	newfirst := e.Steps[3].Repeat.Steps[0]

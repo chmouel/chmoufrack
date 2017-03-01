@@ -185,7 +185,7 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	return
 }
 
-func AddExercise(exercise Exercise) (lastid int, err error) {
+func addExercise(exercise Exercise) (lastid int, err error) {
 	var oldFbID int
 	var oldId = 0
 	if exercise.Name == "" {
@@ -300,7 +300,7 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 	return
 }
 
-func GetAllExercises() (exercises []Exercise, err error) {
+func getAllExercises() (exercises []Exercise, err error) {
 	var getAllExercises = `SELECT ID from Exercise`
 	rows, err := DB.Query(getAllExercises)
 	for rows.Next() {
