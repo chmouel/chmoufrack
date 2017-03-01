@@ -56,11 +56,12 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
         }
 
         p = tourl ? tourl : $scope.selectedProgram;
-        if (typeof(p) == "undefined")
+        if (angular.isUndefined(p))
             return false;
 
         $location.path("/workout/" + p + "/vma/" + t);
-        return true; //make emacs happy
+
+        return true; //make emacs happy, this remind me of perl modules :-[]
     };
 
 });
