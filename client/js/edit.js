@@ -1,4 +1,4 @@
-app.controller("EditController", function($scope, $http, $routeParams, rest, userInfo) {
+app.controller("EditController", function($scope, $http, $routeParams, rest, userInfo, $location) {
     $scope.exercise = Object();
     $scope.exercise.steps = [];
 
@@ -35,6 +35,8 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     ];
 
     $scope.submit = function() {
+        //TODO(chmou): proper error showing (just in case someone wonder we do
+        //proper check in API server too)
         if (!$scope.fblogged) {
             console.error("You should have login to be able to do this here?");
             return;
@@ -46,8 +48,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
         }
 
         rest.submitExercise($scope.exercise).then(function (result) {
-            $(location).attr('href', '/#!/workout/' + $scope.exercise.name);
-            return;
+            $location.path('/workout/' + $scope.exercise.name);
         });
     };
 
@@ -55,8 +56,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
         if (!t) t = $scope.exercise.name;
 
         rest.deleteExercise(t).then(function (result) {
-            $(location).attr('href', '/');
-            return;
+            $location.path('/');
         });
     };
 
