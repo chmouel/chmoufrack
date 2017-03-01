@@ -8,25 +8,18 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
     $scope.quote_author = item.name;
 
 
-    $scope.fbLogged = $window.sessionStorage.getItem('fbUserInfo');
-    if ($scope.fbLogged) {
-        $scope.fbLogged = JSON.parse($scope.fbLogged);
-    }
-
     $scope.fbLogin = function() {
         $facebook.login();
     };
 
     $scope.fbLogout = function() {
         $facebook.logout();
-        $window.sessionStorage.removeItem("fbUserInfo");
         $scope.fbLogged = null;
     };
 
     $scope.$on('fb.auth.login', function(event, userDetails) {
         userInfo.get().then(function(u) {
             $scope.fbLogged=u;
-            $window.sessionStorage.setItem('fbUserInfo', JSON.stringify(u));
         });
     });
 

@@ -35,7 +35,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     ];
 
     $scope.submit = function() {
-        if (!$scope.logged) {
+        if (!$scope.fblogged) {
             console.error("You should have login to be able to do this here?");
             return;
         }
