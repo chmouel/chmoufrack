@@ -95,12 +95,18 @@
 
 .footer {
     width: 100%;
+    margin-bottom: 10px;
 }
 .footer>ul>li {
     border: 1px;
     border-radius: 8px;
     background: #ededed;
     border-style: solid;
+}
+
+.btn-github {
+    background: #000000;
+    color: white;
 }
 
 .quoteContainer{

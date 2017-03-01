@@ -64,35 +64,52 @@
 
     <div ng-view class="container-fluid"></div>
 
-    <div class="container-fluid footer">
-      <ul class="nav nav-tabs nav-justified">
-        <li>
-          <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
-            Comment calculez sa VMA?
+    <div class="container-fluid">
+      <div class="footer">
+        <ul class="nav nav-tabs nav-justified">
+          <li>
+            <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
+              Comment calculez sa VMA?
+            </a>
+          </li>
+          <li>
+            <a href="http://runcalc.net">Calculette allure et plus.</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 text-left">
+          <a href="//github.com/chmouel/chmoufrack">
+            <button class="btn btn-github btn-xs">
+              <i class="fa fa-github"></i>
+              Made with love with ChmouFrack
+            </button>
           </a>
-        </li>
-        <li>
-          <a href="http://runcalc.net">Calculette allure et plus.</a>
-        </li>
-      </ul>
+        </div>
+        <div class="col-md-4 text-center">
+          <a href="//www.twitter.com/samchmou/">
+            <button class="btn btn-info btn-xs">
+              <i class="fa fa-twitter"></i> Contact: @samchmou
+            </button>
+          </a>
+        </div>
+        <div class="col-md-4 text-right">
+          <a ng-show="!logged" ng-click="fbLogin()" href>
+            <button class="btn btn-primary btn-xs">
+              <i class="fa fa-facebook"></i><i> Connexion avec Facebook</i>
+            </button>
+          </a>
+	      <span ng-show="logged">
+            <button class="btn btn-primary btn-xs">
+              <i class="fa fa-facebook"></i>
+              <i>Salut {{logged.name}}</i>
+            </button>
+          </span>
+        </div>
+      </div>
+
     </div>
 
-    <div class="text-center container-fluid">
-      <i>
-        Fait avec amour par <a href="//github.com/chmouel/chmoufrack">ChmouFrack</a> -
-        Contact: <a href="//www.twitter.com/samchmou/"><i class="fa fa-twitter"></i>@samchmou</a> -
-      </i>
-	  <a ng-show="!logged" ng-click="fbLogin()" href>
-        <button class="btn btn-primary btn-xs">
-          <i class="fa fa-facebook"></i><i> Connexion avec Facebook</i>
-        </button>
-      </a>
-	  <span ng-show="logged">
-        <button class="btn btn-primary btn-xs">
-          <i class="fa fa-facebook"></i>
-          <i>Salut {{logged.name}}</i>
-        </button>
-      </span>
-    </div>
-  </body>
+  </body> <!-- container-fluid -->
 </html>
