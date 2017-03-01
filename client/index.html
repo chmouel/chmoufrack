@@ -65,14 +65,14 @@
     <div ng-view class="container-fluid"></div>
 
     <div class="container-fluid">
-      <div class="footer">
-        <ul class="nav nav-tabs nav-justified">
-          <li>
+      <div>
+        <ul class="list-group">
+          <li class="list-group-item">
             <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
               Comment calculez sa VMA?
             </a>
           </li>
-          <li>
+          <li class="list-group-item">
             <a href="http://runcalc.net">Calculette allure et plus.</a>
           </li>
         </ul>
@@ -83,27 +83,27 @@
           <a href="//github.com/chmouel/chmoufrack">
             <button class="btn btn-github btn-xs">
               <i class="fa fa-github"></i>
-              Made by ChmouFrack
+              ChmouFrack
             </button>
           </a>
         </div>
         <div class="col-xs-4">
           <a href="//www.twitter.com/samchmou/">
             <button class="btn btn-info btn-xs">
-              <i class="fa fa-twitter"></i> Contact: @samchmou
+              <i class="fa fa-twitter"></i> @samchmou
             </button>
           </a>
         </div>
         <div class="col-xs-4">
           <a ng-show="!fbLogged" ng-click="fbLogin()" href>
             <button class="btn btn-primary btn-xs">
-              <i class="fa fa-facebook"></i><i> Login with Facebook</i>
+              <i class="fa fa-facebook"></i><i> FB Login</i>
             </button>
           </a>
           <a ng-show="fbLogged" ng-click="fbLogout()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i>
-              <i>Salut {{fbLogged.name}}</i>
+              <i>{{fbLogged.name}}</i>
             </button>
           </a>
         </div>

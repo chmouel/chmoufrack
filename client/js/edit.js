@@ -2,12 +2,6 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     $scope.exercise = Object();
     $scope.exercise.steps = [];
 
-    //TODO: proper error page
-    // if (!$facebook.isConnected()) {
-    //     console.error("You should be logged to access this page");
-    //     return;
-    // }
-
     if ($routeParams.name) {
         var res = $http.get('/v1/exercise/' + $routeParams.name );
 	    res.then(function(response) {
@@ -37,7 +31,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     $scope.submit = function() {
         //TODO(chmou): proper error showing (just in case someone wonder we do
         //proper check in API server too)
-        if (!$scope.fblogged) {
+        if (!$scope.fbLogged) {
             console.error("You should have login to be able to do this here?");
             return;
         }
