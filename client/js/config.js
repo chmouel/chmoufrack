@@ -91,17 +91,13 @@ app.factory('userInfo', function($facebook, $q) {
 
         self.get = function() {
             var deferred = $q.defer();
-            if(self.userInfo !== null) {
-                deferred.resolve(self.userInfo);
-            } else {
-                $facebook.api('/me').then(function(user) {
-                    var auth = $facebook.getAuthResponse();
-                    self.userInfo = user;
-                    self.userInfo['auth'] = auth;
+            $facebook.cachedApi('/me').then(function(user) {
+                var auth = $facebook.getAuthResponse();
+                self.userInfo = user;
+                self.userInfo['auth'] = auth;
 
-                    deferred.resolve(self.userInfo);
-                });
-            }
+                deferred.resolve(self.userInfo);
+            });
             return deferred.promise;
         };
     };
