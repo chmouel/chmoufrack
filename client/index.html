@@ -64,10 +64,43 @@
 
     <div ng-view class="container-fluid"></div>
 
+
+    <div>
+      <ul class="list-group">
+      </ul>
+    </div>
+
+
+
     <div class="container-fluid">
 
-      <ul class="pull-right list-inline">
-        <li>
+      <ul class="list-inline">
+
+        <li class="pull-left">
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Aide
+              <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
+                  Comment calculez sa VMA?
+                </a>
+              </li>
+              <li>
+                <a href="http://runcalc.net">Calculette allure et plus.</a>
+              </li>
+              <li>
+                <a href="https://www.strava.com/">Strava</a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/groups/boostjaures/">AR Jaurés.</a>
+              </li>
+            </ul>
+
+          </div>
+        </li>
+
+        <li class="pull-right" style="margin-top: 5px;">
           <a ng-show="!fbLogged" ng-click="fbLogin()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i><i> Identification</i>
@@ -80,14 +113,14 @@
             </button>
           </a>
         </li>
-        <li>
+        <li class="pull-right" style="margin-top: 5px;">
           <a href="//www.twitter.com/samchmou/">
             <button class="btn btn-info btn-xs">
               <i class="fa fa-twitter"></i> @samchmou
             </button>
           </a>
         </li>
-        <li>
+        <li class="pull-right" style="margin-top: 5px;">
           <a href="//github.com/chmouel/chmoufrack">
             <button class="btn btn-github btn-xs">
               <i class="fa fa-github"></i>
