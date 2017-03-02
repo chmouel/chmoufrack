@@ -1,5 +1,5 @@
-app.controller("EditController", function($scope, $http, $routeParams, rest, userInfo, $location) {
-    $scope.exercise = Object();
+app.controller("EditController", function($scope, $http, $routeParams, utils, userInfo, $location) {
+    $scope.exercise = {};
     $scope.exercise.steps = [];
 
     if ($routeParams.name) {
@@ -7,7 +7,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
 	    res.then(function(response) {
             $scope.exercise = response.data;
 	    }, function errorCallBack(response) {
-            $scope.exercise = new Object();
+            $scope.exercise = {};
             $scope.exercise.steps = {};
             $scope.NotFound = $routeParams.name;
         });
@@ -41,7 +41,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
             $scope.delete($routeParams.name);
         }
 
-        rest.submitExercise($scope.exercise).then(function (result) {
+        utils.submitExercise($scope.exercise).then(function (result) {
             $location.path('/workout/' + $scope.exercise.name);
         });
     };
@@ -49,7 +49,7 @@ app.controller("EditController", function($scope, $http, $routeParams, rest, use
     $scope.delete = function(t, r) {
         if (!t) t = $scope.exercise.name;
 
-        rest.deleteExercise(t).then(function (result) {
+        utils.deleteExercise(t).then(function (result) {
             $location.path('/');
         });
     };

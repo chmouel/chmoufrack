@@ -1,26 +1,23 @@
-app.controller('ProgramIndexController', ['$scope', 'rest', function($scope, rest) {
-    $scope.programIndex = Object();
-    var myPromise = rest.getExercises();
+app.controller('ProgramIndexController', function($scope, utils) {
+    $scope.programIndex = {};
+    var myPromise = utils.getExercises();
     myPromise.then(function(data) {
-        for (var p of data) {
-            if (p.name == "") {
-                console.log("Invalid workout");
-                continue;
+        angular.forEach(data, function (p, noop) {
+            if (p.name !== "") {
+                $scope.programIndex[p.name] = {};
+                $scope.programIndex[p.name].name = p.name;
+                if (p.steps) {
+                    $scope.programIndex[p.name].totalWorkout = p.steps.length;
+                }
+                $scope.programIndex[p.name].comment = p.comment;
+                $scope.programIndex[p.name].id = p.id;
+                $scope.programIndex[p.name].fbID = p.fbID;
             }
-            $scope.programIndex[p.name] = Object();
-            $scope.programIndex[p.name]["name"] = p.name;
-            if (p.steps) {
-                $scope.programIndex[p.name]["totalWorkout"] = p.steps.length;
-            }
-            $scope.programIndex[p.name]["comment"] = p.comment;
-            $scope.programIndex[p.name]["id"] = p.id;
-            $scope.programIndex[p.name]["fbID"] = p.fbID;
-
-        }
+        });
     });
-}]);
+});
 
-app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
+app.controller('CalculController', function($scope, utils) {
     var trackLength = 400;
 
     function calculDistanceForSeconds(vma, seconds, percentage) {
@@ -44,7 +41,7 @@ app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
             result += "'";
         }
 
-        if (second != 0) {
+        if (second !== 0) {
             if (second < 10) {
                 result += 0;
             }
@@ -53,7 +50,7 @@ app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
             result += "00";
         }
 
-        if (minute == 0) {
+        if (minute === 0) {
             result += "s";
         }
         return result;
@@ -69,14 +66,17 @@ app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
         var t = Math.floor(e / 60);
         var n = Math.floor(e - t * 60);
         var r = Math.round(60 * (e - t * 60 - n));
-        r == 60 && (n += 1, r = 0);
+        if (r === 60) {
+            n += 1;
+            r = 0;
+        }
 
-	    if (n == 0 && r != 0) {
+	    if (n === 0 && r !== 0) {
 		    return r;
 	    }
 
         ret += n + "'";
-        if (r == 0) {
+        if (r === 0) {
             ret += "00";
             return ret;
         } else if (r < 10) {
@@ -88,30 +88,30 @@ app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
     }
 
     function calc(time, meters, seconds, percentage, vmas) {
-        var res = new Object();
+        var res = {};
 
-        for (var vmaTarget of vmas) {
-            res[vmaTarget] = Object();
-            res[vmaTarget]['vma'] = vmaTarget; // Hack
+        angular.forEach(vmas, function (vmaTarget, noop) {
+            res[vmaTarget] = {};
+            res[vmaTarget].vma = vmaTarget; // Hack
 
             if (seconds > 0) {
                 meters = calculDistanceForSeconds(vmaTarget, seconds, percentage);
-                res[vmaTarget]['totalTime'] = meters + "m";
+                res[vmaTarget].totalTime = meters + "m";
             } else {
                 var length = calcVMADistance(vmaTarget, meters, percentage);
-                res[vmaTarget]['totalTime'] = length;
+                res[vmaTarget].totalTime = length;
             }
 
             var trackLaps = meters / trackLength; // Todo the fancy half stuff
 
             if (meters >= trackLength) {
-                res[vmaTarget]['timeLap'] = calcVMADistance(vmaTarget, trackLength, percentage);
+                res[vmaTarget].timeLap = calcVMADistance(vmaTarget, trackLength, percentage);
             } else {
-                res[vmaTarget]['timeLap'] = "NA";
+                res[vmaTarget].timeLap = "NA";
             }
-            res[vmaTarget]['speed'] = calcVMASPeed(vmaTarget, percentage);
-            res[vmaTarget]['pace'] = calcPace(res[vmaTarget]['speed']);
-        }
+            res[vmaTarget].speed = calcVMASPeed(vmaTarget, percentage);
+            res[vmaTarget].pace = calcPace(res[vmaTarget].speed);
+        });
         return res;
     }
 
@@ -120,10 +120,13 @@ app.controller('CalculController', ['$scope', 'rest', function($scope, rest) {
         return res;
     };
 
-    var myPromise = rest.getExercises();
+    var myPromise = utils.getExercises();
     myPromise.then(function(data) {
-        for (var program of data) {
-            if (program.name != $scope.selectedProgram) continue;
-            $scope.program = program;
-        }});
-}]);
+        var bbb = false;
+        angular.forEach(data, function (program, noop) {
+            if (program.name == $scope.selectedProgram) {
+                $scope.program = program;
+            }
+        });
+    });
+});

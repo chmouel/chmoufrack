@@ -1,6 +1,6 @@
-app.controller("ViewController", function($scope, $location, $routeParams, $http, rest, $facebook, userInfo, $window) {
+app.controller("ViewController", function($scope, $location, $routeParams, $http, utils, $facebook, userInfo, $window) {
     $scope.vmaWanted = [];
-    $scope.allVMAS = range(12, 22);
+    $scope.allVMAS = utils.range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
     $scope.fbLogin = function() {
@@ -30,21 +30,22 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
             $scope.vmaWanted = [parseInt($routeParams.vma)];
         } else {
             var sp = $routeParams.vma.split(':');
-            $scope.vmaWanted = range(sp[0], sp[1]);
+            $scope.vmaWanted = utils.range(sp[0], sp[1]);
         }
     } else {
         $scope.vmaWanted = $scope.allVMAS;
     }
 
     if (!$scope.programs) {
-        var myPromise = rest.getExercises();
+        var myPromise = utils.getExercises();
         myPromise.then(function(data) {
             $scope.programs = data;
             $scope.programNames = [];
-            for (var p of $scope.programs)
+            angular.forEach(data, function(p, noop) {
                 $scope.programNames.push(p.name);
+            });
         });
-    };
+    }
 
     $scope.submit = function(tourl) {
         var t = "", p ="";
@@ -53,7 +54,7 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
         } else if ($scope.vmaWanted.length > 1) {
             t = $scope.vmaWanted[0] + ":" + $scope.vmaWanted[$scope.vmaWanted.length - 1];
         } else {
-            t = $scope.allVMAS[0] + ":" + $scope.allVMAS[$scope.allVMAS.length - 1];; //default
+            t = $scope.allVMAS[0] + ":" + $scope.allVMAS[$scope.allVMAS.length - 1]; //default
         }
 
         p = tourl ? tourl : $scope.selectedProgram;
