@@ -20,10 +20,20 @@
 }
 
 .list-inline>li {
-    margin-right: -10px;
+    margin-right: -7px;
 }
 
 .btn-github {
     background: #000000;
     color: white;
+}
+
+.btn-github:hover {
+    color: ##504f4f;
+}
+
+.btn-github:hover {
+    color: #fff;
+    background-color: #504f4f;
+    border-color: #333333;
 }
