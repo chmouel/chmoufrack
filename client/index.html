@@ -65,8 +65,9 @@
     <div ng-view class="container-fluid"></div>
 
     <div class="container-fluid">
-      <div class="row text-center">
-        <div class="col-xs-4">
+
+      <ul class="pull-right list-inline">
+        <li>
           <a ng-show="!fbLogged" ng-click="fbLogin()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i><i> Identification</i>
@@ -78,23 +79,24 @@
               <i>{{fbLogged.name}}</i>
             </button>
           </a>
-        </div>
-        <div class="col-xs-4">
+        </li>
+        <li>
           <a href="//www.twitter.com/samchmou/">
             <button class="btn btn-info btn-xs">
               <i class="fa fa-twitter"></i> @samchmou
             </button>
           </a>
-        </div>
-        <div class="col-xs-4">
+        </li>
+        <li>
           <a href="//github.com/chmouel/chmoufrack">
             <button class="btn btn-github btn-xs">
               <i class="fa fa-github"></i>
               ChmouFrack
             </button>
           </a>
-        </div>
-      </div>
+        </li>
+      </ul>
+
 
     </div>
 

@@ -93,15 +93,8 @@
     border-radius: 8px;
 }
 
-.footer {
-    width: 100%;
-    margin-bottom: 10px;
-}
-.footer>ul>li {
-    border: 1px;
-    border-radius: 8px;
-    background: #ededed;
-    border-style: solid;
+.list-inline>li {
+    margin-right: -10px;
 }
 
 .btn-github {
