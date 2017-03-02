@@ -1,6 +1,11 @@
 package server
 
-var ACL = true
+import "database/sql"
+
+var (
+	ACL = true
+	DB  *sql.DB
+)
 
 type errorUnauthorized struct {
 	s string
