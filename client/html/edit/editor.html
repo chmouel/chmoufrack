@@ -37,12 +37,11 @@
       </span>
     </div>
   </div> <!-- ng-repeat -->
-
 </div>
 
 
-<div class="row">
-  <div class="col-md-2">
+<ul class="list-inline text-center">
+  <li>
     <a href="#">
       <button class="btn btn-default navbar-btn">
         <a href ng-click="delete()">
@@ -51,9 +50,9 @@
         </a>
       </button>
     </a>
-  </div>
+  </li>
 
-  <div class="col-md-5 text-center">
+  <li>
     <button class="btn btn-default navbar-btn">
       <a href class="dropdown-toggle" data-toggle="dropdown">
         <i class="glyphicon glyphicon-plus"></i> Ajouter un exercise
@@ -65,14 +64,14 @@
         <li><a href ng-click="addNewWarmupWarmdown('warmdown', exercise)">Récupération</a></li>
       </ul>
     </button>
-  </div>
+  </li>
 
-  <div class="col-md-5 text-right">
-      <button class="btn btn-default navbar-btn">
-        <a href ng-click="submit()">
-          <i class="glyphicon glyphicon-save"></i>
-          Sauvegarder
-        </a>
-      </button>
-  </div>
-</div>
+  <li>
+    <button class="btn btn-default navbar-btn">
+      <a href ng-click="submit()">
+        <i class="glyphicon glyphicon-save"></i>
+        Sauvegarder
+      </a>
+    </button>
+  </li>
+</ul>
