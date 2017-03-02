@@ -1,4 +1,4 @@
-app.controller("EditController", function($scope, $http, $routeParams, utils, userInfo, $location) {
+app.controller("EditController", function($scope, $http, $routeParams, utils, userInfo, $location, $window, $facebook) {
     $scope.exercise = {};
     $scope.exercise.steps = [];
 
@@ -9,7 +9,9 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, us
 	    }, function errorCallBack(response) {
             $scope.exercise = {};
             $scope.exercise.steps = {};
-            $scope.NotFound = $routeParams.name;
+            $scope.error = "Sorry honey, j'ai pas reussi a trouver la séance <strong>" + $routeParams.name + "</strong> dans mon ventre.";
+            $scope.success = false;
+            $window.scrollTo(0, 0);
         });
     }
 
@@ -29,20 +31,25 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, us
     ];
 
     $scope.submit = function() {
-        //TODO(chmou): proper error showing (just in case someone wonder we do
-        //proper check in API server too)
         if (!$scope.fbLogged) {
-            console.error("You should have login to be able to do this here?");
+            $scope.error = "Vous devez être connecter a facebook pour pouvoir enregistrer un programme.";
+            $window.scrollTo(0, 0);
             return;
         }
 
         // NOTE(chmou): If a rename delete the old one
-        if ($scope.exercise.name != $routeParams.name) {
+        if (angular.isDefined($routeParams.name) && $scope.exercise.name != $routeParams.name) {
             $scope.delete($routeParams.name);
         }
 
         utils.submitExercise($scope.exercise).then(function (result) {
-            $location.path('/workout/' + $scope.exercise.name);
+            $scope.error = false;
+            $scope.success = 'Votre programme a était sauvegarder, le <a href="/#!/workout/' + $scope.exercise.name + '"><strong>voir ici</strong></a>';
+            $window.scrollTo(0, 0);
+        }).catch(function(error) {
+            $scope.success = false;
+            $scope.error = error;
+            $window.scrollTo(0, 0);
         });
     };
 
@@ -51,6 +58,10 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, us
 
         utils.deleteExercise(t).then(function (result) {
             $location.path('/');
+        }).catch(function(error) {
+            $scope.success = false;
+            $scope.error = error;
+            $window.scrollTo(0, 0);
         });
     };
 
@@ -73,7 +84,6 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, us
     $scope.addNewWarmupWarmdown = function(t, arr) {
         if (!arr.steps)
             arr.steps = [];
-
         arr.steps.push({
             "type": t,
             "effort_type": "distance",

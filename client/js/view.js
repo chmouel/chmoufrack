@@ -47,7 +47,11 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
         });
     }
 
-    $scope.submit = function(tourl) {
+    $scope.add = function() {
+        $location.path('/add');
+    };
+
+    $scope.switchtoProgram = function(tourl) {
         var t = "", p ="";
         if ( $scope.selectedVMA) {
             t = $scope.selectedVMA;

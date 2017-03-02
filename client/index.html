@@ -72,13 +72,13 @@
             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Menu
               <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li>
-                <a href="/#!/add">
+              <li ng-show="fbLogged">
+                <a href ng-click="add()">
                   Ajouter un nouveau Programme
                 </a>
               </li>
 
-              <li class="divider"></li>
+              <li ng-show="fbLogged" class="divider"></li>
               <li>
                 <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
                   Comment calculez sa VMA?

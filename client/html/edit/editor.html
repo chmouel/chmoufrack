@@ -1,8 +1,10 @@
-<div ng-show="NotFound" class="alert alert-danger">
-  Sorry honey, j'ai pas reussi a trouver la séance <strong>{{NotFound}}</strong> dans mon ventre.
+<div ng-show="error" ng-bind-html="error" class="alert alert-danger">
 </div>
 
-<div ng-hide="NotFound" class="editor">
+<div ng-show="success" ng-bind-html="success" class="alert alert-success">
+</div>
+
+<div class="editor">
   <strong>Nom de la Séance</strong>:
   <input select-on-click type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name" required>
 
@@ -43,35 +45,29 @@
 <ul class="list-inline text-center">
   <li>
     <a href="#">
-      <button class="btn btn-default navbar-btn">
-        <a href ng-click="delete()">
-          <i class="glyphicon glyphicon-remove"></i>
-          Supprimer
-        </a>
+      <button ng-click="delete()" class="btn btn-default navbar-btn">
+        <i class="glyphicon glyphicon-remove"></i>
+        Supprimer
       </button>
     </a>
   </li>
 
   <li>
-    <button class="btn btn-default navbar-btn">
-      <a href class="dropdown-toggle" data-toggle="dropdown">
-        <i class="glyphicon glyphicon-plus"></i> Ajouter un exercise
-      </a>
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><i class="glyphicon glyphicon-plus"></i> Ajouter un exercise</button>
       <ul class="dropdown-menu">
         <li><a href ng-click="addNewIntervals(exercise)">Fractionnée</a></li>
         <li><a href ng-click="addNewRepeat(exercise)">Répétition</a></li>
         <li><a href ng-click="addNewWarmupWarmdown('warmup', exercise)">Échauffement</a></li>
         <li><a href ng-click="addNewWarmupWarmdown('warmdown', exercise)">Récupération</a></li>
       </ul>
-    </button>
+    </div>
   </li>
 
   <li>
-    <button class="btn btn-default navbar-btn">
-      <a href ng-click="submit()">
-        <i class="glyphicon glyphicon-save"></i>
-        Sauvegarder
-      </a>
+    <button ng-click="submit()" class="btn btn-default navbar-btn">
+      <i class="glyphicon glyphicon-save"></i>
+      Sauvegarder
     </button>
   </li>
 </ul>
