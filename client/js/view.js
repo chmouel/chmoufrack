@@ -3,11 +3,6 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
     $scope.allVMAS = range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
-    var item = quoteSource[Math.floor(Math.random()*quoteSource.length)];
-    $scope.quote = item.quote;
-    $scope.quote_author = item.name;
-
-
     $scope.fbLogin = function() {
         $facebook.login();
     };
