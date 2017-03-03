@@ -38,18 +38,18 @@ app.factory('utils', function($http, $q, Facebook) {
         });
     };
 
-    utils.fbLogin = function getURLarg() {
+    utils.fbLogin = function() {
         Facebook.login();
     };
 
-    var fbURLarg = (function getURLarg() {
+    var fbURLarg = function getURLarg() {
         var req = {
             url: 'fbID=' + utils.facebookInfo.id,
             headers: {
                 'Authorization': "Bearer " + utils.facebookInfo.accessToken
             }};
         return req;
-    });
+    };
 
     utils.submitExercise = function(exercise) {
         var req = fbURLarg();
