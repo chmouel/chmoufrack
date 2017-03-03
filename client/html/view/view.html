@@ -6,10 +6,10 @@
         <strong>Répétitions</strong> Faire <strong>{{w.repeat.repeat}}</strong> fois
       </div>
 
-        <div ng-init="repetion=true" ng-repeat="w in w.repeat.steps">
-          <div ng-include="'html/view/interval.html'">
-          </div>
+      <div ng-init="repetion=true" ng-repeat="w in w.repeat.steps">
+        <div ng-include="'html/view/interval.html'">
         </div>
+      </div>
     </div>
 
     <div ng-if="w.type == 'interval'">
@@ -25,22 +25,25 @@
     </div>
     <div ng-hide="$last" class="text-center" style="padding-bottom: 10px;">
     </div>
-
   </div>
+
+  <div ng-show="facebook.loggedIn  && facebook.info.id == program.fbID" class="pull-right">
+    <a href="#!/edit/{{program.name}}"><i class="glyphicon glyphicon-pencil"></i><small>Edit</small></a>
+  </div>
+
+  <form name="chooser" ng-submit="submit()" novalidate>
+    <div class="form-group  container-fluid">
+      <div class="col-lg-offset-2 col-lg-4">
+        <label for="programs">Programme:</label>
+        <select ng-options="x for x in programNames" ng-change="switchtoProgram()" ng-model="selectedProgram" class="form-control">
+        </select>
+      </div>
+      <div class="col-lg-2">
+        <label for="vma">VMA:</label>
+        <select ng-options="x for x in allVMAS" ng-change="switchtoProgram()" ng-model="selectedVMA" class="form-control" >
+        </select>
+      </div>
+    </div>
+  </form>
 
 </div>
-
-<form name="chooser" ng-submit="submit()" novalidate>
-  <div class="form-group  container-fluid">
-    <div class="col-lg-offset-2 col-lg-4">
-      <label for="programs">Programme:</label>
-      <select ng-options="x for x in programNames" ng-change="switchtoProgram()" ng-model="selectedProgram" class="form-control">
-      </select>
-    </div>
-    <div class="col-lg-2">
-      <label for="vma">VMA:</label>
-      <select ng-options="x for x in allVMAS" ng-change="switchtoProgram()" ng-model="selectedVMA" class="form-control" >
-      </select>
-    </div>
-  </div>
-</form>

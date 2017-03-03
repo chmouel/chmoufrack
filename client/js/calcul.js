@@ -122,7 +122,6 @@ app.controller('CalculController', function($scope, utils) {
 
     var myPromise = utils.getExercises();
     myPromise.then(function(data) {
-        var bbb = false;
         angular.forEach(data, function (program, noop) {
             if (program.name == $scope.selectedProgram) {
                 $scope.program = program;
