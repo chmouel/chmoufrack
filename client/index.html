@@ -41,8 +41,9 @@
     <script type="text/javascript" src="js/view.js"></script>
     <script type="text/javascript" src="js/edit.js"></script>
     <script type="text/javascript" src="js/calcul.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
 
-    <script type="text/javascript" src="js/ngFacebook.js"></script>
+    <script type="text/javascript" src="js/angular-facebook.js"></script>
 
     <script>
      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -56,7 +57,7 @@
     </script>
 
   </head>
-  <body ng-app="Frack">
+  <body ng-app="Frack" ng-controller="ViewController">
     <a ng-href="{{rootUrl}}">
       <img class="img-responsive img-rounded" alt="banner" src="img/banner.png">
     </a>
@@ -72,13 +73,13 @@
             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Menu
               <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li ng-show="fbLogged">
+              <li ng-show="facebook.loggedIn">
                 <a href ng-click="add()">
                   Ajouter un nouveau Programme
                 </a>
               </li>
 
-              <li ng-show="fbLogged" class="divider"></li>
+              <li ng-show="facebook.loggedIn" class="divider"></li>
               <li>
                 <a href="//www.doctissimo.fr/forme/courir/entrainement-course-a-pied/vma">
                   Comment calculez sa VMA?
@@ -102,16 +103,18 @@
         </li>
 
         <li class="pull-right" style="margin-top: 5px;">
-          <a ng-show="!fbLogged" ng-click="fbLogin()" href>
+          <a ng-if="facebook.ready && !facebook.loggedIn" ng-click="fbLogin()" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-user-o" aria-hidden="true"></i>
               <i class="fa fa-facebook"></i><i>  Connexion</i>
             </button>
           </a>
-          <a ng-show="fbLogged" ng-click="fbLogout()" href>
+
+          <!-- TODO: somethign in there? -->
+          <a ng-show="facebook.ready && facebook.loggedIn" href>
             <button class="btn btn-primary btn-xs">
               <i class="fa fa-facebook"></i>
-              <i>{{fbLogged.name}}</i>
+              <i>{{facebook.info.name}}</i>
             </button>
           </a>
         </li>

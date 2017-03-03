@@ -1,21 +1,27 @@
-app.controller("ViewController", function($scope, $location, $routeParams, $http, utils, $facebook, userInfo, $window) {
+app.controller("ViewController", function($scope, $location, $routeParams, $http, utils, Facebook, $window) {
+    $scope.facebook = {};
+    $scope.facebook.info = {};
+    $scope.facebook.loggedIn = false;
+    $scope.facebook.ready = false;
+
     $scope.vmaWanted = [];
     $scope.allVMAS = utils.range(12, 22);
     $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
-    $scope.fbLogin = function() {
-        $facebook.login();
-    };
+    $scope.$on('Facebook:xfbmlRender', function(ev, response) {
+        $scope.facebook.ready = true;
+    });
 
-    $scope.fbLogout = function() {
-        $facebook.logout();
-        $scope.fbLogged = null;
-    };
-
-    $scope.$on('fb.auth.login', function(event, userDetails) {
-        userInfo.get().then(function(u) {
-            $scope.fbLogged=u;
-        });
+    $scope.$on('Facebook:statusChange', function(ev, response) {
+        if (response.status == 'connected') {
+            $scope.facebook.loggedIn = true;
+            utils.FBdoLogged(response).then(function(data) {
+                $scope.facebook.loggedIn = true;
+                $scope.facebook.info = data;
+            });
+        } else {
+            console.log("no");
+        }
     });
 
     if ($routeParams.name) {
@@ -45,6 +51,10 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
                 $scope.programNames.push(p.name);
             });
         });
+    }
+
+    $scope.fbLogin = function() {
+        utils.fbLogin();
     }
 
     $scope.add = function() {

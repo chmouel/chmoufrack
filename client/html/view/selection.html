@@ -8,7 +8,7 @@
         <div class="col-md-6">
           <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
         </div>
-        <div ng-if="fbLogged && fbLogged.id == p.fbID" class="col-md-6 text-right">
+        <div ng-if="facebook.loggedIn && facebook.info.id == p.fbID" class="col-md-6 text-right">
           <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
         </div>
       </div>
