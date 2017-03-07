@@ -57,6 +57,15 @@ app.factory('utils', function($http, $q, Facebook) {
   };
 
   utils.submitExercise = function(exercise) {
+
+    angular.forEach(exercise.steps, function(step, noop) {
+      if (step.effort_type == 'time' && !angular.isUndefined(step.length))
+        delete step.length;
+      angular.forEach(step, function(k, v) {
+        if (angular.isUndefined(k)) delete step[v];
+      });
+    });
+
     var req = fbURLarg();
     req.url = '/v1/exercise?' + req.url;
     req.method = 'POST';
