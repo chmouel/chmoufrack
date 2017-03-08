@@ -1,6 +1,6 @@
 <!-- workout -->
 <div ng-init="isTableOpen=true" ng-click="isTableOpen = !isTableOpen" class="workout-step active">
-  <strong>Exercice:</strong> <i>{{w.laps}}</i> fois <i><span ng-if="w.seconds">{{w.seconds}}s</span>
+  <strong>Exercice:</strong> <i>{{w.laps}}</i> fois <i><span ng-if="w.effort">{{w.effort}}s</span>
     <span ng-if="w.length">{{w.length}}m</span></i> - <strong>VMA</strong>: <i>{{w.percentage}}%</i>
 </div>
 
@@ -9,13 +9,13 @@
     <thead>
       <tr>
         <th>VMA</th>
-        <th><span ng-if="w.seconds">Distance Total</span><span ng-if="w.length">Temps Total</span></th>
+        <th><span ng-if="w.effort">Distance Total</span><span ng-if="w.length">Temps Total</span></th>
         <th>Temps 400m</th>
         <th>Vitesse</th>
         <th>Allure</th>
       </tr>
     </thead>
-    <tbody ng-init="vmas = doCalc(w.laps, w.length, w.seconds, w.percentage)">
+    <tbody ng-init="vmas = doCalc(w.laps, w.length, w.effort, w.percentage)">
       <tr ng-repeat="v in vmas">
         <td><strong>{{v.vma}}</strong></td>
         <td>{{v.totalTime}}</td>

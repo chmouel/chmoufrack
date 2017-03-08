@@ -112,9 +112,9 @@ app.controller('CalculController', function($scope, utils) {
       res[vmaTarget].speed = calcVMASPeed(vmaTarget, percentage);
       res[vmaTarget].pace = calcPace(res[vmaTarget].speed);
     });
+
     return res;
   }
-
   $scope.doCalc = function(r, m, s, p) {
     var res = calc(r, m, s, p, $scope.vmaWanted);
     return res;
