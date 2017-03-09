@@ -50,12 +50,37 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
     }
   ];
 
+  var showError = function(msg) {
+    $scope.error = msg;
+    $scope.success = false;
+    $window.scrollTo(0, 0);
+  };
+
   $scope.submit = function() {
-    console.log($scope.forms);
-    return;
+    var err = null;
+    angular.forEach($scope.forms, function(p, noop) {
+      if (Object.keys(p.$error).length === 0)
+        return;
+      angular.forEach(p.$error, function(e, noop) {
+        angular.forEach(e, function(a, noop) {
+          if (a.$name == 'effortd' && a.$$parentForm.unit.$viewValue == 'time') {
+            return;
+          }
+          if (a.$name == 'effortt' && a.$$parentForm.unit.$viewValue == 'distance') {
+            return;
+          }
+          err = a;
+        });
+      });
+    });
+
+    if (err) {
+      showError("Vous avez une erreur dans les donnees de la forme");
+      return;
+    }
+
     if (!$scope.facebook.loggedIn) {
-      $scope.error = "Vous devez être connecter a facebook pour pouvoir enregistrer un programme.";
-      $window.scrollTo(0, 0);
+      showError("Vous devez être connecter a facebook pour pouvoir enregistrer un programme.");
       return;
     }
 

@@ -61,6 +61,16 @@ app.factory('utils', function($http, $q, Facebook) {
     angular.forEach(exercise.steps, function(step, noop) {
       if (step.effort_type == 'time' && !angular.isUndefined(step.length))
         delete step.length;
+
+      if (step.effort_type == 'time' && typeof step.effort === 'string' ) {
+        if (step.effort.endsWith('m') || step.effort.endsWith('mn')) {
+          step.effort = step.effort.replace(/m(n?)$/, '') * 60;
+        } else if (step.effort.endsWith('s') || step.effort.endsWith('sec')) {
+          step.effort = step.effort.replace(/s(ec?)$/, '');
+        }
+      }
+      step.effort = step.effort.toString();
+
       angular.forEach(step, function(k, v) {
         if (angular.isUndefined(k)) delete step[v];
       });
