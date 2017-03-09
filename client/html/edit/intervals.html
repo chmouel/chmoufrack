@@ -4,8 +4,12 @@
   <div class="form-group">
     <label for="repetition" class="control-label col-sm-2">Répétition:</label>
     <div class="col-sm-2">
-      <input select-on-click type="number" maxlength="2" class="form-control" name="repetition" placeholder="Nombre" ng-model="step.laps" required>
+      <input select-on-click type="number" maxlength="2" class="form-control"
+        name="repetition" placeholder="Nombre" ng-model="step.laps" required>
     </div>
+    <label class="help-block" ng-show="forms.intervals.repetition.$error.required">
+      Vous devez specifiez une repetition.
+    </label>
   </div>
 
   <div class="form-group">
@@ -34,6 +38,9 @@
           check-effort-time select-on-click>
         <label class="help-block" ng-show="forms.intervals.effort.$error.invalidEffortFormat">
           Vous devez specifiez un format du genre: 3mn ou 30s
+        </label>
+        <label class="help-block" ng-show="forms.intervals.effort.$error.required">
+          Vous devez ajouter un temps d'effort
         </label>
       </div>
     </div>

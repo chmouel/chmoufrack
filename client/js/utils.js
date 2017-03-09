@@ -102,12 +102,8 @@ app.directive('checkEffortTime', function() {
     require: 'ngModel',
     link: function(scope, element, attr, mCtrl) {
       function myValidation(value) {
-        if (value.length < 2) {
-          mCtrl.$setValidity('invalidEffortFormat', true);
-          return;
-        }
         if (value === '') {
-          element.addClass('has-error');
+          mCtrl.$setValidity('required', false);
           mCtrl.$setValidity('invalidEffortFormat', true);
           return;
         }
@@ -115,10 +111,9 @@ app.directive('checkEffortTime', function() {
             value.substr(value.length-1) == "s" ||
             value.substr(value.length-2) == "mn" ||
             value.substr(value.length-2) == "sec") {
-          element.addClass('has-error');
           mCtrl.$setValidity('invalidEffortFormat', true);
         } else {
-          element.removeClass('has-error');
+          mCtrl.$setValidity('required', true);
           mCtrl.$setValidity('invalidEffortFormat', false);
         }
         return value;
