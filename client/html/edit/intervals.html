@@ -1,4 +1,4 @@
-<form name="intervals" class="form-horizontal" novalidate>
+<form name="forms.intervals" class="form-horizontal" novalidate>
   <span class="label label-success">Fractionnée</span>
 
   <div class="form-group">
@@ -18,22 +18,37 @@
       </select>
     </div>
 
-    <label ng-show="step.effort_type == 'distance'" for="unit" class="control-label col-sm-3">Distance en mètres:</label>
-    <label ng-show="step.effort_type == 'time'" for="unit" class="control-label col-sm-3">Temps d'effort:</label>
-    <div class="col-sm-3">
-      <input name="effort-distance" select-on-click type="number" maxlength="9" class="form-control" placeholder="Distance en mètres" ng-show="step.effort_type == 'distance'" ng-model="step.length" required>
-      <input name="effort-time" select-on-click type="text" maxlength="9" class="form-control" placeholder="Temps" ng-show="step.effort_type == 'time'" ng-model="step.effort">
+    <div ng-show="step.effort_type == 'distance'">
+      <label for="unit" class="control-label col-sm-3">Distance en mètres:</label>
+      <div class="col-sm-3">
+        <input name="effort" select-on-click type="number" maxlength="9"
+          class="form-control" placeholder="Distance en mètres"
+          ng-model="step.length" required>
+      </div>
+    </div>
+    <div ng-show="step.effort_type == 'time'">
+      <label for="unit" class="control-label col-sm-3">Temps d'effort:</label>
+      <div class="col-sm-3">
+        <input name="effort" type="text" maxlength="9" class="form-control"
+          placeholder="Temps" ng-model="step.effort"
+          check-effort-time select-on-click>
+        <label class="help-block" ng-show="forms.intervals.effort.$error.invalidEffortFormat">
+          Vous devez specifiez un format du genre: 3mn ou 30s
+        </label>
+      </div>
     </div>
   </div>
 
   <div class="form-group">
     <label for="vma" class="control-label col-sm-1">VMA:</label>
     <div class="col-sm-3">
-      <input type="number" maxlength="3" class="form-control" name="vma" placeholder="Pourcentage" ng-model="step.percentage" required>
+      <input type="number" maxlength="3" class="form-control" name="vma"
+        placeholder="Pourcentage" ng-model="step.percentage" required>
     </div>
     <label for="rest" class="control-label col-sm-1">Repos:</label>
     <div class="col-sm-7">
-      <textarea class="form-control" placeholder="Temps ou distance de repos" ng-model="step.rest" rows="2" name="rest"></textarea>
+      <textarea class="form-control" placeholder="Temps ou distance de repos"
+        ng-model="step.rest" rows="2" name="rest"></textarea>
     </div>
   </div>
 

@@ -1,4 +1,6 @@
 app.controller("EditController", function($scope, $http, $routeParams, utils, $location, $window) {
+  $scope.forms = {};
+
   $scope.exercise = {};
   $scope.exercise.steps = [];
 
@@ -49,6 +51,8 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   ];
 
   $scope.submit = function() {
+    console.log($scope.forms);
+    return;
     if (!$scope.facebook.loggedIn) {
       $scope.error = "Vous devez être connecter a facebook pour pouvoir enregistrer un programme.";
       $window.scrollTo(0, 0);

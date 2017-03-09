@@ -96,3 +96,34 @@ app.filter('secondsToHms', function() {
       return hDisplay + mDisplay + sDisplay;
     };
 });
+
+app.directive('checkEffortTime', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attr, mCtrl) {
+      function myValidation(value) {
+        if (value.length < 2) {
+          mCtrl.$setValidity('invalidEffortFormat', true);
+          return;
+        }
+        if (value === '') {
+          element.addClass('has-error');
+          mCtrl.$setValidity('invalidEffortFormat', true);
+          return;
+        }
+        if (value.substr(value.length-1) == "m" ||
+            value.substr(value.length-1) == "s" ||
+            value.substr(value.length-2) == "mn" ||
+            value.substr(value.length-2) == "sec") {
+          element.addClass('has-error');
+          mCtrl.$setValidity('invalidEffortFormat', true);
+        } else {
+          element.removeClass('has-error');
+          mCtrl.$setValidity('invalidEffortFormat', false);
+        }
+        return value;
+      }
+      mCtrl.$parsers.push(myValidation);
+    }
+  };
+});

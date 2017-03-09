@@ -111,3 +111,9 @@
     box-shadow: inset 0 0 0 1px #6e8594;
     border-radius: 8px;
 }
+
+
+.help-block {
+  display: block;
+  color: red;
+}
