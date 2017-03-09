@@ -9,7 +9,8 @@
         name="repetition" placeholder="Nombre" ng-model="step.laps" required>
     </div>
 
-    <label class="help-block" ng-show="forms['intervals_' + $index].repetition.$error.required">
+    <label class="help-block"
+      ng-show="forms['intervals_' + $index].repetition.$dirty && forms['intervals_' + $index].repetition.$error.required">
       Vous devez specifiez une repetition.
     </label>
   </div>
@@ -28,11 +29,12 @@
     <div ng-show="step.effort_type == 'distance'">
       <label for="unit" class="control-label col-sm-3">Distance en mètres:</label>
       <div class="col-sm-3">
-        <input name="effortd" select-on-click type="text" maxlength="9"
+        <input name="effortd" select-on-click type="number" maxlength="9"
           class="form-control" placeholder="Distance en mètres"
           ng-model="step.length" required>
 
-        <label class="help-block" ng-show="forms['intervals_' + $index].effortd.$error.required">
+        <label class="help-block"
+          ng-show="forms['intervals_' + $index].effortd.$dirty && forms['intervals_' + $index].effortd.$error.required">
           Vous devez specifiez des metres.
         </label>
       </div>
@@ -43,10 +45,12 @@
         <input name="effortt" type="text" maxlength="9" class="form-control"
           placeholder="Temps" ng-model="step.effort"
           check-effort-time select-on-click>
-        <label class="help-block" ng-show="forms['intervals_' + $index].effortt.$error.invalidEffortFormat">
+        <label class="help-block"
+          ng-show="forms['intervals_' + $index].effortt.$dirty && forms['intervals_' + $index].effortt.$error.invalidEffortFormat">
           Vous devez specifiez un format du genre: 3mn ou 30s.
         </label>
-        <label class="help-block" ng-show="forms['intervals_' + $index].effortt.$error.required">
+        <label class="help-block"
+          ng-show="forms['intervals_' + $index].effortt.$dirty && forms['intervals_' + $index].effortt.$error.required">
           Vous devez ajouter un temps d'effort.
         </label>
       </div>
@@ -59,7 +63,8 @@
     <div class="col-sm-3">
       <input type="number" maxlength="3" class="form-control" name="vma"
         placeholder="Pourcentage" ng-model="step.percentage" required>
-      <label class="help-block" ng-show="forms['intervals_' + $index].vma.$error.required">
+      <label class="help-block"
+        ng-show="forms['intervals_' + $index].vma.$dirty && forms['intervals_' + $index].vma.$error.required">
         Vous devez mettre une VMA
       </label>
     </div>

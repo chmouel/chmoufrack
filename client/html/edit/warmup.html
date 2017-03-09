@@ -5,7 +5,9 @@
       <i class="glyphicon glyphicon-hand-up"></i>
     </span>
     <input name="effort" select-on-click ng-model="step.effort" type="text" class="form-control" placeholder="Distance ou temps" required>
-    <label class="help-block" ng-show="forms['warmup_' + $index].effort.$error.required">
+
+    <label class="help-block"
+      ng-show="forms['warmup_' + $index].effort.$dirty && forms['warmup_' + $index].effort.$error.required">
       Vous devez specifiez un échauffement.
     </label>
 
