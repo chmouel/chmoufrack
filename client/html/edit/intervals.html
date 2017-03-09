@@ -1,17 +1,20 @@
-<form name="forms.intervals" class="form-horizontal" novalidate>
+<form name="forms.intervals_{{$index}}" class="form-horizontal" novalidate>
   <span class="label label-success">Fractionnée</span>
 
+  <!-- formgroup -->
   <div class="form-group">
     <label for="repetition" class="control-label col-sm-2">Répétition:</label>
     <div class="col-sm-2">
       <input select-on-click type="number" maxlength="2" class="form-control"
         name="repetition" placeholder="Nombre" ng-model="step.laps" required>
     </div>
-    <label class="help-block" ng-show="forms.intervals.repetition.$error.required">
+
+    <label class="help-block" ng-show="forms['intervals_' + $index].repetition.$error.required">
       Vous devez specifiez une repetition.
     </label>
   </div>
 
+  <!-- formgroup -->
   <div class="form-group">
     <label for="unit" class="control-label col-sm-2">Type d'effort:</label>
     <div class="col-sm-2">
@@ -25,32 +28,40 @@
     <div ng-show="step.effort_type == 'distance'">
       <label for="unit" class="control-label col-sm-3">Distance en mètres:</label>
       <div class="col-sm-3">
-        <input name="effort" select-on-click type="number" maxlength="9"
+        <input name="effortd" select-on-click type="text" maxlength="9"
           class="form-control" placeholder="Distance en mètres"
           ng-model="step.length" required>
+
+        <label class="help-block" ng-show="forms['intervals_' + $index].effortd.$error.required">
+          Vous devez specifiez des metres.
+        </label>
       </div>
     </div>
     <div ng-show="step.effort_type == 'time'">
       <label for="unit" class="control-label col-sm-3">Temps d'effort:</label>
       <div class="col-sm-3">
-        <input name="effort" type="text" maxlength="9" class="form-control"
+        <input name="effortt" type="text" maxlength="9" class="form-control"
           placeholder="Temps" ng-model="step.effort"
           check-effort-time select-on-click>
-        <label class="help-block" ng-show="forms.intervals.effort.$error.invalidEffortFormat">
-          Vous devez specifiez un format du genre: 3mn ou 30s
+        <label class="help-block" ng-show="forms['intervals_' + $index].effortt.$error.invalidEffortFormat">
+          Vous devez specifiez un format du genre: 3mn ou 30s.
         </label>
-        <label class="help-block" ng-show="forms.intervals.effort.$error.required">
-          Vous devez ajouter un temps d'effort
+        <label class="help-block" ng-show="forms['intervals_' + $index].effortt.$error.required">
+          Vous devez ajouter un temps d'effort.
         </label>
       </div>
     </div>
   </div>
 
+  <!-- formgroup -->
   <div class="form-group">
     <label for="vma" class="control-label col-sm-1">VMA:</label>
     <div class="col-sm-3">
       <input type="number" maxlength="3" class="form-control" name="vma"
         placeholder="Pourcentage" ng-model="step.percentage" required>
+      <label class="help-block" ng-show="forms['intervals_' + $index].vma.$error.required">
+        Vous devez mettre une VMA
+      </label>
     </div>
     <label for="rest" class="control-label col-sm-1">Repos:</label>
     <div class="col-sm-7">

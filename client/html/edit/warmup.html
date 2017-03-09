@@ -1,9 +1,13 @@
-<form name="forms.warmup" class="form-horizontal" novalidate>
+<form name="forms.warmup_{{$index}}" class="form-horizontal" novalidate>
   <span class="label label-warning">Échauffement</span>
   <div class="input-group">
     <span class="input-group-addon">
       <i class="glyphicon glyphicon-hand-up"></i>
     </span>
-    <input name="effort" select-on-click ng-model="step.effort" type="text" class="form-control" placeholder="Distance ou temps">
+    <input name="effort" select-on-click ng-model="step.effort" type="text" class="form-control" placeholder="Distance ou temps" required>
+    <label class="help-block" ng-show="forms['warmup_' + $index].effort.$error.required">
+      Vous devez specifiez un échauffement.
+    </label>
+
   </div>
 </form>
