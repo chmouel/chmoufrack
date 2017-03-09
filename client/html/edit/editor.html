@@ -13,13 +13,13 @@
 
 
   <div class="step" ng-repeat="step in exercise.steps">
-    <span ng-show="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
+    <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
 
-    <span ng-show="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
+    <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
 
-    <span ng-show="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
+    <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
 
-    <span ng-show="step.type == 'repeat'" ng-include="'html/edit/repeat.html'"></span>
+    <span ng-if="step.type == 'repeat'" ng-include="'html/edit/repeat.html'"></span>
 
     <div class="text-right">
       <a href ng-click="swapUp($index, exercise)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
