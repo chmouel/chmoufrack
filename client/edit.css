@@ -102,17 +102,14 @@
 }
 
 .rest2 {
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-right: 25px;
-    color: #000000;
-    border-radius: 8px;
+    padding: 5px;
+    margin: 5px;
 }
 
 .rest2 pre {
     white-space: pre-line;
+    background: #ffffff;
+    border: 0;
 }
 
 
