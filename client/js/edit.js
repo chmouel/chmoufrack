@@ -63,9 +63,11 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
         return;
       angular.forEach(p.$error, function(e, noop) {
         angular.forEach(e, function(a, noop) {
+          // NOTE: if we chose time and we have a distance not defined then it's fine
           if (a.$name == 'effortd' && a.$$parentForm.unit.$viewValue == 'time') {
             return;
           }
+          // NOTE: same as before
           if (a.$name == 'effortt' && a.$$parentForm.unit.$viewValue == 'distance') {
             return;
           }
@@ -75,7 +77,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
     });
 
     if (err) {
-      showError("Vous avez une erreur dans les donnees de la forme");
+      showError("Vous avez une erreur a corrigez");
       return;
     }
 

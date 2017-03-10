@@ -69,7 +69,9 @@ app.factory('utils', function($http, $q, Facebook) {
           step.effort = step.effort.replace(/s(ec?)$/, '');
         }
       }
-      step.effort = step.effort.toString();
+      if (angular.isDefined(step.effort)) {
+        step.effort = step.effort.toString();
+      }
 
       angular.forEach(step, function(k, v) {
         if (angular.isUndefined(k)) delete step[v];
