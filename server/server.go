@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"strconv"
+
 	fb "github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
 )
@@ -17,20 +19,19 @@ func FBCheck() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		fbid := c.Query("fbID")
 		token := c.Request.Header["Authorization"][0]
 
 		if len(token) > 6 && strings.ToUpper(token[0:6]) == "BEARER" {
 			token = token[7:]
 		}
 
-		if fbid == "" || token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a fbid or token for this query"})
+		if token == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a token for this query"})
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		_, err := fb.Get("/"+fbid, fb.Params{
+		_fb, err := fb.Get("/me", fb.Params{
 			"access_token": token,
 		})
 		if err != nil {
@@ -38,6 +39,22 @@ func FBCheck() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
+		var fbInfo FBinfo
+		err = _fb.Decode(&fbInfo)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while decoding: " + err.Error()})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		s := _fb.Get("id").(string)
+		fbInfo.ID, err = strconv.Atoi(s)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while decoding FBid: " + err.Error()})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Set("FBInfo", fbInfo)
 		c.Next()
 	}
 }

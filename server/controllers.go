@@ -20,19 +20,17 @@ func handle_error_nf_bad(c *gin.Context, err error) {
 func POSTExercise(c *gin.Context) {
 	var exercise Exercise
 	var err error
-	var fbID int
-
-	if c.Query("fbID") != "" {
-		if fbID, err = strconv.Atoi(c.Query("fbID")); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-	}
 
 	if err := c.Bind(&exercise); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	exercise.FBid = fbID
+
+	v, exist := c.Get("FBInfo")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Why FBinfo do not exist, this should not happen"})
+	}
+	exercise.FB = v.(FBinfo)
 
 	_, err = addExercise(exercise)
 	if err != nil {

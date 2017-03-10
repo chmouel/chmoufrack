@@ -1,22 +1,3 @@
-app.controller('ProgramIndexController', function($scope, utils) {
-  $scope.programIndex = {};
-  var myPromise = utils.getExercises();
-  myPromise.then(function(data) {
-    angular.forEach(data, function(p, noop) {
-      if (p.name !== "") {
-        $scope.programIndex[p.name] = {};
-        $scope.programIndex[p.name].name = p.name;
-        if (p.steps) {
-          $scope.programIndex[p.name].totalWorkout = p.steps.length;
-        }
-        $scope.programIndex[p.name].comment = p.comment;
-        $scope.programIndex[p.name].id = p.id;
-        $scope.programIndex[p.name].fbID = p.fbID;
-      }
-    });
-  });
-});
-
 app.controller('CalculController', function($scope, utils) {
   var trackLength = 400;
 

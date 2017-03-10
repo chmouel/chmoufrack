@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"strconv"
 
 	"os"
 
@@ -39,12 +38,8 @@ func main() {
 	}
 
 	if *initDBbool != "" {
-		facebookId, err := strconv.Atoi(*initDBbool)
-		if err != nil {
-			log.Fatal(err)
-		}
 		fmt.Println("Adding Fixtures to DB")
-		err = server.InitFixturesDB(facebookId)
+		err = server.InitFixturesDB(*initDBbool)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -154,12 +154,14 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
 	var nComment sql.NullString
 
-	sqlT := `SELECT id, name, fbID, comment from Exercise where id=?`
+	sqlT := `SELECT e.id,e.name,e.comment,f.fbid,f.name as fbname,f.link FROM Exercise e LEFT JOIN FBinfo f on f.FBId=e.FBId WHERE e.id=?`
 	err = DB.QueryRow(sqlT, ID).Scan(
 		&exercise.ID,
 		&exercise.Name,
-		&exercise.FBid,
 		&nComment,
+		&exercise.FB.ID,
+		&exercise.FB.Name,
+		&exercise.FB.Link,
 	)
 
 	if nComment.Valid {
@@ -201,19 +203,29 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 	}
 
 	//TODO: better ACL than that
-	if ACL && oldFbID != 0 && exercise.FBid != oldFbID {
+	if ACL && oldFbID != 0 && exercise.FB.ID != oldFbID {
 		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
 	}
 
 	am := ArgsMap{
 		"name":    exercise.Name,
 		"comment": exercise.Comment,
-		"fbID":    exercise.FBid,
+		"fbID":    exercise.FB.ID,
 	}
 	if oldId != 0 {
 		am["id"] = oldId
 	}
 	lastid, err = SQLInsertOrUpdate("Exercise", oldId, am)
+	if err != nil {
+		return
+	}
+
+	am = ArgsMap{
+		"FBid": exercise.FB.ID,
+		"name": exercise.FB.Name,
+		"link": exercise.FB.Link,
+	}
+	_, err = SQLInsertOrUpdate("FBinfo", oldId, am)
 	if err != nil {
 		return
 	}

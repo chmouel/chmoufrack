@@ -83,3 +83,23 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
   };
 
 });
+
+app.controller('ProgramIndexController', function($scope, utils) {
+    $scope.programIndex = {};
+    var myPromise = utils.getExercises();
+    myPromise.then(function(data) {
+        angular.forEach(data, function(p, noop) {
+            if (p.name !== "") {
+                $scope.programIndex[p.name] = {};
+                $scope.programIndex[p.name].name = p.name;
+                if (p.steps) {
+                    $scope.programIndex[p.name].totalWorkout = p.steps.length;
+                }
+                $scope.programIndex[p.name].comment = p.comment;
+                $scope.programIndex[p.name].id = p.id;
+                console.log(p);
+                $scope.programIndex[p.name].fb = p.fb;
+            }
+        });
+    });
+});

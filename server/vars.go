@@ -36,12 +36,18 @@ type Step struct {
 	Position   int     `json:"-"`
 }
 
+type FBinfo struct {
+	ID   int    `json:"id" facebook:"-"`
+	Name string `json:"name"`
+	Link string `json:"link"`
+}
+
 type Exercise struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name" binding:"required"`
 	Comment string `json:"comment,omitempty" yaml:"comment,omitempty"`
 	Steps   `json:"steps,omitempty"`
-	FBid    int `json:"fbID"`
+	FB      FBinfo `json:"fb"`
 }
 
 type Repeats struct {

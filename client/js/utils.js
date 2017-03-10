@@ -48,7 +48,6 @@ app.factory('utils', function($http, $q, Facebook) {
 
   var fbURLarg = function getURLarg() {
     var req = {
-      url: 'fbID=' + utils.facebookInfo.id,
       headers: {
         'Authorization': "Bearer " + utils.facebookInfo.accessToken
       }
@@ -79,17 +78,17 @@ app.factory('utils', function($http, $q, Facebook) {
     });
 
     var req = fbURLarg();
-    req.url = '/v1/exercise?' + req.url;
+    req.url = '/v1/exercise';
     req.method = 'POST';
     req.data = exercise;
     return $http(req);
   };
 
   utils.deleteExercise = function(t) {
-    var req = fbURLarg();
-    req.url = '/v1/exercise/' + t + '?' + req.url;
-    req.method = 'DELETE';
-    return $http(req);
+      var req = fbURLarg();
+      req.url = '/v1/exercise/' + t;
+      req.method = 'DELETE';
+      return $http(req);
   };
 
   return utils;

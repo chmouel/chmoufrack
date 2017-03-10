@@ -3,10 +3,21 @@ package server
 import (
 	"database/sql"
 
+	"strconv"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var sqlTable = `
+CREATE TABLE IF NOT EXISTS FBinfo (
+	ID int NOT NULL AUTO_INCREMENT,
+	FBId bigint not null,
+	name varchar(255) not null,
+	link varchar(255) not null,
+	PRIMARY KEY(ID),
+	CONSTRAINT uc_U UNIQUE (FBid,name,link)
+);
+
 CREATE TABLE IF NOT EXISTS Exercise (
 	ID int NOT NULL AUTO_INCREMENT,
 	name varchar(255) NOT NULL,
@@ -85,8 +96,15 @@ var SQLresetDB = `
 
 type ArgsMap map[string]interface{}
 
-func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, facebookid int) (e Exercise) {
+func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, facebookid string) (e Exercise) {
 	var steps Steps
+
+	f, _ := strconv.Atoi(facebookid)
+	fbinfo := FBinfo{
+		ID:   f,
+		Name: "Chmou EL",
+		Link: "http://facebook.com/profile/id",
+	}
 
 	step1 := Step{
 		Type:       "warmup",
@@ -115,7 +133,7 @@ func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, len
 		Name:    exerciceName,
 		Comment: "NoComment",
 		Steps:   steps,
-		FBid:    facebookid,
+		FB:      fbinfo,
 	}
 	return
 }
@@ -207,10 +225,9 @@ func DBConnect(dbconnection string, reset string) (err error) {
 	return
 }
 
-func InitFixturesDB(facebookid int) (err error) {
+func InitFixturesDB(facebookid string) (err error) {
 	_, err = DB.Exec(SQLresetDB)
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, facebookid)
-
 	var repeatSteps Steps
 	repeatStep := Step{
 		Laps:       6,
