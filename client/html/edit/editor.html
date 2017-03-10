@@ -4,42 +4,43 @@
 <div ng-show="success" ng-bind-html="success" class="alert alert-success">
 </div>
 
-<div class="editor">
-  <strong>Nom de la Séance</strong>:
-  <input select-on-click type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name" required>
+<form class="form-horizontal" name="edit" novalidate>
+  <div class="editor">
+    <strong>Nom de la Séance</strong>:
+    <input select-on-click type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name" required>
 
-  <strong>Commentaire sur la Séance</strong>:
-  <textarea select-on-click type="text" maxlength="1024" rows="2" class="form-control" name="comment" ng-model="exercise.comment" required></textarea>
+    <strong>Commentaire sur la Séance</strong>:
+    <textarea select-on-click type="text" maxlength="1024" rows="2" class="form-control" name="comment" ng-model="exercise.comment" required></textarea>
 
 
-  <div class="step" ng-repeat="step in exercise.steps">
-    <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
+    <div class="step" ng-repeat="step in exercise.steps">
+      <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
 
-    <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
+      <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
 
-    <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
+      <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
 
-    <span ng-if="step.type == 'repeat'" ng-include="'html/edit/repeat.html'"></span>
+      <span ng-if="step.type == 'repeat'" ng-include="'html/edit/repeat.html'"></span>
 
-    <div class="text-right">
-      <a href ng-click="swapUp($index, exercise)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
-      <a href ng-click="swapDown($index, exercise)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
-      <a href ng-click="removeStep($index, exercise)"><i class="glyphicon glyphicon-remove"></i></a>
+      <div class="text-right">
+        <a href ng-click="swapUp($index, exercise)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
+        <a href ng-click="swapDown($index, exercise)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
+        <a href ng-click="removeStep($index, exercise)"><i class="glyphicon glyphicon-remove"></i></a>
 
-      <span ng-show="step.type == 'repeat'"> <!-- plus a new only when a repeat -->
-        <a href class="dropdown-toggle" data-toggle="dropdown">
-          <i class="glyphicon glyphicon-plus"></i>
-        </a>
-        <ul class="dropdown-menu pull-right">
-          <li><a href ng-click="addNewIntervals(step.repeat)">Fractionnée</a></li>
-          <li><a href ng-click="addNewWarmupWarmdown('warmup', step.repeat)">Échauffement</a></li>
-          <li><a href ng-click="addNewWarmupWarmdown('warmdown', step.repeat)">Récupération</a></li>
-        </ul>
-      </span>
-    </div>
-  </div> <!-- ng-repeat -->
-</div>
-
+        <span ng-show="step.type == 'repeat'"> <!-- plus a new only when a repeat -->
+          <a href class="dropdown-toggle" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-plus"></i>
+          </a>
+          <ul class="dropdown-menu pull-right">
+            <li><a href ng-click="addNewIntervals(step.repeat)">Fractionnée</a></li>
+            <li><a href ng-click="addNewWarmupWarmdown('warmup', step.repeat)">Échauffement</a></li>
+            <li><a href ng-click="addNewWarmupWarmdown('warmdown', step.repeat)">Récupération</a></li>
+          </ul>
+        </span>
+      </div>
+    </div> <!-- ng-repeat -->
+  </div>
+</form>
 
 <ul class="list-inline text-center">
   <li>
