@@ -57,7 +57,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   };
 
   $scope.submit = function() {
-    console.log($scope.forms);
+
     var err = null;
     angular.forEach($scope.forms, function(p, noop) {
       if (Object.keys(p.$error).length === 0)
@@ -89,8 +89,21 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
 
     // NOTE(chmou): If a rename delete the old one
     if (angular.isDefined($routeParams.name) && $scope.exercise.name != $routeParams.name) {
+      var exist = false;
+      angular.forEach($scope.programs, function(p, noop) {
+        if ($scope.exercise.name == p.name)
+          exist = true;
+      });
+      if (exist) {
+        showError('Vous ne pouvez pas renommer un programme vers ' +
+                  'le nom <b>' + $scope.exercise.name +
+                  '</b> qui existe, <a href="/#!/edit/' +
+                  $scope.exercise.name +'">supprimez</a> le d\'abord.');
+        return;
+      }
       $scope.delete($routeParams.name);
     }
+
 
     utils.submitExercise($scope.exercise).then(function(result) {
       $scope.error = false;

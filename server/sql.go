@@ -100,7 +100,6 @@ func getSteps(exerciseType string, targetID int, steps *[]Step) (err error) {
 		return
 	}
 
-	//TODO: cleanup
 	getRepeatSQL := `SELECT id, repeats, position from Repeats where exerciseID=?`
 	rows, err = DB.Query(getRepeatSQL, targetID)
 	for rows.Next() {
