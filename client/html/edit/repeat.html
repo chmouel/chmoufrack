@@ -32,11 +32,9 @@
         <a href ng-click="removeStep($index, orig)"><i class="glyphicon glyphicon-remove"></i></a>
       </div>
 
-      <span ng-show="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
-
-      <span ng-show="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
-
-      <span class="repeatStep" ng-show="step.type == 'interval'" ng-include="'html/edit/intervals.html'"></span>
+      <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
+      <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
+      <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'" class="repeatStep"></span>
 
     </div> <!-- ng-repeat -->
   </span>
