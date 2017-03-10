@@ -4,14 +4,18 @@
 <div ng-show="success" ng-bind-html="success" class="alert alert-success">
 </div>
 
-<form class="form-horizontal" name="edit" novalidate>
+<form class="form-horizontal" name="forms.edit" novalidate>
   <div class="editor">
     <strong>Nom de la Séance</strong>:
-    <input select-on-click type="text" maxlength="1024" class="form-control" name="distance" ng-model="exercise.name" required>
+    <input select-on-click type="text" maxlength="1024" class="form-control" name="name" ng-model="exercise.name" required>
+    <label class="help-block"
+      ng-show="forms.edit.name.$dirty && forms.edit.name.$error.required">
+      Vous devez spécifier un nom.
+    </label>
+
 
     <strong>Commentaire sur la Séance</strong>:
     <textarea select-on-click type="text" maxlength="1024" rows="2" class="form-control" name="comment" ng-model="exercise.comment" required></textarea>
-
 
     <div class="step" ng-repeat="step in exercise.steps">
       <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
