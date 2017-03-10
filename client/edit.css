@@ -101,12 +101,12 @@
     margin: 10px;
 }
 
-.rest2 {
+.comment {
     padding: 5px;
     margin: 5px;
 }
 
-.rest2 pre {
+.comment pre {
     white-space: pre-line;
     background: #ffffff;
     border: 0;
