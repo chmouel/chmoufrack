@@ -1,36 +1,41 @@
-
-<div class="block-header">
-  <img width="28px" height="24px" src="img/repeat.png"/>
-  Répétition
-</div>
-
-<div class="form-group">
-  <div class="col-sm-12">
-    <strong>Repetitions</strong>:
-    <input name="repeat" select-on-click type="number" maxlength="2" class="form-control" ng-model="step.repeat.repeat" required>
+<ng-form class="form-horizontal" name="forms.repeat_{{$index}}" novalidate>
+  <div class="block-header">
+    <img width="28px" height="24px" src="img/repeat.png"/>
+    Répétition
   </div>
-</div>
 
-<div ng-hide="step.repeat.steps.length" class="alert alert-info">
-  <strong>Pas d'exercise ajouter encore</strong>, clique sur l'icone plus <i class="glyphicon glyphicon-plus"></i> pour en rajouter un.
-</div>
+  <div class="form-group">
+    <div class="col-sm-12">
+      <strong>Repetitions</strong>:
+      <input name="repeat" select-on-click type="number" maxlength="2" class="form-control" ng-model="step.repeat.repeat" required>
+      <label class="help-block"
+        ng-show="forms['repeat_' + $index].repeat.$dirty && forms['repeat_' + $index].repeat.$error.required">
+        Vous devez spécifier un nombre de répétition.
+      </label>
+    </div>
+  </div>
 
-<div class="block-repeat">
-  <!-- TODO: commonalize with editor.html -->
+  <div ng-hide="step.repeat.steps.length" class="alert alert-info">
+    <strong>Pas d'exercise ajouter encore</strong>, clique sur l'icone plus <i class="glyphicon glyphicon-plus"></i> pour en rajouter un.
+  </div>
 
-  <span ng-init="orig = step.repeat">
-    <div class="step" ng-repeat="step in step.repeat.steps">
-      <div class="text-center">
-        <a href ng-click="swapUp($index, orig)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
-        <a href ng-click="swapDown($index, orig)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
-        <a href ng-click="removeStep($index, orig)"><i class="glyphicon glyphicon-remove"></i></a>
-      </div>
+  <div class="block-repeat">
+    <!-- TODO: commonalize with editor.html -->
 
-      <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
-      <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
-      <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'" class="repeatStep"></span>
+    <span ng-init="orig = step.repeat">
+      <div class="step" ng-repeat="step in step.repeat.steps">
+        <div class="text-center">
+          <a href ng-click="swapUp($index, orig)"><i ng-hide="$first" class="glyphicon glyphicon-chevron-up"></i></a>
+          <a href ng-click="swapDown($index, orig)"><i ng-hide="$last" class="glyphicon glyphicon-chevron-down"></i></a>
+          <a href ng-click="removeStep($index, orig)"><i class="glyphicon glyphicon-remove"></i></a>
+        </div>
 
-    </div> <!-- ng-repeat -->
-  </span>
+        <span ng-if="step.type == 'warmup'" ng-include="'html/edit/warmup.html'"></span>
+        <span ng-if="step.type == 'warmdown'" ng-include="'html/edit/warmdown.html'"></span>
+        <span ng-if="step.type == 'interval'" ng-include="'html/edit/intervals.html'" class="repeatStep"></span>
 
-</div>
+      </div> <!-- ng-repeat -->
+    </span>
+
+  </div>
+</form>

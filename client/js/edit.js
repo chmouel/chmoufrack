@@ -57,6 +57,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   };
 
   $scope.submit = function() {
+    console.log($scope.forms);
     var err = null;
     angular.forEach($scope.forms, function(p, noop) {
       if (Object.keys(p.$error).length === 0)

@@ -4,7 +4,7 @@
 <div ng-show="success" ng-bind-html="success" class="alert alert-success">
 </div>
 
-<form class="form-horizontal" name="forms.edit" novalidate>
+<ng-form class="form-horizontal" name="forms.edit" novalidate>
   <div class="editor">
     <strong>Nom de la Séance</strong>:
     <input select-on-click type="text" maxlength="1024" class="form-control" name="name" ng-model="exercise.name" required>
