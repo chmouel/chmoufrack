@@ -33,12 +33,7 @@ app.factory('utils', function($http, $q, Facebook) {
       method: "GET",
       url: "/v1/exercises"
     }).then(function(result) {
-      if (typeof (result.data) === 'string' &&
-        result.data.trim() == "null" && counter < 3) {
-        console.log("retry");
-        utils.getExercises();
-      }
-      return result.data;
+        return result.data;
     });
   };
 
