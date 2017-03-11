@@ -3,8 +3,9 @@ Description=Run ChmouFrack
 
 [Service]
 Type=idle
+Environment="GIN_MODE=release"
 WorkingDirectory=/usr/local/go/src/github.com/chmouel/chmoufrack/
-ExecStart=/usr/local/go/src/github.com/chmouel/chmoufrack/frack -dblocation /home/chmoufrack/.config/frack/frack.db -staticHTML /var/www/chmoufrack/client
+ExecStart=/usr/local/go/src/bin/frack -db 'user:pasword/db' -staticHTML /usr/local/go/src/github.com/chmouel/chmoufrack/client -port 9091
 User=chmoufrack
 TimeoutStopSec=1
 Restart=always
