@@ -20,6 +20,11 @@
     padding: 10px;
 }
 
+.tableCommentheader {
+    text-align: right;
+    padding: 2px;
+}
+
 .list-inline>li {
     margin-right: -7px;
 }

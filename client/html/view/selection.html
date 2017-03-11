@@ -4,22 +4,18 @@
       <h3 class="text-center"><strong><a href>{{p.name}}</a></strong></h3>
     </div>
     <div class="tableComment">
-      <div class="row">
-        <div class="col-md-4">
-          <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
-        </div>
-        <div ng-show="facebook.loggedIn && facebook.info.id == p.fb.id" class="text-left col-md-4">
-          <b>Editer Programme</b>: <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
-        </div>
-        <div ng-show="!facebook.loggedIn" class="col-md-4">
-        </div>
-        <div class="col-md-4 text-right">
-          <b>Ajouter par:</b>&nbsp;
-          <a href="{{p.fb.link}}">
-            <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
-            {{p.fb.name}}
-          </a>
-        </div>
+      <div class="tableCommentheader">
+        <strong>Exercices</strong>: {{p.totalWorkout}}
+        <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
+          &nbsp;|&nbsp;
+          <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
+        </span>
+        &nbsp;|&nbsp;
+        <b>Auteur:</b>&nbsp;
+        <a href="{{p.fb.link}}">
+          <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
+          {{p.fb.name}}
+        </a>
       </div>
       <div ng-click="switchtoProgram(p.name)" class="row" ng-show="p.comment">
         <div class="text-justify comment">
