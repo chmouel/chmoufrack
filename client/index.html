@@ -55,10 +55,11 @@
 
   </head>
   <body ng-app="Frack" ng-controller="ViewController">
-    <a ng-href="{{rootUrl}}">
-      <img class="img-responsive img-rounded" alt="banner" src="img/banner.png">
-    </a>
-
+    <div class="img-banner img-responsive img-rounded">
+      <a ng-href="{{rootUrl}}">
+        <img class="img-responsive img-rounded" alt="banner" src="img/banner.png">
+      </a>
+    </div>
     <div class="container-fluid">
 
       <div ng-view></div>
