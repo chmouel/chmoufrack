@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS FBinfo (
 
 CREATE TABLE IF NOT EXISTS Exercise (
 	ID int NOT NULL AUTO_INCREMENT,
-	name varchar(255) NOT NULL,
-    comment text,
+	name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    comment text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 	fbID bigint NOT NULL,
     PRIMARY KEY(ID),
 	CONSTRAINT uc_U UNIQUE (ID,name,fbID)
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS Warmup (
 	id int NOT NULL AUTO_INCREMENT,
 	position tinyint DEFAULT 0,
 	effort_type varchar(32) DEFAULT "distance",
-    effort text NOT NULL,
+    effort text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 	repeatID integer,
 	exerciseID integer,
     PRIMARY KEY(ID)
@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS Intervals (
 	laps tinyint NOT NULL,
     length INTEGER NOT NULL,
 	percentage tinyint NOT NULL,
-	rest text,
+	rest text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 	effort_type varchar(32) DEFAULT "distance",
-	effort text, -- storing time in there
+	effort text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 	repeatID integer,
 	exerciseID integer,
     CHECK(repeatID is not NULL or exerciseID is not NULL),
@@ -207,7 +207,7 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 }
 
 func DBConnect(dbconnection string, reset string) (err error) {
-	DB, err = sql.Open("mysql", dbconnection+"?multiStatements=true")
+	DB, err = sql.Open("mysql", dbconnection+"?multiStatements=true&collation=utf8mb4_bin")
 
 	if err != nil {
 		return
