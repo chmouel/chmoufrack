@@ -34,7 +34,9 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 
 		_fb, err := fb.Get("/me", fb.Params{
 			"access_token": token,
+			"fields":       "name,email,link",
 		})
+
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -48,6 +50,7 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
 		s := _fb.Get("id").(string)
 		fbInfo.ID, err = strconv.Atoi(s)
 		if err != nil {
