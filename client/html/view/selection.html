@@ -8,7 +8,7 @@
         <strong>Exercices</strong>: {{p.totalWorkout}}
         <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
           &nbsp;|&nbsp;
-          <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
+          <a href="#!/edit/{{p.name | escape }}"><i class="glyphicon glyphicon-pencil"></i></a>
         </span>
         &nbsp;|&nbsp;
         <b>Auteur:</b>&nbsp;

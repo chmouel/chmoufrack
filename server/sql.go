@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"regexp"
 	"sort"
 )
 
@@ -188,6 +189,14 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	return
 }
 
+func checkBadCharacters(s string) (err error) {
+	var re = regexp.MustCompile(`[/?&].*`)
+	if re.MatchString(s) {
+		return &errorUnauthorized{"You have invalid characters"}
+	}
+	return
+}
+
 func addExercise(exercise Exercise) (lastid int, err error) {
 	var oldFbID string
 	var oldId int
@@ -207,6 +216,10 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
 	}
 
+	err = checkBadCharacters(exercise.Name)
+	if err != nil {
+		return
+	}
 	am := ArgsMap{
 		"name":    exercise.Name,
 		"comment": exercise.Comment,

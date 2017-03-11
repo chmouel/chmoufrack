@@ -33,8 +33,8 @@ app.factory('utils', function($http, $q, Facebook) {
       method: "GET",
       url: "/v1/exercises"
     }).then(function(result) {
-        console.log(result.data[0].fb);
-        return result.data;
+      console.log(result.data[0].fb);
+      return result.data;
     });
   };
 
@@ -81,27 +81,27 @@ app.factory('utils', function($http, $q, Facebook) {
   };
 
   utils.deleteExercise = function(t) {
-      var req = fbURLarg();
-      req.url = '/v1/exercise/' + t;
-      req.method = 'DELETE';
-      return $http(req);
+    var req = fbURLarg();
+    req.url = '/v1/exercise/' + window.encodeURIComponent(t);
+    req.method = 'DELETE';
+    return $http(req);
   };
 
   return utils;
 });
 
 app.filter('secondsToHms', function() {
-    return function(x) {
-      var d = Number(x);
-      var h = Math.floor(d / 3600);
-      var m = Math.floor(d % 3600 / 60);
-      var s = Math.floor(d % 3600 % 60);
+  return function(x) {
+    var d = Number(x);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
 
-      var hDisplay = h > 0 ? h + "h" : "";
-      var mDisplay = m > 0 ? m + "mn " : "";
-      var sDisplay = s > 0 ? s + "s" : "";
-      return hDisplay + mDisplay + sDisplay;
-    };
+    var hDisplay = h > 0 ? h + "h" : "";
+    var mDisplay = m > 0 ? m + "mn " : "";
+    var sDisplay = s > 0 ? s + "s" : "";
+    return hDisplay + mDisplay + sDisplay;
+  };
 });
 
 app.directive('checkEffortTime', function() {
@@ -128,4 +128,30 @@ app.directive('checkEffortTime', function() {
       mCtrl.$parsers.push(myValidation);
     }
   };
+});
+
+
+
+app.directive('checkValidForUrl', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attr, mCtrl) {
+      function myValidation(value) {
+        if (value === '') {
+          mCtrl.$setValidity('invalidURLChar', true);
+          return;
+        }
+        if (/[&?!/]/.test(value)) {
+          mCtrl.$setValidity('invalidURLChar', false);
+        } else {
+          mCtrl.$setValidity('invalidURLChar', true);
+        }
+      }
+      mCtrl.$parsers.push(myValidation);
+    }
+  };
+});
+
+app.filter('escape', function() {
+  return window.encodeURIComponent;
 });

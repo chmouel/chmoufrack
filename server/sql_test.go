@@ -539,3 +539,11 @@ func TestNotExerciseName(t *testing.T) {
 	}
 
 }
+
+func TestBadCharacters(t *testing.T) {
+	s := "foo/bar"
+	err := checkBadCharacters(s)
+	if err == nil {
+		t.Fatalf("We should have detected that we have a bad characters")
+	}
+}

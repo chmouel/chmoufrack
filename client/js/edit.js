@@ -5,7 +5,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   $scope.exercise.steps = [];
 
   if ($routeParams.name) {
-    var res = $http.get('/v1/exercise/' + $routeParams.name);
+    var res = $http.get('/v1/exercise/' + window.encodeURIComponent($routeParams.name));
     res.then(function(response) {
       $scope.exercise = response.data;
     }, function errorCallBack(response) {
