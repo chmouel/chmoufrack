@@ -3,8 +3,7 @@ package server
 import "database/sql"
 
 var (
-	ACL = true
-	DB  *sql.DB
+	DB *sql.DB
 )
 
 type errorUnauthorized struct {

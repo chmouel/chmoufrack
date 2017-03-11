@@ -178,7 +178,6 @@ func getExercise(ID int) (exercise Exercise, err error) {
 
 	err = getSteps("exerciseID", exercise.ID, &steps)
 	if err != nil {
-		fmt.Println(err.Error())
 		return
 	}
 	exercise.Steps = steps
@@ -189,7 +188,7 @@ func getExercise(ID int) (exercise Exercise, err error) {
 
 func addExercise(exercise Exercise) (lastid int, err error) {
 	var oldFbID int
-	var oldId = 0
+	var oldId int
 	if exercise.Name == "" {
 		return -1, errors.New("You need to specify an exercise Name")
 	}
@@ -202,8 +201,7 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 		return
 	}
 
-	//TODO: better ACL than that
-	if ACL && oldFbID != 0 && exercise.FB.ID != oldFbID {
+	if oldFbID != 0 && exercise.FB.ID != oldFbID {
 		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
 	}
 

@@ -28,7 +28,7 @@ func (fbcheck *fakeFBCheck) Check() gin.HandlerFunc {
 	}
 }
 
-func test_check_created(resp *http.Response, expected int) (err error) {
+func test_check_http_expected(resp *http.Response, expected int) (err error) {
 	if status := resp.StatusCode; status != expected {
 		buf := bytes.NewBuffer(nil)
 		io.Copy(buf, resp.Body)
@@ -117,17 +117,18 @@ func TestGETExerciseNotFound(t *testing.T) {
 }
 
 func TestDeleteExercise(t *testing.T) {
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	// Delete by Name
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
-
-	fbcheck := &fakeFBCheck{}
-	server := httptest.NewServer(
-		setupRoutes("./", fbcheck),
-	)
 
 	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/Test1", nil)
 	if err != nil {
@@ -141,6 +142,26 @@ func TestDeleteExercise(t *testing.T) {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNoContent)
 	}
+
+	// Delete by ID
+	e = createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+	url := fmt.Sprintf("%s/v1/exercise/%d", server.URL, e.ID)
+	req, err = http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status := resp.StatusCode; status != http.StatusNoContent {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusNoContent)
+	}
+
 }
 
 func TestGETExercises(t *testing.T) {
@@ -220,7 +241,7 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = test_check_created(resp, http.StatusCreated); err != nil {
+	if err = test_check_http_expected(resp, http.StatusCreated); err != nil {
 		t.Errorf(err.Error())
 	}
 
@@ -243,7 +264,7 @@ func TestPostExcercise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = test_check_created(resp, http.StatusCreated); err != nil {
+	if err = test_check_http_expected(resp, http.StatusCreated); err != nil {
 		t.Errorf(err.Error())
 	}
 
@@ -273,7 +294,7 @@ func TestPostBadJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
 		t.Errorf(err.Error())
 	}
 }
@@ -294,7 +315,7 @@ func TestPostNoting(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
 		t.Errorf(err.Error())
 	}
 }
@@ -316,7 +337,56 @@ func TestPostBadContent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = test_check_created(resp, http.StatusBadRequest); err != nil {
+	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
 		t.Errorf(err.Error())
+	}
+}
+
+type emptyFBCheck struct{}
+
+func (f *emptyFBCheck) Check() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+	}
+}
+
+func TestWithoutFBInfo(t *testing.T) {
+	fbcheck := &emptyFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString("{}"))
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func TestRedirect(t *testing.T) {
+	fbcheck := &emptyFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+	req, err := http.NewRequest("GET", server.URL+"/", nil)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	norclient := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	resp, err := norclient.Do(req)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if resp.StatusCode != 301 {
+		t.Fatal("No redirect found on /")
 	}
 }

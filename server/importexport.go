@@ -25,8 +25,6 @@ func YAMLExport() (err error) {
 func YAMLImport(filename string) (err error) {
 	var exercises []Exercise
 
-	ACL = false
-
 	source, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return

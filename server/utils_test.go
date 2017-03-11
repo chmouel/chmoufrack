@@ -11,7 +11,6 @@ func TestMain(m *testing.M) {
 	if dblocation == "" {
 		log.Fatal("You need to specify a FRACK_TEST_DB variable")
 	}
-	ACL = false
 
 	err := DBConnect(dblocation, "1234")
 	if err != nil {

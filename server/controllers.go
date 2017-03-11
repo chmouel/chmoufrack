@@ -21,15 +21,18 @@ func POSTExercise(c *gin.Context) {
 	var exercise Exercise
 	var err error
 
-	if err := c.Bind(&exercise); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	v, exist := c.Get("FBInfo")
+	if !exist {
+		handle_error_nf_bad(c,
+			&errorUnauthorized{"Why FBinfo do not exist, this should not happen"})
 		return
 	}
 
-	v, exist := c.Get("FBInfo")
-	if !exist {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Why FBinfo do not exist, this should not happen"})
+	if err := c.Bind(&exercise); err != nil {
+		handle_error_nf_bad(c, err)
+		return
 	}
+	// Needs to be after the bind
 	exercise.FB = v.(FBinfo)
 
 	_, err = addExercise(exercise)

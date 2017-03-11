@@ -420,12 +420,18 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 
 func TestNotHere(t *testing.T) {
 	var err error
-	err = InitFixturesDB("1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	_, err = addExercise(e)
 	if err != nil {
 		t.FailNow()
 	}
 	_, err = getExercise(50)
 
+	if _, ok := err.(*error404); !ok {
+		t.FailNow()
+	}
+
+	_, err = getIdOfExerciseName("blahblah")
 	if _, ok := err.(*error404); !ok {
 		t.FailNow()
 	}
@@ -504,6 +510,32 @@ func TestUPAndDown(t *testing.T) {
 	if second.Laps != newthird.Laps {
 		t.Fatal("Old firssecond should be in third position")
 
+	}
+
+}
+
+func TestUpdateForSomeoneElse(t *testing.T) {
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	_, err := addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding first repeat: %s", err)
+	}
+
+	e.FB.ID = 5678
+	_, err = addExercise(e)
+	if _, ok := err.(*errorUnauthorized); !ok {
+		t.Fatal(err.Error())
+	}
+}
+
+func TestNotExerciseName(t *testing.T) {
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e.Name = ""
+	_, err := addExercise(e)
+
+	if err == nil {
+		t.Fatalf("We should have an error adding new exercise without an exercise name")
 	}
 
 }
