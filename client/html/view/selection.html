@@ -1,25 +1,25 @@
 <div ng-controller="ProgramIndexController">
-  <div ng-click="switchtoProgram(p.name)"  ng-repeat="p in programIndex">
-    <div class="well-sm program">
+  <div ng-repeat="p in programIndex">
+    <div ng-click="switchtoProgram(p.name)" class="program">
       <h3 class="text-center"><strong><a href>{{p.name}}</a></strong></h3>
     </div>
     <div class="tableComment">
       <div class="row">
-          <div class="col-md-4">
-            <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
-          </div>
-          <div ng-show="facebook.loggedIn && facebook.info.id == p.fb.id" class="text-left col-md-4">
-            <b>Editer Programme</b>: <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
-          </div>
-          <div ng-show="!facebook.loggedIn" class="col-md-4">
-          </div>
-          <div class="col-md-4 text-right">
-            <b>Ajouter par:</b>&nbsp;
-             <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
-             <a href="{{p.fb.link}}">{{p.fb.name}}</a>
-          </div>
+        <div class="col-md-4">
+          <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
+        </div>
+        <div ng-show="facebook.loggedIn && facebook.info.id == p.fb.id" class="text-left col-md-4">
+          <b>Editer Programme</b>: <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
+        </div>
+        <div ng-show="!facebook.loggedIn" class="col-md-4">
+        </div>
+        <div class="col-md-4 text-right">
+          <b>Ajouter par:</b>&nbsp;
+          <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
+          <a href="{{p.fb.link}}">{{p.fb.name}}</a>
+        </div>
       </div>
-      <div class="row" ng-show="p.comment">
+      <div ng-click="switchtoProgram(p.name)" class="row" ng-show="p.comment">
         <div class="text-justify comment">
           <pre ng-bind-html="p.comment | linky:'_blank'"></pre>
         </div>

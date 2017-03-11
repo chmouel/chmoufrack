@@ -522,7 +522,7 @@ func TestUpdateForSomeoneElse(t *testing.T) {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
 	}
 
-	e.FB.ID = 5678
+	e.FB.ID = "5678"
 	_, err = addExercise(e)
 	if _, ok := err.(*errorUnauthorized); !ok {
 		t.Fatal(err.Error())

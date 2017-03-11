@@ -189,7 +189,7 @@ func getExercise(ID int) (exercise Exercise, err error) {
 }
 
 func addExercise(exercise Exercise) (lastid int, err error) {
-	var oldFbID int
+	var oldFbID string
 	var oldId int
 	if exercise.Name == "" {
 		return -1, errors.New("You need to specify an exercise Name")
@@ -203,7 +203,7 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 		return
 	}
 
-	if oldFbID != 0 && exercise.FB.ID != oldFbID {
+	if oldFbID != "" && exercise.FB.ID != oldFbID {
 		return -1, &errorUnauthorized{"You are not allowed to update other user exercise"}
 	}
 
@@ -226,7 +226,8 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 		"link":  exercise.FB.Link,
 		"email": exercise.FB.Email,
 	}
-	_, err = SQLInsertOrUpdate("FBinfo", exercise.FB.ID, am)
+	// TODO(chmou): figure out a better way than just a 1
+	_, err = SQLInsertOrUpdate("FBinfo", 1, am)
 	if err != nil {
 		return
 	}

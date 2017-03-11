@@ -36,7 +36,7 @@ type Step struct {
 }
 
 type FBinfo struct {
-	ID    int    `json:"id" facebook:"-"`
+	ID    string `json:"id" facebook:"-"`
 	Name  string `json:"name"`
 	Link  string `json:"link"`
 	Email string `json:"email,omitempty"`

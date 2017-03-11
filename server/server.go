@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"strconv"
-
 	fb "github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
 )
@@ -51,13 +49,7 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 			return
 		}
 
-		s := _fb.Get("id").(string)
-		fbInfo.ID, err = strconv.Atoi(s)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while decoding FBid: " + err.Error()})
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
+		fbInfo.ID = _fb.Get("id").(string)
 
 		c.Set("FBInfo", fbInfo)
 		c.Next()

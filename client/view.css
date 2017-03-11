@@ -8,9 +8,10 @@
 }
 
 .program {
+    border-radius: 4px 4px 0 0;
     background-color: #def0fc;
-    margin-top: 20px;
-    padding: 5 90px;
+    padding: 5px;
+    margin: 5px;
 }
 
 .tableComment {

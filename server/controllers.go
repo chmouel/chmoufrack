@@ -32,6 +32,7 @@ func POSTExercise(c *gin.Context) {
 		handle_error_nf_bad(c, err)
 		return
 	}
+
 	// Needs to be after the bind
 	exercise.FB = v.(FBinfo)
 

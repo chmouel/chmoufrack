@@ -20,7 +20,7 @@ type fakeFBCheck struct{}
 func (fbcheck *fakeFBCheck) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("FBInfo", FBinfo{
-			ID:   1234,
+			ID:   "1234",
 			Name: "Chmou EL",
 			Link: "http://facebook.com/testtest",
 		})
@@ -111,7 +111,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 	}
 
 	if status := resp.StatusCode; status != http.StatusNotFound {
-		t.Errorf("handler returned wrong status code: got %v want %v",
+		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNotFound)
 	}
 }
@@ -139,7 +139,7 @@ func TestDeleteExercise(t *testing.T) {
 		t.Fatal(err)
 	}
 	if status := resp.StatusCode; status != http.StatusNoContent {
-		t.Errorf("handler returned wrong status code: got %v want %v",
+		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNoContent)
 	}
 
@@ -158,7 +158,7 @@ func TestDeleteExercise(t *testing.T) {
 		t.Fatal(err)
 	}
 	if status := resp.StatusCode; status != http.StatusNoContent {
-		t.Errorf("handler returned wrong status code: got %v want %v",
+		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNoContent)
 	}
 
@@ -188,7 +188,7 @@ func TestGETExercises(t *testing.T) {
 	}
 
 	if status := resp.StatusCode; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
+		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
@@ -230,6 +230,7 @@ func TestPostExcercise(t *testing.T) {
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
 	)
+
 	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise1))
 	if err != nil {
 		t.Fatal(err)
@@ -242,7 +243,7 @@ func TestPostExcercise(t *testing.T) {
 	}
 
 	if err = test_check_http_expected(resp, http.StatusCreated); err != nil {
-		t.Errorf(err.Error())
+		t.Fatal(err.Error())
 	}
 
 	//check in DB if it was really made
@@ -265,13 +266,14 @@ func TestPostExcercise(t *testing.T) {
 	}
 
 	if err = test_check_http_expected(resp, http.StatusCreated); err != nil {
-		t.Errorf(err.Error())
+		t.Fatalf(err.Error())
 	}
 
 	exercises, err = getAllExercises()
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if len(exercises) != 1 {
 		t.Fatal("We should have only one excercise since it was an update")
 	}
@@ -295,7 +297,7 @@ func TestPostBadJSON(t *testing.T) {
 	}
 
 	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
-		t.Errorf(err.Error())
+		t.Fatalf(err.Error())
 	}
 }
 
@@ -316,7 +318,7 @@ func TestPostNoting(t *testing.T) {
 	}
 
 	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
-		t.Errorf(err.Error())
+		t.Fatalf(err.Error())
 	}
 }
 
@@ -338,7 +340,7 @@ func TestPostBadContent(t *testing.T) {
 	}
 
 	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
-		t.Errorf(err.Error())
+		t.Fatalf(err.Error())
 	}
 }
 
@@ -364,7 +366,7 @@ func TestWithoutFBInfo(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
-		t.Errorf(err.Error())
+		t.Fatalf(err.Error())
 	}
 }
 

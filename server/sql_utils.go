@@ -3,8 +3,6 @@ package server
 import (
 	"database/sql"
 
-	"strconv"
-
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -100,9 +98,8 @@ type ArgsMap map[string]interface{}
 func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, facebookid string) (e Exercise) {
 	var steps Steps
 
-	f, _ := strconv.Atoi(facebookid)
 	fbinfo := FBinfo{
-		ID:    f,
+		ID:    facebookid,
 		Name:  "Chmou EL",
 		Link:  "https://www.facebook.com/app_scoped_user_id/10157827176205251/",
 		Email: "email@email.com",
