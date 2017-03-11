@@ -12,13 +12,14 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func FBCheck() gin.HandlerFunc {
+type ACLCheck interface {
+	Check() gin.HandlerFunc
+}
+
+type FBCheck struct{}
+
+func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//NOTE(chmou): Hack hack until i figured how to bypass it for the unit tests
-		if !ACL {
-			c.Next()
-			return
-		}
 		token := c.Request.Header["Authorization"][0]
 
 		if len(token) > 6 && strings.ToUpper(token[0:6]) == "BEARER" {
@@ -59,7 +60,7 @@ func FBCheck() gin.HandlerFunc {
 	}
 }
 
-func setupRoutes(staticDir string) *gin.Engine {
+func setupRoutes(staticDir string, acl ACLCheck) *gin.Engine {
 	router := gin.Default()
 
 	// Not ideal compared to the old imp on direct net/http since I cannot have
@@ -71,9 +72,9 @@ func setupRoutes(staticDir string) *gin.Engine {
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/test", FBCheck())
-		v1.POST("/exercise", FBCheck(), POSTExercise)
-		v1.DELETE("/exercise/:id", FBCheck(), DeleteExercise)
+		v1.GET("/test", acl.Check())
+		v1.POST("/exercise", acl.Check(), POSTExercise)
+		v1.DELETE("/exercise/:id", acl.Check(), DeleteExercise)
 		v1.GET("/exercise/:id", GETExercise)
 		v1.GET("/exercises", GETExercises)
 	}
@@ -89,7 +90,8 @@ func Serve(staticDir string, port int, debug bool) {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router := setupRoutes(staticDir)
+	fbcheck := &FBCheck{}
+	router := setupRoutes(staticDir, fbcheck)
 
 	fmt.Printf("Serving on %s with static dir %s\n", sPort, staticDir)
 	if err := router.Run(sPort); err != nil {

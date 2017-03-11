@@ -225,7 +225,7 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 		"name": exercise.FB.Name,
 		"link": exercise.FB.Link,
 	}
-	_, err = SQLInsertOrUpdate("FBinfo", oldId, am)
+	_, err = SQLInsertOrUpdate("FBinfo", exercise.FB.ID, am)
 	if err != nil {
 		return
 	}

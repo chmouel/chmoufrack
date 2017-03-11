@@ -11,7 +11,22 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+
+	"gopkg.in/gin-gonic/gin.v1"
 )
+
+type fakeFBCheck struct{}
+
+func (fbcheck *fakeFBCheck) Check() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("FBInfo", FBinfo{
+			ID:   1234,
+			Name: "Chmou EL",
+			Link: "http://facebook.com/testtest",
+		})
+		c.Next()
+	}
+}
 
 func test_check_created(resp *http.Response, expected int) (err error) {
 	if status := resp.StatusCode; status != expected {
@@ -33,7 +48,11 @@ func TestGETExercise(t *testing.T) {
 	}
 	ai := strconv.Itoa(i)
 
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	resp, err := http.Get(server.URL + "/v1/exercise/" + ai)
 	if err != nil {
 		t.Fatal(err)
@@ -56,7 +75,12 @@ func TestGETExerciseByName(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	resp, err := http.Get(server.URL + "/v1/exercise/Test1")
 	if err != nil {
 		t.Fatal(err)
@@ -76,7 +100,11 @@ func TestGETExerciseNotFound(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	resp, err := http.Get(server.URL + "/v1/exercise/1200")
 	if err != nil {
 		t.Fatal(err)
@@ -96,7 +124,11 @@ func TestDeleteExercise(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/Test1", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -119,7 +151,11 @@ func TestGETExercises(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	req, err := http.NewRequest("GET", server.URL+"/v1/exercises", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -169,7 +205,10 @@ func TestPostExcercise(t *testing.T) {
  "comment": "Updaated",
  "steps": []}`
 
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
 	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise1))
 	if err != nil {
 		t.Fatal(err)
@@ -218,7 +257,11 @@ func TestPostExcercise(t *testing.T) {
 }
 
 func TestPostBadJSON(t *testing.T) {
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString("HALLLLO!!!"))
 	if err != nil {
 		t.Fatal(err)
@@ -236,7 +279,11 @@ func TestPostBadJSON(t *testing.T) {
 }
 
 func TestPostNoting(t *testing.T) {
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -254,7 +301,11 @@ func TestPostNoting(t *testing.T) {
 
 func TestPostBadContent(t *testing.T) {
 	exercise := `{"hello": "moto"}`
-	server := httptest.NewServer(setupRoutes("./")) //Creating new server with the user handlers
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
 	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise))
 	if err != nil {
 		t.Fatal(err)
