@@ -5,12 +5,17 @@
     </div>
     <div class="tableComment">
       <div class="row">
-        <div class="col-md-6">
-          <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
-        </div>
-        <div ng-if="facebook.loggedIn && facebook.info.id == p.fb.id" class="col-md-6 text-right">
-          <a href="#!/edit/{{p.name}}"><i class="glyphicon glyphicon-pencil"></i></a>
-        </div>
+          <div class="col-md-6">
+            <strong>Nombre d'exercices</strong>: {{p.totalWorkout}}
+          </div>
+          <div ng-show="facebook.loggedIn && facebook.info.id == p.fb.id" class="text-center col-md-2">
+            <a href="#!/edit/{{p.name}}"><b>Editer</b>: <i class="glyphicon glyphicon-pencil"></i></a>
+          </div>
+          <div ng-show="!facebook.loggedIn" class="col-md-2">
+          </div>
+          <div class="col-md-4 text-right">
+            <b>Ajouter par:</b> <a href="{{p.fb.link}}">{{p.fb.name}}</a>
+          </div>
       </div>
       <div class="row" ng-show="p.comment">
         <div class="text-justify comment">

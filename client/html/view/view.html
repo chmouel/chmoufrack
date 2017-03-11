@@ -27,10 +27,6 @@
     </div>
   </div>
 
-  <div ng-show="facebook.loggedIn  && facebook.info.id == program.fb.id" class="pull-right">
-    <a href="#!/edit/{{program.name}}"><i class="glyphicon glyphicon-pencil"></i><small>Edit</small></a>
-  </div>
-
   <form name="chooser" ng-submit="submit()" novalidate>
     <div class="form-group  container-fluid">
       <div class="col-lg-offset-2 col-lg-4">
@@ -45,5 +41,4 @@
       </div>
     </div>
   </form>
-
 </div>
