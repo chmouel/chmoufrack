@@ -33,7 +33,6 @@ app.factory('utils', function($http, $q, Facebook) {
       method: "GET",
       url: "/v1/exercises"
     }).then(function(result) {
-      console.log(result.data[0].fb);
       return result.data;
     });
   };
