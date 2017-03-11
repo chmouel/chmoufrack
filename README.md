@@ -4,6 +4,10 @@ A running interval training generated for different vVO2max (or MAS).
 
 See informatbout about your MAS [here](http://www.scienceforsport.com/maximal-aerobic-speed-mas/) and a tool to calculate it [here](https://www.2peak.com/tools/mas.php)
 
+The website in action is located here :
+
+https://frack.chmouel.com
+
 ## REST Server
 
 To install the REST Server you simply need to :
