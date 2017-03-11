@@ -8,6 +8,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
     var res = $http.get('/v1/exercise/' + window.encodeURIComponent($routeParams.name));
     res.then(function(response) {
       $scope.exercise = response.data;
+      $window.document.title = "ChmouFrack: " + $scope.exercise.name;
     }, function errorCallBack(response) {
       $scope.exercise = {};
       $scope.exercise.steps = {};

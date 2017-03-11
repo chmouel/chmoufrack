@@ -1,4 +1,4 @@
-app.controller('CalculController', function($scope, utils) {
+app.controller('CalculController', function($scope, utils, $window) {
   var trackLength = 400;
 
   function calculDistanceForSeconds(vma, seconds, percentage) {
@@ -106,6 +106,7 @@ app.controller('CalculController', function($scope, utils) {
     angular.forEach(data, function(program, noop) {
       if (program.name == $scope.selectedProgram) {
         $scope.program = program;
+        $window.document.title = "ChmouFrack: " + program.name;
       }
     });
   });
