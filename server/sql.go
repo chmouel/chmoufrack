@@ -154,6 +154,7 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	var steps []Step
 	var nComment sql.NullString
 
+	// Note: Do not get email here so to avoid spam, maybe we'll use email another time
 	sqlT := `SELECT e.id,e.name,e.comment,f.fbid,f.name as fbname,f.link FROM Exercise e LEFT JOIN FBinfo f on f.FBId=e.FBId WHERE e.id=?`
 	err = DB.QueryRow(sqlT, ID).Scan(
 		&exercise.ID,
@@ -219,9 +220,10 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 	}
 
 	am = ArgsMap{
-		"FBid": exercise.FB.ID,
-		"name": exercise.FB.Name,
-		"link": exercise.FB.Link,
+		"FBid":  exercise.FB.ID,
+		"name":  exercise.FB.Name,
+		"link":  exercise.FB.Link,
+		"email": exercise.FB.Email,
 	}
 	_, err = SQLInsertOrUpdate("FBinfo", exercise.FB.ID, am)
 	if err != nil {

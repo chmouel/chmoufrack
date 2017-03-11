@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS FBinfo (
 	FBId bigint not null,
 	name varchar(255) not null,
 	link varchar(255) not null,
+	email varchar(255) not null,
 	PRIMARY KEY(ID),
 	CONSTRAINT uc_U UNIQUE (FBid,name,link)
 );
@@ -101,9 +102,10 @@ func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, len
 
 	f, _ := strconv.Atoi(facebookid)
 	fbinfo := FBinfo{
-		ID:   f,
-		Name: "Chmou EL",
-		Link: "http://facebook.com/profile/id",
+		ID:    f,
+		Name:  "Chmou EL",
+		Link:  "https://www.facebook.com/app_scoped_user_id/10157827176205251/",
+		Email: "email@email.com",
 	}
 
 	step1 := Step{

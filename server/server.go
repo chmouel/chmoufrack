@@ -55,6 +55,7 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
 		c.Set("FBInfo", fbInfo)
 		c.Next()
 	}
