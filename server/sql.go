@@ -145,9 +145,9 @@ func getIdOfExerciseName(name string) (id int, err error) {
 	return
 }
 
-func deleteExercise(ID int) (err error) {
+func deleteExercise(e Exercise) (err error) {
 	sqlT := `DELETE From Exercise where id=?`
-	_, err = sqlTX(sqlT, ID)
+	_, err = sqlTX(sqlT, e.ID)
 	return
 }
 

@@ -46,17 +46,39 @@ func POSTExercise(c *gin.Context) {
 
 func DeleteExercise(c *gin.Context) {
 	var err error
-	var i, id int
+	var i int
+	var fb FBinfo
 	exerciseID := c.Param("id")
 
-	if i, err = strconv.Atoi(exerciseID); err == nil {
-		id = i
-	} else {
-		id, err = getIdOfExerciseName(exerciseID)
+	v, exist := c.Get("FBInfo")
+	if !exist {
+		handle_error_nf_bad(c,
+			&errorUnauthorized{"Why FBinfo do not exist, this should not happen"})
+		return
+	}
+	fb = v.(FBinfo)
 
+	if i, err = strconv.Atoi(exerciseID); err != nil {
+		i, err = getIdOfExerciseName(exerciseID)
+		if err != nil {
+			handle_error_nf_bad(c, err)
+			return
+		}
 	}
 
-	err = deleteExercise(id)
+	e, err := getExercise(i)
+	if err != nil {
+		handle_error_nf_bad(c, err)
+		return
+	}
+
+	if e.FB.ID != fb.ID {
+		handle_error_nf_bad(c,
+			&errorUnauthorized{"You have no right to delete this exercise"})
+		return
+	}
+
+	err = deleteExercise(e)
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return

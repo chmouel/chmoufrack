@@ -307,7 +307,7 @@ func TestDBDeleteExercise(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	err = deleteExercise(i)
+	err = deleteExercise(e)
 	if err != nil {
 		t.Fatal(err)
 	}

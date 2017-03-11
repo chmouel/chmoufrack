@@ -15,14 +15,27 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-type fakeFBCheck struct{}
+type fakeFBCheck struct {
+	ID   string
+	Name string
+	Link string
+}
 
-func (fbcheck *fakeFBCheck) Check() gin.HandlerFunc {
+func (f *fakeFBCheck) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if f.ID == "" {
+			f.ID = "1234"
+		}
+		if f.Name == "" {
+			f.Name = "Chmou EL"
+		}
+		if f.Link == "" {
+			f.Link = "http://facebook.com/testtest"
+		}
 		c.Set("FBInfo", FBinfo{
-			ID:   "1234",
-			Name: "Chmou EL",
-			Link: "http://facebook.com/testtest",
+			ID:   f.ID,
+			Name: f.Name,
+			Link: f.Link,
 		})
 		c.Next()
 	}
@@ -113,6 +126,32 @@ func TestGETExerciseNotFound(t *testing.T) {
 	if status := resp.StatusCode; status != http.StatusNotFound {
 		t.Fatalf("handler returned wrong status code: got %v want %v",
 			status, http.StatusNotFound)
+	}
+}
+
+func TestDELETExerciseNotFound(t *testing.T) {
+	_, err := DB.Exec("DELETE FROM Exercise")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fbcheck := &fakeFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/1200", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = test_check_http_expected(resp, http.StatusNotFound); err != nil {
+		t.Fatalf(err.Error())
 	}
 }
 
@@ -369,6 +408,18 @@ func TestWithoutFBInfo(t *testing.T) {
 	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
 		t.Fatalf(err.Error())
 	}
+
+	req, err = http.NewRequest("DELETE", server.URL+"/v1/exercise/blah", nil)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Fatalf(err.Error())
+	}
 }
 
 func TestRedirect(t *testing.T) {
@@ -392,4 +443,35 @@ func TestRedirect(t *testing.T) {
 	if resp.StatusCode != 301 {
 		t.Fatal("No redirect found on /")
 	}
+}
+
+func TestDeleteForSomeoneElse(t *testing.T) {
+	originalFacebookId := "1234"
+	otherFacebookID := "4567"
+	name := "Test1"
+	e := createSampleExercise(name, "easy warmup todoo", "finish strong", 1000, originalFacebookId)
+
+	_, err := addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	fbcheck := &fakeFBCheck{ID: otherFacebookID}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/"+name, nil)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Fatalf(err.Error())
+	}
+
 }
