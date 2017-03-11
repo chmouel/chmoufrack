@@ -15,8 +15,10 @@
         </div>
         <div class="col-md-4 text-right">
           <b>Ajouter par:</b>&nbsp;
-          <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
-          <a href="{{p.fb.link}}">{{p.fb.name}}</a>
+          <a href="{{p.fb.link}}">
+            <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
+            {{p.fb.name}}
+          </a>
         </div>
       </div>
       <div ng-click="switchtoProgram(p.name)" class="row" ng-show="p.comment">
