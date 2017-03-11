@@ -145,10 +145,11 @@ func TestDeleteExercise(t *testing.T) {
 
 	// Delete by ID
 	e = createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	lastid, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
-	url := fmt.Sprintf("%s/v1/exercise/%d", server.URL, e.ID)
+	url := fmt.Sprintf("%s/v1/exercise/%d", server.URL, lastid)
 	req, err = http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Fatal(err)
