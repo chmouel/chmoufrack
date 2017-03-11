@@ -20,7 +20,7 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
         $scope.facebook.info = data;
       });
     } else {
-      console.log("no");
+      console.log("no login allowed");
     }
   });
 
@@ -97,7 +97,6 @@ app.controller('ProgramIndexController', function($scope, utils) {
                 }
                 $scope.programIndex[p.name].comment = p.comment;
                 $scope.programIndex[p.name].id = p.id;
-                console.log(p);
                 $scope.programIndex[p.name].fb = p.fb;
             }
         });

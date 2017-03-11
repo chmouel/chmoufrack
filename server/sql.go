@@ -170,6 +170,7 @@ func getExercise(ID int) (exercise Exercise, err error) {
 	}
 
 	if err != nil {
+
 		if err != sql.ErrNoRows {
 			return
 		}
