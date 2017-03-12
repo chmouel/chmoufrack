@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Warmdown (
 	id int NOT NULL AUTO_INCREMENT,
 	position tinyint DEFAULT 0,
 	effort_type varchar(32) DEFAULT "distance",
-    effort text NOT NULL,
+	effort text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
 	repeatID integer,
 	exerciseID integer,
     PRIMARY KEY(ID)
