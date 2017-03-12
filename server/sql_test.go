@@ -547,3 +547,12 @@ func TestBadCharacters(t *testing.T) {
 		t.Fatalf("We should have detected that we have a bad characters")
 	}
 }
+
+func TestAddEmojis(t *testing.T) {
+	e := createSampleExercise("Test1 💜", "easy warmup todoo 💜", "finish strong 💜", 1000, "1234")
+	_, err := addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding second repeat: %s", err)
+	}
+}
