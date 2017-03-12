@@ -8,11 +8,12 @@ import (
 
 func TestMain(m *testing.M) {
 	dblocation := os.Getenv("FRACK_TEST_DB")
+
 	if dblocation == "" {
 		log.Fatal("You need to specify a FRACK_TEST_DB variable")
 	}
 
-	err := DBConnect(dblocation, "1234")
+	err := DBConnect(dblocation, false)
 	if err != nil {
 		log.Fatal(err)
 	}

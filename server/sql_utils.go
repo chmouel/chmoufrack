@@ -206,21 +206,21 @@ func sqlTX(query string, args ...interface{}) (res sql.Result, err error) {
 	return
 }
 
-func DBConnect(dbconnection string, reset string) (err error) {
+func DBConnect(dbconnection string, reset bool) (err error) {
 	DB, err = sql.Open("mysql", dbconnection+"?multiStatements=true&collation=utf8mb4_bin")
 
 	if err != nil {
 		return
 	}
 
-	if reset != "" {
+	if reset {
 		_, err = DB.Exec(SQLDropTable)
 		if err != nil {
 			return
 		}
 	}
-
 	_, err = DB.Exec(sqlTable)
+
 	return
 }
 
