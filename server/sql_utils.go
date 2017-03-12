@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS FBinfo (
 
 CREATE TABLE IF NOT EXISTS Exercise (
 	ID int NOT NULL AUTO_INCREMENT,
-	name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+	name varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     comment text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
 	fbID bigint NOT NULL,
     PRIMARY KEY(ID),
