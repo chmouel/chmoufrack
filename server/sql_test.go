@@ -10,7 +10,7 @@ func removeFromArray(slice []Step, s int) []Step {
 	return append(slice[:s], slice[s+1:]...)
 }
 
-func TestAddExercise(t *testing.T) {
+func TestSQLAddExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	i, err := addExercise(e)
@@ -36,7 +36,7 @@ func TestAddExercise(t *testing.T) {
 	}
 }
 
-func TestAddExerciseAndID(t *testing.T) {
+func TestSQLAddExerciseAndID(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	oldid, err := addExercise(e)
 	if err != nil {
@@ -63,7 +63,7 @@ func TestAddExerciseAndID(t *testing.T) {
 	}
 }
 
-func TestUpdateExercise(t *testing.T) {
+func TestSQLUpdateExercise(t *testing.T) {
 	e := createSampleExercise("TestAddUpdate", "easy warmup todoo", "finish strong", 4567, "1234")
 
 	_, err := addExercise(e)
@@ -127,7 +127,7 @@ func TestUpdateExercise(t *testing.T) {
 
 }
 
-func TestAddGetRepeat(t *testing.T) {
+func TestSQLAddGetRepeat(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	originSteps := len(e.Steps)
 
@@ -201,7 +201,7 @@ func TestAddGetRepeat(t *testing.T) {
 	}
 }
 
-func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
+func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	var repeatSteps Steps
@@ -280,7 +280,7 @@ func TestAddGetRepeatDoublonMixedUP(t *testing.T) {
 	}
 }
 
-func TestGetByName(t *testing.T) {
+func TestSQLGetByName(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	_, err := addExercise(e)
 	if err != nil {
@@ -300,7 +300,7 @@ func TestGetByName(t *testing.T) {
 	}
 }
 
-func TestDBDeleteExercise(t *testing.T) {
+func TestSQLDBDeleteExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	i, err := addExercise(e)
 	if err != nil {
@@ -318,7 +318,7 @@ func TestDBDeleteExercise(t *testing.T) {
 	}
 }
 
-func TestGetAllExercices(t *testing.T) {
+func TestSQLGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
@@ -337,7 +337,7 @@ func TestGetAllExercices(t *testing.T) {
 
 }
 
-func TestGetAllExercicesNotFound(t *testing.T) {
+func TestSQLGetAllExercicesNotFound(t *testing.T) {
 	_, err := DB.Exec("DELETE FROM Exercise")
 	if err != nil {
 		t.Fatal(err)
@@ -352,7 +352,7 @@ func TestGetAllExercicesNotFound(t *testing.T) {
 	}
 }
 
-func TestAddGetRepeatDoublon(t *testing.T) {
+func TestSQLAddGetRepeatDoublon(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	var repeatSteps Steps
@@ -418,7 +418,7 @@ func TestAddGetRepeatDoublon(t *testing.T) {
 	}
 }
 
-func TestNotHere(t *testing.T) {
+func TestSQLNotHere(t *testing.T) {
 	var err error
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	_, err = addExercise(e)
@@ -437,7 +437,7 @@ func TestNotHere(t *testing.T) {
 	}
 }
 
-func TestUPAndDown(t *testing.T) {
+func TestSQLUPAndDown(t *testing.T) {
 
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	var repeatSteps Steps
@@ -514,7 +514,7 @@ func TestUPAndDown(t *testing.T) {
 
 }
 
-func TestUpdateForSomeoneElse(t *testing.T) {
+func TestSQLUpdateForSomeoneElse(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	_, err := addExercise(e)
 
@@ -529,7 +529,7 @@ func TestUpdateForSomeoneElse(t *testing.T) {
 	}
 }
 
-func TestNotExerciseName(t *testing.T) {
+func TestSQLNotExerciseName(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	e.Name = ""
 	_, err := addExercise(e)
@@ -540,7 +540,7 @@ func TestNotExerciseName(t *testing.T) {
 
 }
 
-func TestBadCharacters(t *testing.T) {
+func TestSQLBadCharacters(t *testing.T) {
 	s := "foo/bar"
 	err := checkBadCharacters(s)
 	if err == nil {
@@ -548,7 +548,7 @@ func TestBadCharacters(t *testing.T) {
 	}
 }
 
-func TestAddEmojis(t *testing.T) {
+func TestSQLAddEmojis(t *testing.T) {
 	e := createSampleExercise("Test1 💜", "easy warmup todoo 💜", "finish strong 💜", 1000, "1234")
 	_, err := addExercise(e)
 

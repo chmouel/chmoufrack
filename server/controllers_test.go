@@ -52,7 +52,7 @@ func test_check_http_expected(resp *http.Response, expected int) (err error) {
 	return
 }
 
-func TestGETExercise(t *testing.T) {
+func TestRestGETExercise(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	i, err := addExercise(e)
@@ -82,7 +82,7 @@ func TestGETExercise(t *testing.T) {
 	}
 }
 
-func TestGETExerciseByName(t *testing.T) {
+func TestRestGETExerciseByName(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 	_, err := addExercise(e)
 	if err != nil {
@@ -107,7 +107,7 @@ func TestGETExerciseByName(t *testing.T) {
 	}
 }
 
-func TestGETExerciseNotFound(t *testing.T) {
+func TestRestGETExerciseNotFound(t *testing.T) {
 	_, err := DB.Exec("DELETE FROM Exercise")
 	if err != nil {
 		t.Fatal(err)
@@ -129,7 +129,7 @@ func TestGETExerciseNotFound(t *testing.T) {
 	}
 }
 
-func TestDELETExerciseNotFound(t *testing.T) {
+func TestRestDELETExerciseNotFound(t *testing.T) {
 	_, err := DB.Exec("DELETE FROM Exercise")
 	if err != nil {
 		t.Fatal(err)
@@ -155,7 +155,7 @@ func TestDELETExerciseNotFound(t *testing.T) {
 	}
 }
 
-func TestDeleteExercise(t *testing.T) {
+func TestRestDeleteExercise(t *testing.T) {
 	fbcheck := &fakeFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
@@ -204,7 +204,7 @@ func TestDeleteExercise(t *testing.T) {
 
 }
 
-func TestGETExercises(t *testing.T) {
+func TestRestGETExercises(t *testing.T) {
 	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
 
 	_, err := addExercise(e)
@@ -243,7 +243,7 @@ func TestGETExercises(t *testing.T) {
 
 }
 
-func TestPostExcercise(t *testing.T) {
+func TestRestPostExcercise(t *testing.T) {
 	exercise1 := `{"name": "Test1",
 	"comment": "NoComment",
 	"steps": [{
@@ -319,7 +319,7 @@ func TestPostExcercise(t *testing.T) {
 	}
 }
 
-func TestPostBadJSON(t *testing.T) {
+func TestRestPostBadJSON(t *testing.T) {
 	fbcheck := &fakeFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
@@ -341,7 +341,7 @@ func TestPostBadJSON(t *testing.T) {
 	}
 }
 
-func TestPostNoting(t *testing.T) {
+func TestRestPostNoting(t *testing.T) {
 	fbcheck := &fakeFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
@@ -362,7 +362,7 @@ func TestPostNoting(t *testing.T) {
 	}
 }
 
-func TestPostBadContent(t *testing.T) {
+func TestRestPostBadContent(t *testing.T) {
 	exercise := `{"hello": "moto"}`
 	fbcheck := &fakeFBCheck{}
 	server := httptest.NewServer(
@@ -392,7 +392,7 @@ func (f *emptyFBCheck) Check() gin.HandlerFunc {
 	}
 }
 
-func TestWithoutFBInfo(t *testing.T) {
+func TestRestWithoutFBInfo(t *testing.T) {
 	fbcheck := &emptyFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
@@ -422,7 +422,7 @@ func TestWithoutFBInfo(t *testing.T) {
 	}
 }
 
-func TestRedirect(t *testing.T) {
+func TestRestRedirect(t *testing.T) {
 	fbcheck := &emptyFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
@@ -445,7 +445,7 @@ func TestRedirect(t *testing.T) {
 	}
 }
 
-func TestDeleteForSomeoneElse(t *testing.T) {
+func TestRestDeleteForSomeoneElse(t *testing.T) {
 	originalFacebookId := "1234"
 	otherFacebookID := "4567"
 	name := "Test1"
