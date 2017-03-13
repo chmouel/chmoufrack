@@ -12,6 +12,13 @@ app.factory('utils', function($http, $q, Facebook) {
       angular.extend(facebookInfo, response);
       utils.facebookInfo = facebookInfo;
       deferred.resolve(facebookInfo);
+      return facebookInfo;
+    }).then(function(data){
+      var req = fbURLarg();
+      req.url = '/v1/fbinfo';
+      req.method = 'POST';
+      req.data = data;
+      return $http(req);
     });
     return deferred.promise;
   };

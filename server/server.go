@@ -16,8 +16,14 @@ type ACLCheck interface {
 
 type FBCheck struct{}
 
+// Really need to find a way how to test that,
 func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if len(c.Request.Header["Authorization"]) == 0 {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to have an authorization header in your request"})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 		token := c.Request.Header["Authorization"][0]
 
 		if len(token) > 6 && strings.ToUpper(token[0:6]) == "BEARER" {
@@ -68,6 +74,7 @@ func setupRoutes(staticDir string, acl ACLCheck) *gin.Engine {
 
 	v1 := router.Group("/v1")
 	{
+		v1.POST("/fbinfo", acl.Check(), POSTFbinfo)
 		v1.POST("/exercise", acl.Check(), POSTExercise)
 		v1.DELETE("/exercise/:id", acl.Check(), DeleteExercise)
 		v1.GET("/exercise/:id", GETExercise)

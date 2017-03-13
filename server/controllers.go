@@ -17,6 +17,37 @@ func handle_error_nf_bad(c *gin.Context, err error) {
 	}
 }
 
+func POSTFbinfo(c *gin.Context) {
+	var fbinfo FBinfo
+	var tokenFBInfo FBinfo
+
+	v, exist := c.Get("FBInfo")
+	if !exist {
+		handle_error_nf_bad(c,
+			&errorUnauthorized{"Why FBinfo do not exist, this should not happen"})
+		return
+	}
+
+	if err := c.Bind(&fbinfo); err != nil {
+		handle_error_nf_bad(c, err)
+		return
+	}
+
+	tokenFBInfo = v.(FBinfo)
+	if tokenFBInfo.ID != fbinfo.ID {
+		handle_error_nf_bad(c,
+			&errorUnauthorized{"You are not allowed to update other people FB infos"})
+		return
+	}
+
+	_, err := addFBInfo(fbinfo)
+	if err != nil {
+		handle_error_nf_bad(c, err)
+		return
+	}
+	c.Status(http.StatusCreated)
+}
+
 func POSTExercise(c *gin.Context) {
 	var exercise Exercise
 	var err error

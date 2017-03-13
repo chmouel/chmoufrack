@@ -197,6 +197,19 @@ func checkBadCharacters(s string) (err error) {
 	return
 }
 
+func addFBInfo(fb FBinfo) (lastid int, err error) {
+	am := ArgsMap{
+		"FBid":  fb.ID,
+		"name":  fb.Name,
+		"link":  fb.Link,
+		"email": fb.Email,
+	}
+	// TODO(chmou): figure out a better way than just a 1
+	lastid, err = SQLInsertOrUpdate("FBinfo", 1, am)
+
+	return
+}
+
 func addExercise(exercise Exercise) (lastid int, err error) {
 	var oldFbID string
 	var oldId int

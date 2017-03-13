@@ -243,7 +243,7 @@ func TestRestGETExercises(t *testing.T) {
 
 }
 
-func TestRestPostExcercise(t *testing.T) {
+func TestRestCreateExcercise(t *testing.T) {
 	exercise1 := `{"name": "Test1",
 	"comment": "NoComment",
 	"steps": [{
@@ -474,4 +474,96 @@ func TestRestDeleteForSomeoneElse(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
+}
+
+func TestRestCreateFBInfo(t *testing.T) {
+	fbid := "4557"
+	fbinfo_rest := `{
+	"id": "%s",
+    "name": "Ola Chica",
+    "link": "https://www.facebook.com/app_scoped_user_id/10157827176205251/"
+  }`
+
+	fbcheck := &fakeFBCheck{ID: fbid}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	req, err := http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(
+		fmt.Sprintf(fbinfo_rest, fbid)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = test_check_http_expected(resp, http.StatusCreated); err != nil {
+		t.Fatal(err.Error())
+	}
+
+	fbcheck = &fakeFBCheck{ID: "FAKENEWS!"}
+	server = httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Fatal(err.Error())
+	}
+
+	fbcheck = &fakeFBCheck{ID: fbid}
+	server = httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	// Bad content no string
+	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString("FAKENEWS"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
+		t.Fatal(err.Error())
+	}
+
+	emptyFBCheck := &emptyFBCheck{}
+	server = httptest.NewServer(
+		setupRoutes("./", emptyFBCheck),
+	)
+
+	// Bad content no string
+	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Fatal(err.Error())
+	}
 }
