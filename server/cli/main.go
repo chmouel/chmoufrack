@@ -32,7 +32,13 @@ func main() {
 	if *db == "" {
 		log.Fatal("You need to specify a MySQL DB cnx with -db")
 	}
-	err := server.DBConnect(*db, *initDBbool)
+
+	reset := false
+	if *initDBbool != "" {
+		reset = true
+	}
+
+	err := server.DBConnect(*db, reset)
 	if err != nil {
 		log.Fatalf("Cannot connect to mysql: %s", err.Error())
 	}
