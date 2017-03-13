@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS FBinfo (
 	link varchar(255) not null,
 	email varchar(255) not null,
 	PRIMARY KEY(ID),
-	CONSTRAINT uc_U UNIQUE (FBid,name,link)
+	CONSTRAINT uc_U UNIQUE (FBid)
 );
 
 CREATE TABLE IF NOT EXISTS Exercise (
