@@ -68,7 +68,6 @@ func setupRoutes(staticDir string, acl ACLCheck) *gin.Engine {
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/test", acl.Check())
 		v1.POST("/exercise", acl.Check(), POSTExercise)
 		v1.DELETE("/exercise/:id", acl.Check(), DeleteExercise)
 		v1.GET("/exercise/:id", GETExercise)
