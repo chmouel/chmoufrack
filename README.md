@@ -59,3 +59,14 @@ You need to adjust the [config.js](client/js/config.js) file to your facebook ap
 
 If you want to add a Program you need to be logged to Facebook and then you can click on the Menu to "add a program"
 
+
+## Build
+
+``frack`` use [https://github.com/Masterminds/glide](glide) for dependency management. After installing glide (see README) just issue this to build chmoufrack :
+
+```
+glide up
+go build -o chmoufrack -v github.com/chmouel/chmoufrack/server/cli
+```
+
+To run the test you need to have a MySQL DB access specified in the environment variable `FRACK_TEST_DB`. You can setup access via the .my.cnf mechanism
