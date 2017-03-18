@@ -272,7 +272,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 		t.Fatalf("failing to update repeat")
 	}
 	if len(e.Steps[4].Repeat.Steps) != 1 {
-		t.Fatalf("failing to update repeat")
+		t.Fatalf("failing to update repeat, numbre of repeat(%d) != 1", e.Steps[4].Repeat.Steps)
 	}
 
 	if e.Steps[4].Repeat.Steps[0].Length == 999 {
