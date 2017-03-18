@@ -8,7 +8,7 @@ app.factory('utils', function($http, $q, Facebook) {
       'id': response.authResponse.userID,
       'accessToken': response.authResponse.accessToken
     };
-    Facebook.api('/me', function(response) {
+    Facebook.api('/me?fields=name,email,link', function(response) {
       angular.extend(facebookInfo, response);
       utils.facebookInfo = facebookInfo;
       deferred.resolve(facebookInfo);
