@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS Exercise (
 	ID int NOT NULL AUTO_INCREMENT,
 	name varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     comment text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+	public ENUM("0", "1") DEFAULT "0",
 	fbID bigint NOT NULL,
     PRIMARY KEY(ID),
 	CONSTRAINT uc_U UNIQUE (ID,name,fbID)
@@ -95,13 +97,13 @@ var SQLresetDB = `
 
 type ArgsMap map[string]interface{}
 
-func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, facebookid string) (e Exercise) {
+func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, length int, public bool, name string, facebookid string) (e Exercise) {
 	var steps Steps
 
 	fbinfo := FBinfo{
 		ID:    facebookid,
-		Name:  "Chmou EL",
-		Link:  "https://www.facebook.com/app_scoped_user_id/10157827176205251/",
+		Name:  name,
+		Link:  fmt.Sprintf("https://www.facebook.com/app_scoped_user_id/%s/", facebookid),
 		Email: "email@email.com",
 	}
 
@@ -133,7 +135,9 @@ func createSampleExercise(exerciceName, warmupEffort, warmdownEffort string, len
 		Comment: "NoComment",
 		Steps:   steps,
 		FB:      fbinfo,
+		Public:  public,
 	}
+
 	return
 }
 
@@ -175,6 +179,8 @@ func SQLInsertOrUpdate(table string, id int, am ArgsMap) (lastid int, err error)
 	}
 	query += ");"
 
+	// fmt.Println(query)
+	// fmt.Println(values...)
 	res, err = sqlTX(query, values...)
 	if err != nil {
 		return
@@ -226,30 +232,29 @@ func DBConnect(dbconnection string, reset bool) (err error) {
 
 func InitFixturesDB(facebookid string) (err error) {
 	_, err = DB.Exec(SQLresetDB)
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, facebookid)
-	var repeatSteps Steps
-	repeatStep := Step{
-		Laps:       6,
-		Length:     400,
-		Percentage: 100,
-		Type:       "interval",
-		EffortType: "distance",
-	}
-	repeatSteps = append(repeatSteps, repeatStep)
-
-	repeat := Repeats{
-		Steps:   repeatSteps,
-		Repeats: 5,
-	}
-	exerciseStep := Step{
-		Type:   "repeat",
-		Repeat: repeat,
-	}
-	e.Steps = append(e.Steps, exerciseStep)
-
+	e := createSampleExercise("Test_public", "easy warmup todoo", "finish strong", 1000, true, "Chmou EL", facebookid)
 	_, err = addExercise(e)
 	if err != nil {
 		return
 	}
+
+	e = createSampleExercise("Test_private", "easy warmup todoo", "finish strong", 1000, false, "Chmou EL", facebookid)
+	_, err = addExercise(e)
+	if err != nil {
+		return
+	}
+
+	e = createSampleExercise("Test_public_otherid", "easy warmup todoo", "finish strong", 1000, true, "Mark Z", "4")
+	_, err = addExercise(e)
+	if err != nil {
+		return
+	}
+
+	e = createSampleExercise("Test_private_otherid", "easy warmup todoo", "finish strong", 1000, false, "Mark Z", "4")
+	_, err = addExercise(e)
+	if err != nil {
+		return
+	}
+
 	return
 }

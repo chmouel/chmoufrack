@@ -13,10 +13,9 @@ func TestMain(m *testing.M) {
 		log.Fatal("You need to specify a FRACK_TEST_DB variable")
 	}
 
-	err := DBConnect(dblocation, false)
+	err := DBConnect(dblocation, true)
 	if err != nil {
 		log.Fatal(err)
 	}
-	code := m.Run()
-	os.Exit(code)
+	os.Exit(m.Run())
 }

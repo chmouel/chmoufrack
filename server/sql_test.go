@@ -11,14 +11,14 @@ func removeFromArray(slice []Step, s int) []Step {
 }
 
 func TestSQLAddExercise(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if err != nil {
 		t.Fatalf("getExercise() failed: %s", err)
 	}
@@ -37,7 +37,7 @@ func TestSQLAddExercise(t *testing.T) {
 }
 
 func TestSQLAddExerciseAndID(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	oldid, err := addExercise(e)
 	if err != nil {
 		log.Fatal()
@@ -47,13 +47,13 @@ func TestSQLAddExerciseAndID(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	e = createSampleExercise("Test2", "easy warmup todoo", "finish strong", 1000, "1234")
+	e = createSampleExercise("Test2", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	newid, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	e, err = getExercise(newid)
+	e, err = getExercise(newid, "")
 	if err != nil {
 		t.Fatalf("getExercise() failed: %s", err)
 	}
@@ -64,7 +64,7 @@ func TestSQLAddExerciseAndID(t *testing.T) {
 }
 
 func TestSQLUpdateExercise(t *testing.T) {
-	e := createSampleExercise("TestAddUpdate", "easy warmup todoo", "finish strong", 4567, "1234")
+	e := createSampleExercise("TestAddUpdate", "easy warmup todoo", "finish strong", 4567, true, "Test User", "1234")
 
 	_, err := addExercise(e)
 	if err != nil {
@@ -81,7 +81,7 @@ func TestSQLUpdateExercise(t *testing.T) {
 		t.Fatalf("addExercise() when updating failed: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if err != nil {
 		t.Fatalf("getExercise() failed: %s", err)
 	}
@@ -104,7 +104,7 @@ func TestSQLUpdateExercise(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when removing failed: %s", err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != 2 {
 		t.Fatalf("failing to remove a step %d != 2", e.Steps.Len())
 	}
@@ -120,7 +120,7 @@ func TestSQLUpdateExercise(t *testing.T) {
 		t.Fatalf("addExercise() when add a new element: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != 3 {
 		t.Fatalf("failing to remove a step %d != 3", e.Steps.Len())
 	}
@@ -128,7 +128,7 @@ func TestSQLUpdateExercise(t *testing.T) {
 }
 
 func TestSQLAddGetRepeat(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	originSteps := len(e.Steps)
 
 	var repeatSteps Steps
@@ -156,7 +156,7 @@ func TestSQLAddGetRepeat(t *testing.T) {
 		t.Fatalf("addExercise() when adding a repeat: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != originSteps+1 {
 		t.Fatalf("failing to add a repeat %d != %d", e.Steps.Len(),
 			originSteps+1)
@@ -179,12 +179,12 @@ func TestSQLAddGetRepeat(t *testing.T) {
 		t.Fatalf("addExercise() updating a repeat step: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps[3].Repeat.Steps) != 1 {
 		t.Fatalf("failing updating a repeat step %d != 1",
 			len(e.Steps[3].Repeat.Steps))
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if e.Steps[3].Repeat.Steps[0].Laps != 99 {
 		t.Fatalf("failing updating a repeat laps %d != 99",
 			e.Steps[3].Repeat.Steps[0].Laps)
@@ -195,14 +195,14 @@ func TestSQLAddGetRepeat(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when removing from field failed: %s", err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps[3].Repeat.Steps) != 0 {
 		t.Fatalf("addExercise() failing to remove field: %s", err)
 	}
 }
 
 func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	var repeatSteps Steps
 	repeatStep1 := Step{
@@ -228,7 +228,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 
 	var repeatSteps2 Steps
 	repeatStep2 := Step{
@@ -254,7 +254,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 		t.Fatalf("addExercise() when adding second repeat: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != 5 {
 		t.Fatalf("addExercise() when adding second repeat %s!=5", len(e.Steps))
 	}
@@ -264,7 +264,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -281,7 +281,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 }
 
 func TestSQLGetByName(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -291,7 +291,7 @@ func TestSQLGetByName(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if err != nil {
 		t.Fatalf("getExercise() failed: %s", err)
 	}
@@ -301,7 +301,7 @@ func TestSQLGetByName(t *testing.T) {
 }
 
 func TestSQLDBDeleteExercise(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	i, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -312,7 +312,7 @@ func TestSQLDBDeleteExercise(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if _, ok := err.(*error404); !ok {
 		fmt.Println(err)
 	}
@@ -321,13 +321,13 @@ func TestSQLDBDeleteExercise(t *testing.T) {
 func TestSQLGetAllExercices(t *testing.T) {
 	_, _ = DB.Exec("DELETE from Exercise")
 
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	exercises, err := getAllExercises()
+	exercises, err := getAllExercises("")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -337,13 +337,42 @@ func TestSQLGetAllExercices(t *testing.T) {
 
 }
 
+func TestSQLSetPublic(t *testing.T) {
+	_, err := DB.Exec(SQLresetDB)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
+	i, err := addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding first repeat: %s", err)
+	}
+	e, err = getExercise(i, "")
+	if e.Public != true {
+		t.Fatalf("Error while setting exercise as public, it should be true and I have a false")
+	}
+
+	e = createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, false, "Test User", "1234")
+	i, err = addExercise(e)
+
+	if err != nil {
+		t.Fatalf("addExercise() when adding first repeat: %s", err)
+	}
+	e, err = getExercise(i, "")
+	if _, ok := err.(*error404); !ok {
+		t.FailNow()
+	}
+}
+
 func TestSQLGetAllExercicesNotFound(t *testing.T) {
 	_, err := DB.Exec("DELETE FROM Exercise")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	exercises, err := getAllExercises()
+	exercises, err := getAllExercises("")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -353,7 +382,7 @@ func TestSQLGetAllExercicesNotFound(t *testing.T) {
 }
 
 func TestSQLAddGetRepeatDoublon(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	var repeatSteps Steps
 	repeatStep1 := Step{
@@ -379,7 +408,7 @@ func TestSQLAddGetRepeatDoublon(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 
 	var repeatSteps2 Steps
 	repeatStep2 := Step{
@@ -405,14 +434,14 @@ func TestSQLAddGetRepeatDoublon(t *testing.T) {
 		t.Fatalf("addExercise() when adding second repeat: %s", err)
 	}
 
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != 5 {
 		t.Fatalf("addExercise() when adding second repeat %s!=5", len(e.Steps))
 	}
 
 	e.Steps = removeFromArray(e.Steps, 4)
 	i, err = addExercise(e)
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 	if len(e.Steps) != 4 {
 		t.Fatalf("removing repeat is not working steps %d != 4", len(e.Steps))
 	}
@@ -420,12 +449,12 @@ func TestSQLAddGetRepeatDoublon(t *testing.T) {
 
 func TestSQLNotHere(t *testing.T) {
 	var err error
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	_, err = addExercise(e)
 	if err != nil {
 		t.FailNow()
 	}
-	_, err = getExercise(50)
+	_, err = getExercise(50, "")
 
 	if _, ok := err.(*error404); !ok {
 		t.FailNow()
@@ -438,8 +467,7 @@ func TestSQLNotHere(t *testing.T) {
 }
 
 func TestSQLUPAndDown(t *testing.T) {
-
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	var repeatSteps Steps
 	repeatStep1 := Step{
 		Laps:       5,
@@ -482,7 +510,7 @@ func TestSQLUPAndDown(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() when adding first repeat: %s", err)
 	}
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 
 	first := e.Steps[3].Repeat.Steps[0]
 	second := e.Steps[3].Repeat.Steps[1]
@@ -494,7 +522,7 @@ func TestSQLUPAndDown(t *testing.T) {
 
 	e.Steps[3].Repeat.Steps = inversedSteps
 	i, err = addExercise(e)
-	e, err = getExercise(i)
+	e, err = getExercise(i, "")
 
 	newfirst := e.Steps[3].Repeat.Steps[0]
 	newsecond := e.Steps[3].Repeat.Steps[1]
@@ -515,7 +543,7 @@ func TestSQLUPAndDown(t *testing.T) {
 }
 
 func TestSQLUpdateForSomeoneElse(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	_, err := addExercise(e)
 
 	if err != nil {
@@ -530,7 +558,7 @@ func TestSQLUpdateForSomeoneElse(t *testing.T) {
 }
 
 func TestSQLNotExerciseName(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	e.Name = ""
 	_, err := addExercise(e)
 
@@ -549,7 +577,7 @@ func TestSQLBadCharacters(t *testing.T) {
 }
 
 func TestSQLAddEmojis(t *testing.T) {
-	e := createSampleExercise("Test1 💜", "easy warmup todoo 💜", "finish strong 💜", 1000, "1234")
+	e := createSampleExercise("Test1 💜", "easy warmup todoo 💜", "finish strong 💜", 1000, true, "Test User", "1234")
 	_, err := addExercise(e)
 
 	if err != nil {

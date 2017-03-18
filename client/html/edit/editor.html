@@ -6,6 +6,11 @@
 
 <ng-form class="form-horizontal" name="forms.edit" novalidate>
   <div class="editor">
+
+    <div class="checkbox pull-right">
+      <label><input type="checkbox" name="public" ng-model="exercise.public" value="">Activité Publique</label>
+    </div>
+
     <strong>Nom de la Séance</strong>:
     <input select-on-click type="text" maxlength="1024" class="form-control" name="name" ng-model="exercise.name" required>
     <label class="help-block" ng-show="forms.edit.name.$dirty && forms.edit.name.$error.required">
@@ -14,7 +19,6 @@
     <label class="help-block" ng-show="forms.edit.name.$dirty && forms.edit.name.$error.invalidURLChar">
       Vous avez des caracters invalide dans le nom (ne pas mettre de ?, /, &, !).
     </label>
-
 
     <strong>Commentaire sur la Séance</strong>:
     <textarea select-on-click type="text" maxlength="1024" rows="2" class="form-control" name="comment" ng-model="exercise.comment" required></textarea>

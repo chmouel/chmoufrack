@@ -24,7 +24,7 @@ func POSTFbinfo(c *gin.Context) {
 	v, exist := c.Get("FBInfo")
 	if !exist {
 		handle_error_nf_bad(c,
-			&errorUnauthorized{"Why FBinfo do not exist, this should not happen"})
+			&errorUnauthorized{"You need to have an authorization header in your request"})
 		return
 	}
 
@@ -55,7 +55,7 @@ func POSTExercise(c *gin.Context) {
 	v, exist := c.Get("FBInfo")
 	if !exist {
 		handle_error_nf_bad(c,
-			&errorUnauthorized{"Why FBinfo do not exist, this should not happen"})
+			&errorUnauthorized{"You need to have an authorization header in your request"})
 		return
 	}
 
@@ -97,7 +97,7 @@ func DeleteExercise(c *gin.Context) {
 		}
 	}
 
-	e, err := getExercise(i)
+	e, err := getExercise(i, fb.ID)
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return
@@ -123,6 +123,12 @@ func GETExercise(c *gin.Context) {
 	var err error
 	var i, id int
 	exerciseID := c.Param("id")
+	var fb FBinfo
+
+	v, exist := c.Get("FBInfo")
+	if exist {
+		fb = v.(FBinfo)
+	}
 
 	if i, err = strconv.Atoi(exerciseID); err == nil {
 		id = i
@@ -134,7 +140,7 @@ func GETExercise(c *gin.Context) {
 		}
 	}
 
-	exercise, err = getExercise(id)
+	exercise, err = getExercise(id, fb.ID)
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return
@@ -146,8 +152,14 @@ func GETExercise(c *gin.Context) {
 func GETExercises(c *gin.Context) {
 	var exercises []Exercise
 	var err error
+	var fb FBinfo
 
-	exercises, err = getAllExercises()
+	v, exist := c.Get("FBInfo")
+	if exist {
+		fb = v.(FBinfo)
+	}
+
+	exercises, err = getAllExercises(fb.ID)
 	if err != nil {
 		handle_error_nf_bad(c, err)
 		return

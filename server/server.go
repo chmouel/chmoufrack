@@ -20,8 +20,7 @@ type FBCheck struct{}
 func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if len(c.Request.Header["Authorization"]) == 0 {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to have an authorization header in your request"})
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.Next()
 			return
 		}
 		token := c.Request.Header["Authorization"][0]
@@ -72,11 +71,11 @@ func setupRoutes(staticDir string, acl ACLCheck) *gin.Engine {
 		c.Redirect(http.StatusMovedPermanently, "/html")
 	})
 
-	v1 := router.Group("/v1")
+	v1 := router.Group("/v1", acl.Check())
 	{
-		v1.POST("/fbinfo", acl.Check(), POSTFbinfo)
-		v1.POST("/exercise", acl.Check(), POSTExercise)
-		v1.DELETE("/exercise/:id", acl.Check(), DeleteExercise)
+		v1.POST("/fbinfo", POSTFbinfo)
+		v1.POST("/exercise", POSTExercise)
+		v1.DELETE("/exercise/:id", DeleteExercise)
 		v1.GET("/exercise/:id", GETExercise)
 		v1.GET("/exercises", GETExercises)
 	}

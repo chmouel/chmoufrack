@@ -53,7 +53,7 @@ func test_check_http_expected(resp *http.Response, expected int) (err error) {
 }
 
 func TestRestGETExercise(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	i, err := addExercise(e)
 	if err != nil {
@@ -83,7 +83,7 @@ func TestRestGETExercise(t *testing.T) {
 }
 
 func TestRestGETExerciseByName(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	_, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -108,7 +108,7 @@ func TestRestGETExerciseByName(t *testing.T) {
 }
 
 func TestRestGETExerciseNotFound(t *testing.T) {
-	_, err := DB.Exec("DELETE FROM Exercise")
+	_, err := DB.Exec(SQLresetDB)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -162,7 +162,7 @@ func TestRestDeleteExercise(t *testing.T) {
 	)
 
 	// Delete by Name
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	_, err := addExercise(e)
 	if err != nil {
@@ -183,7 +183,7 @@ func TestRestDeleteExercise(t *testing.T) {
 	}
 
 	// Delete by ID
-	e = createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e = createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 	lastid, err := addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
@@ -205,7 +205,7 @@ func TestRestDeleteExercise(t *testing.T) {
 }
 
 func TestRestGETExercises(t *testing.T) {
-	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, "1234")
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, true, "Test User", "1234")
 
 	_, err := addExercise(e)
 	if err != nil {
@@ -244,8 +244,14 @@ func TestRestGETExercises(t *testing.T) {
 }
 
 func TestRestCreateExcercise(t *testing.T) {
-	exercise1 := `{"name": "Test1",
+	_, err := DB.Exec(SQLresetDB)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	exercise_public := `{"name": "TestPublic",
 	"comment": "NoComment",
+	"public": true,
 	"steps": [{
 	    "effort": "easy warmup todoo",
 	    "effort_type": "distance",
@@ -262,16 +268,22 @@ func TestRestCreateExcercise(t *testing.T) {
 	    "type": "warmdown"
 	}]}`
 
+	exercise_private := `{
+	  "name": "TestPrivate",
+	  "comment": "NoComment",
+      "public": false,
+	  "steps": []}`
+
 	exercise_updated := `{"name": "Test1",
  "comment": "Updaated",
  "steps": []}`
 
-	fbcheck := &fakeFBCheck{}
+	fbcheck := &fakeFBCheck{ID: "012345678933"}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise1))
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_public))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -286,13 +298,33 @@ func TestRestCreateExcercise(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	//check in DB if it was really made
-	exercises, err := getAllExercises()
+	req, err = http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_private))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//check in DB if it was really made, we should only have one exercise cause we have not set the fbid
+	exercises, err := getAllExercises("")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(exercises) != 1 {
-		t.Fatal("did not have a new exercise created")
+		t.Fatalf("we did not or had too many public exercises: %d != 1", len(exercises))
+	}
+
+	//check in DB, now we are getting the private too
+	exercises, err = getAllExercises("012345678933")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(exercises) != 2 {
+		t.Fatalf("we did not get our private exercise: %d != 2", len(exercises))
 	}
 
 	req, err = http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_updated))
@@ -309,7 +341,7 @@ func TestRestCreateExcercise(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	exercises, err = getAllExercises()
+	exercises, err = getAllExercises("")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -446,12 +478,17 @@ func TestRestRedirect(t *testing.T) {
 }
 
 func TestRestDeleteForSomeoneElse(t *testing.T) {
+	_, err := DB.Exec(SQLresetDB)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	originalFacebookId := "1234"
 	otherFacebookID := "4567"
 	name := "Test1"
-	e := createSampleExercise(name, "easy warmup todoo", "finish strong", 1000, originalFacebookId)
+	e := createSampleExercise(name, "easy warmup todoo", "finish strong", 1000, true, "Test User", originalFacebookId)
 
-	_, err := addExercise(e)
+	_, err = addExercise(e)
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}

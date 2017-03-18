@@ -1,6 +1,7 @@
 app.factory('utils', function($http, $q, Facebook) {
   var utils = {};
   utils.facebookInfo = {};
+  utils.programs = {};
 
   utils.FBdoLogged = function(response) {
     var deferred = $q.defer();
@@ -13,12 +14,6 @@ app.factory('utils', function($http, $q, Facebook) {
       utils.facebookInfo = facebookInfo;
       deferred.resolve(facebookInfo);
       return facebookInfo;
-    }).then(function(data){
-      var req = fbURLarg();
-      req.url = '/v1/fbinfo';
-      req.method = 'POST';
-      req.data = data;
-      return $http(req);
     });
     return deferred.promise;
   };
@@ -34,17 +29,23 @@ app.factory('utils', function($http, $q, Facebook) {
   };
 
   var counter = 0;
-  utils.getExercises = function() {
+  utils.getExercises = function(logged) {
+    var req = {};
+    if (logged)
+      req = fbURLarg();
+
+    req.url = '/v1/exercises';
+    req.method = 'GET';
+
     // Angular $http() and then() both return promises themselves
-    return $http({
-      method: "GET",
-      url: "/v1/exercises"
-    }).then(function(result) {
+    return $http(req).then(function(result) {
       return result.data;
     });
   };
 
-  var fbURLarg = function getURLarg() {
+  var fbURLarg = function(){
+    if (!utils.facebookInfo.accessToken)
+      return {};
     var req = {
       headers: {
         'Authorization': "Bearer " + utils.facebookInfo.accessToken

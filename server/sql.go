@@ -151,20 +151,29 @@ func deleteExercise(e Exercise) (err error) {
 	return
 }
 
-func getExercise(ID int) (exercise Exercise, err error) {
+func getExercise(ID int, FBId string) (exercise Exercise, err error) {
 	var steps []Step
 	var nComment sql.NullString
+	var strPublic string
 
 	// Note: Do not get email here so to avoid spam, maybe we'll use email another time
-	sqlT := `SELECT e.id,e.name,e.comment,f.fbid,f.name as fbname,f.link FROM Exercise e LEFT JOIN FBinfo f on f.FBId=e.FBId WHERE e.id=?`
-	err = DB.QueryRow(sqlT, ID).Scan(
+	sqlT := `SELECT e.id,e.name,e.comment,e.public,f.fbid,f.name as fbname,f.link FROM Exercise e LEFT JOIN FBinfo f on f.FBId=e.FBId WHERE e.id=? and (public="1" or f.fbid=?)`
+
+	err = DB.QueryRow(sqlT, ID, FBId).Scan(
 		&exercise.ID,
 		&exercise.Name,
 		&nComment,
+		&strPublic,
 		&exercise.FB.ID,
 		&exercise.FB.Name,
 		&exercise.FB.Link,
 	)
+
+	if strPublic == "0" {
+		exercise.Public = false
+	} else {
+		exercise.Public = true
+	}
 
 	if nComment.Valid {
 		exercise.Comment = nComment.String
@@ -197,6 +206,14 @@ func checkBadCharacters(s string) (err error) {
 	return
 }
 
+func convertBoolToZeroUn(c bool) (ret string) {
+	ret = "0"
+	if c {
+		ret = "1"
+	}
+	return
+}
+
 func addFBInfo(fb FBinfo) (lastid int, err error) {
 	am := ArgsMap{
 		"FBid":  fb.ID,
@@ -213,6 +230,7 @@ func addFBInfo(fb FBinfo) (lastid int, err error) {
 func addExercise(exercise Exercise) (lastid int, err error) {
 	var oldFbID string
 	var oldId int
+
 	if exercise.Name == "" {
 		return -1, errors.New("You need to specify an exercise Name")
 	}
@@ -233,14 +251,18 @@ func addExercise(exercise Exercise) (lastid int, err error) {
 	if err != nil {
 		return
 	}
+
 	am := ArgsMap{
 		"name":    exercise.Name,
 		"comment": exercise.Comment,
 		"fbID":    exercise.FB.ID,
+		"public":  convertBoolToZeroUn(exercise.Public),
 	}
+
 	if oldId != 0 {
 		am["id"] = oldId
 	}
+
 	lastid, err = SQLInsertOrUpdate("Exercise", oldId, am)
 	if err != nil {
 		return
@@ -340,16 +362,17 @@ func addStep(value Step, exerciseType string, position, targetID int) (err error
 	return
 }
 
-func getAllExercises() (exercises []Exercise, err error) {
-	var getAllExercises = `SELECT ID from Exercise`
-	rows, err := DB.Query(getAllExercises)
+func getAllExercises(fbID string) (exercises []Exercise, err error) {
+	var getAllExercises = `SELECT ID from Exercise where (public="1" or fbId=?);`
+	rows, err := DB.Query(getAllExercises, fbID)
 	for rows.Next() {
 		e := Exercise{}
 		err = rows.Scan(&e.ID)
 		if err != nil {
 			return
 		}
-		e, err = getExercise(e.ID)
+
+		e, err = getExercise(e.ID, fbID)
 		if err != nil {
 			return
 		}

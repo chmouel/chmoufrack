@@ -9,7 +9,7 @@ import (
 )
 
 func YAMLExport() (err error) {
-	exercises, err := getAllExercises()
+	exercises, err := getAllExercises("")
 	if err != nil {
 		return
 	}

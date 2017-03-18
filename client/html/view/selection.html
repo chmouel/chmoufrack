@@ -1,26 +1,24 @@
-<div ng-controller="ProgramIndexController">
-  <div ng-repeat="p in programIndex">
-    <div ng-click="switchtoProgram(p.name)" class="program">
-      <h3 class="text-center"><strong><a href>{{p.name}}</a></strong></h3>
-    </div>
-    <div class="tableComment">
-      <div class="tableCommentheader">
-        <strong>Exercices</strong>: {{p.totalWorkout}}
-        <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
-          &nbsp;|&nbsp;
-          <a href="#!/edit/{{p.name | escape }}"><i class="glyphicon glyphicon-pencil"></i></a>
-        </span>
+<div ng-repeat="p in programs">
+  <div ng-click="switchtoProgram(p.name)" class="program">
+    <h3 class="text-center"><strong><a href>{{p.name}}</a></strong></h3>
+  </div>
+  <div class="tableComment">
+    <div class="tableCommentheader">
+      <strong>Exercices</strong>: {{p.steps.length}}
+      <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
         &nbsp;|&nbsp;
-        <b>Auteur:</b>&nbsp;
-        <a href="{{p.fb.link}}">
-          <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
-          {{p.fb.name}}
-        </a>
-      </div>
-      <div ng-click="switchtoProgram(p.name)" class="row" ng-show="p.comment">
-        <div class="text-justify comment">
-          <pre ng-bind-html="p.comment | linky:'_blank'"></pre>
-        </div>
+        <a href="#!/edit/{{p.name | escape }}"><i class="glyphicon glyphicon-pencil"></i></a>
+      </span>
+      &nbsp;|&nbsp;
+      <b>Auteur:</b>&nbsp;
+      <a href="{{p.fb.link}}">
+        <img width="18" heigh="18" ng-src="https://graph.facebook.com/{{p.fb.id}}/picture?type=square">
+        {{p.fb.name}}
+      </a>
+    </div>
+    <div ng-click="switchtoProgram(p.name)" class="row" ng-show="p.comment">
+      <div class="text-justify comment">
+        <pre ng-bind-html="p.comment | linky:'_blank'"></pre>
       </div>
     </div>
   </div>

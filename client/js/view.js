@@ -8,23 +8,6 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
   $scope.allVMAS = utils.range(12, 22);
   $scope.rootUrl = $location.absUrl().replace($location.url(), "");
 
-  $scope.$on('Facebook:xfbmlRender', function(ev, response) {
-    $scope.facebook.ready = true;
-  });
-
-  $scope.$on('Facebook:statusChange', function(ev, response) {
-    console.log(response.status);
-    if (response.status == 'connected') {
-      $scope.facebook.loggedIn = true;
-      utils.FBdoLogged(response).then(function(data) {
-        $scope.facebook.loggedIn = true;
-        $scope.facebook.info = data;
-      });
-    } else {
-      console.log("no login allowed");
-    }
-  });
-
   if ($routeParams.name) {
     $scope.selectedProgram = $routeParams.name;
   }
@@ -43,16 +26,38 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
     $scope.vmaWanted = $scope.allVMAS;
   }
 
-  if (!$scope.programs) {
-    var myPromise = utils.getExercises();
-    myPromise.then(function(data) {
-      $scope.programs = data;
+  var refreshExercise = function(logged) {
+    utils.getExercises(logged).then(function(data) {
+      utils.programs = data;
+      $scope.programs = utils.programs;
       $scope.programNames = [];
-      angular.forEach(data, function(p, noop) {
+      angular.forEach(utils.programs, function(p, noop) {
         $scope.programNames.push(p.name);
       });
     });
+  };
+
+  if (!$scope.programs) {
+    refreshExercise(false);
   }
+
+  $scope.$on('Facebook:xfbmlRender', function(ev, response) {
+    $scope.facebook.ready = true;
+  });
+
+  $scope.$on('Facebook:statusChange', function(ev, response) {
+    if (response.status == 'connected') {
+      $scope.facebook.loggedIn = true;
+      utils.FBdoLogged(response).then(function(data) {
+        $scope.facebook.loggedIn = true;
+        $scope.facebook.info = data;
+      }).then(function(data) {
+        refreshExercise(true);
+      });
+    } else {
+      console.log("no login allowed");
+    }
+  });
 
   $scope.fbLogin = function() {
     if ($scope.facebook.loggedIn)
@@ -86,23 +91,4 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
     return true; //make emacs happy, this remind me of perl modules :-[]
   };
 
-});
-
-app.controller('ProgramIndexController', function($scope, utils) {
-    $scope.programIndex = {};
-    var myPromise = utils.getExercises();
-    myPromise.then(function(data) {
-        angular.forEach(data, function(p, noop) {
-            if (p.name !== "") {
-                $scope.programIndex[p.name] = {};
-                $scope.programIndex[p.name].name = p.name;
-                if (p.steps) {
-                    $scope.programIndex[p.name].totalWorkout = p.steps.length;
-                }
-                $scope.programIndex[p.name].comment = p.comment;
-                $scope.programIndex[p.name].id = p.id;
-                $scope.programIndex[p.name].fb = p.fb;
-            }
-        });
-    });
 });

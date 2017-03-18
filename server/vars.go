@@ -22,6 +22,8 @@ func (e *error404) Error() string {
 	return e.s
 }
 
+type Steps []Step
+
 type Step struct {
 	ID         int     `json:"id"`
 	Effort     string  `json:"effort,omitempty" yaml:"effort,omitempty"`
@@ -46,8 +48,9 @@ type Exercise struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name" binding:"required"`
 	Comment string `json:"comment,omitempty" yaml:"comment,omitempty"`
-	Steps   `json:"steps,omitempty"`
+	Public  bool   `json:"public"`
 	FB      FBinfo `json:"fb"`
+	Steps   `json:"steps,omitempty"`
 }
 
 type Repeats struct {
@@ -55,8 +58,6 @@ type Repeats struct {
 	Steps   Steps `json:"steps,omitempty" yaml:"steps,omitempty"`
 	Repeats int   `json:"repeat,omitempty" yaml:"repeat,omitempty" `
 }
-
-type Steps []Step
 
 func (slice Steps) Len() int {
 	return len(slice)
