@@ -44,10 +44,6 @@ app.factory('utils', function($http, $q, Facebook) {
     });
   };
 
-  utils.fbLogin = function() {
-    Facebook.login();
-  };
-
   var fbURLarg = function getURLarg() {
     var req = {
       headers: {

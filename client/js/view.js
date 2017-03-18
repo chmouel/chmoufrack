@@ -13,6 +13,7 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
   });
 
   $scope.$on('Facebook:statusChange', function(ev, response) {
+    console.log(response.status);
     if (response.status == 'connected') {
       $scope.facebook.loggedIn = true;
       utils.FBdoLogged(response).then(function(data) {
@@ -54,8 +55,11 @@ app.controller("ViewController", function($scope, $location, $routeParams, $http
   }
 
   $scope.fbLogin = function() {
-    utils.fbLogin();
-  }
+    if ($scope.facebook.loggedIn)
+      Facebook.logout();
+    else
+      Facebook.login();
+  };
 
   $scope.add = function() {
     $location.path('/add');
