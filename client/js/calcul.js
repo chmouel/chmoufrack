@@ -101,28 +101,25 @@ app.controller('CalculController', function($scope, utils, $window) {
     return res;
   };
 
-  angular.forEach(utils.programs, function(program, noop) {
-    if (program.name == $scope.selectedProgram) {
-      $scope.program = program;
-      $window.document.title = "ChmouFrack: " + program.name;
-    }
-  });
+
+  var setProgram = function() {
+    angular.forEach(utils.programs, function(program, noop) {
+      if (program.name == $scope.selectedProgram) {
+        $scope.program = program;
+        $window.document.title = "ChmouFrack: " + program.name;
+      }
+    });
+  };
+
+  setProgram();
 
   $scope.$on('Facebook:statusChange', function(ev, response) {
     if (response.status == 'connected') {
-      $scope.facebook.loggedIn = true;
       utils.FBdoLogged(response).then(function(data) {
-        $scope.facebook.loggedIn = true;
-        $scope.facebook.info = data;
       }).then(function(data) {
         utils.getExercises(true).then(function(data) {
           utils.programs = data;
-          angular.forEach(utils.programs, function(program, noop) {
-            if (program.name == $scope.selectedProgram) {
-              $scope.program = program;
-              $window.document.title = "ChmouFrack: " + program.name;
-            }
-          });
+          setProgram();
         });
       });
     } else {

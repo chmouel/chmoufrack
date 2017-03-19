@@ -4,6 +4,27 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   $scope.exercise = {};
   $scope.exercise.steps = [];
 
+  $scope.$on('Facebook:statusChange', function(ev, response) {
+    if (response.status == 'connected') {
+      utils.FBdoLogged(response).then(function(data) {
+        console.log("hello moto");
+      }).then(function(data) {
+        utils.getExercises(true).then(function(data) {
+          angular.forEach(utils.programs, function(program, noop) {
+            if (program.name == window.encodeURIComponent($routeParams.name)) {
+              $scope.error = '';
+              $scope.exercise = program;
+              $window.document.title = "ChmouFrack: " + program.name;
+            }
+          });
+
+        });
+      });
+    } else {
+      console.log("no login allowed");
+    }
+  });
+
   if ($routeParams.name) {
     var res = $http.get('/v1/exercise/' + window.encodeURIComponent($routeParams.name));
     res.then(function(response) {
