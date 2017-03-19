@@ -4,20 +4,22 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   $scope.exercise = {};
   $scope.exercise.steps = [];
 
+  var applyProgram = function() {
+    angular.forEach(utils.programs, function(program, noop) {
+      if (program.name == window.encodeURIComponent($routeParams.name)) {
+        $scope.error = '';
+        $scope.exercise = program;
+        $window.document.title = "ChmouFrack: " + program.name;
+      }
+    });
+  };
+
   $scope.$on('Facebook:statusChange', function(ev, response) {
     if (response.status == 'connected') {
       utils.FBdoLogged(response).then(function(data) {
-        console.log("hello moto");
       }).then(function(data) {
         utils.getExercises(true).then(function(data) {
-          angular.forEach(utils.programs, function(program, noop) {
-            if (program.name == window.encodeURIComponent($routeParams.name)) {
-              $scope.error = '';
-              $scope.exercise = program;
-              $window.document.title = "ChmouFrack: " + program.name;
-            }
-          });
-
+          applyProgram();
         });
       });
     } else {
@@ -25,19 +27,10 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
     }
   });
 
-  if ($routeParams.name) {
-    var res = $http.get('/v1/exercise/' + window.encodeURIComponent($routeParams.name));
-    res.then(function(response) {
-      $scope.exercise = response.data;
-      $window.document.title = "ChmouFrack: " + $scope.exercise.name;
-    }, function errorCallBack(response) {
-      $scope.exercise = {};
-      $scope.exercise.steps = {};
-      $scope.error = "Sorry honey, j'ai pas reussi a trouver la séance <strong>" + $routeParams.name + "</strong> dans mon ventre.";
-      $scope.success = false;
-      $window.scrollTo(0, 0);
-    });
-  }
+  if (angular.isUndefined($scope.exercise.length) &&
+      angular.isDefined(utils.facebookInfo.email) &&
+      utils.programs.length !== 0)
+    applyProgram();
 
   $scope.effortDistanceUnits = [
     {
