@@ -79,7 +79,6 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   };
 
   $scope.submit = function() {
-
     var err = null;
     angular.forEach($scope.forms, function(p, noop) {
       if (Object.keys(p.$error).length === 0)
@@ -133,7 +132,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
       $window.scrollTo(0, 0);
     }).catch(function(error) {
       $scope.success = false;
-      $scope.error = error;
+      $scope.error = "Error while saving: (" + error.status + "): " + error.data.error;
       $window.scrollTo(0, 0);
     });
   };
