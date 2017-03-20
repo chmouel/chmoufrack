@@ -74,7 +74,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
   $scope.submit = function() {
     var err = null;
     angular.forEach($scope.forms, function(p, noop) {
-      if (Object.keys(p.$error).length === 0)
+      if (angular.isDefined(p.$error) && Object.keys(p.$error).length === 0)
         return;
       angular.forEach(p.$error, function(e, noop) {
         angular.forEach(e, function(a, noop) {
@@ -123,6 +123,7 @@ app.controller("EditController", function($scope, $http, $routeParams, utils, $l
       $scope.error = false;
       $scope.success = 'Votre programme a était sauvegarder, le <a href="/#!/workout/' + $scope.exercise.name + '"><strong>voir ici</strong></a>';
       $window.scrollTo(0, 0);
+      utils.programs.push($scope.exercise); // So we can see it clicking
     }).catch(function(error) {
       $scope.success = false;
       $scope.error = "Error while saving: (" + error.status + "): " + error.data.error;
