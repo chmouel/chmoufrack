@@ -1,0 +1,17 @@
+language: go
+
+go:
+  - 1.7.1
+  - tip
+
+sudo: false
+
+before_install: cd server
+install:
+  - go get github.com/Masterminds/glide
+  - glide up
+  - go build
+
+before_script: cd server
+script:
+  - go test .
