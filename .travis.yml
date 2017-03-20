@@ -8,9 +8,7 @@ go:
 
 sudo: false
 
-env:
-  - FRACK_TEST_DB=travis@/fracktest
-  -
+env: FRACK_TEST_DB=travis@/fracktest
 
 before_install:
   - cd server
