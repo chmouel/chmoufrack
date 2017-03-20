@@ -8,7 +8,9 @@ go:
 
 sudo: false
 
-env: FRACK_TEST_DB="travis@/fracktest"
+env:
+  - GIN_MODE=release
+  - FRACK_TEST_DB=travis@/fracktest
 
 before_install:
   - cd server
@@ -22,6 +24,5 @@ install:
 script:
   - glide up
   - go build
-  - GIN_MODE="release" go test
-  - diff <(gofmt -d .) <("")
+  - go test
   - if [[ $TRAVIS_SECURE_ENV_VARS = "true" ]]; then  bash $TRAVIS_BUILD_DIR/.travis/test-coverage.sh; fi
