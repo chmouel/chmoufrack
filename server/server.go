@@ -31,12 +31,11 @@ func Check(aclcheck ACLCheck) gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		token := c.Request.Header["Authorization"][0]
-
-		if len(token) > 6 && strings.ToUpper(token[0:6]) == "BEARER" {
-			token = token[7:]
+		var token string
+		authorization := c.Request.Header["Authorization"][0]
+		if len(authorization) > 6 && strings.ToUpper(authorization[0:6]) == "BEARER" {
+			token = authorization[7:]
 		}
-
 		if token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "You need to specify a token for this query"})
 			c.AbortWithStatus(http.StatusUnauthorized)
