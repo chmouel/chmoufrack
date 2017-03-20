@@ -1,4 +1,5 @@
-# Frack - An interval program generator!
+ChmouFrack [![Build Status][travis-badge]][travis]]
+==========
 
 A running interval training generated for different vVO2max (or MAS).
 
@@ -7,6 +8,10 @@ See informatbout about your MAS [here](http://www.scienceforsport.com/maximal-ae
 The website in action is located here :
 
 https://frack.chmouel.com
+
+
+[travis]: <https://travis-ci.org/chmouel/chmoufrack>
+[travis-badge]: <https://travis-ci.org/chmouel/chmoufrack.svg?branch=master>
 
 ## REST Server
 
