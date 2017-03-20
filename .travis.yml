@@ -10,6 +10,8 @@ sudo: false
 
 env:
   - GIN_MODE=release
+
+env:
   - FRACK_TEST_DB=travis@/fracktest
 
 before_install:
