@@ -8,12 +8,20 @@ go:
 
 sudo: false
 
-before_install: cd server
+env: FRACK_TEST_DB="travis@/fracktest"
+
+before_install:
+  - cd server
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
+
 install:
   - go get github.com/Masterminds/glide
-  - glide up
-  - go build
   - mysql -utravis -h127.0.0.1 -e "CREATE DATABASE fracktest"
 
 script:
-  - GIN_MODE="release" FRACK_TEST_DB="travis@/fracktest" go test
+  - glide up
+  - go build
+  - GIN_MODE="release" go test
+  - diff <(gofmt -d .) <("")
+  - if [[ $TRAVIS_SECURE_ENV_VARS = "true" ]]; then  bash $TRAVIS_BUILD_DIR/.travis/test-coverage.sh; fi
