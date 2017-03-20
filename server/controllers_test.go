@@ -17,6 +17,7 @@ func test_check_http_expected(resp *http.Response, expected int) (err error) {
 	if status := resp.StatusCode; status != expected {
 		buf := bytes.NewBuffer(nil)
 		io.Copy(buf, resp.Body)
+
 		err = errors.New(
 			fmt.Sprintf("handler returned wrong status code: expected %v received %v, error: %s",
 				expected, status, buf))
@@ -307,16 +308,78 @@ func TestRestCreateExcercise(t *testing.T) {
 	}
 }
 
-func TestRestPostNoFBInfo(t *testing.T) {
+func TestRestGetPrivateExercise(t *testing.T) {
+	_, err := DB.Exec("DELETE FROM Exercise")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fbid := "123456789"
+	e := createSampleExercise("Test1", "easy warmup todoo", "finish strong", 1000, false, "Test User", fbid)
+	_, err = addExercise(e)
+	if err != nil {
+		t.Fatalf("addExercise() failed: %s", err)
+	}
+
+	fbcheck := &fakeFBCheck{ID: fbid}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+
+	// Get exercise
+	resp, err := test_do_request("GET", server.URL+"/v1/exercise/Test1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var exercise Exercise
+	if err = json.NewDecoder(resp.Body).Decode(&exercise); err != nil {
+		t.Fatal("Could not decode body, not proper json.")
+	}
+	if exercise.Name != "Test1" {
+		t.Fatalf("TestRestGetPrivateExercise failed %s != Test1.", exercise.Name)
+	}
+
+	// Get all excercises
+	resp, err = test_do_request("GET", server.URL+"/v1/exercises", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var exercises []Exercise
+	if err = json.NewDecoder(resp.Body).Decode(&exercises); err != nil {
+		t.Fatal("Could not decode body, not proper json.")
+	}
+
+	if exercises[0].Name != "Test1" {
+		t.Fatalf("TestRestGetPrivateExercise failed %s != Test1.", exercise.Name)
+	}
+
+	// No authorization should be public
+	resp, err = http.Get(server.URL + "/v1/Test1")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Since it's a public request and ours is private, then fail
+	if status := resp.StatusCode; status != http.StatusNotFound {
+		t.Fatalf("handler returned wrong status code: got %v want %v",
+			status, http.StatusNotFound)
+	}
+}
+
+func TestRestPostNoFB(t *testing.T) {
 	fbcheck := &emptyFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
 	)
-	resp, err := test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(""))
+	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(""))
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(resp)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
+		t.Fatalf(err.Error())
+	}
 }
 
 func TestRestPostBadJSON(t *testing.T) {
@@ -441,12 +504,7 @@ func TestRestDeleteForSomeoneElse(t *testing.T) {
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
 	)
-	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/"+name, nil)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("DELETE", server.URL+"/v1/exercise/"+name, nil)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -514,13 +572,13 @@ func TestRestCreateFBInfo(t *testing.T) {
 		setupRoutes("./", emptyFBCheck),
 	)
 
-	// Bad content no string
-	resp, err = test_do_request("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
+	req, err := http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
 	if err != nil {
 		t.Fatal(err)
 	}
-
+	req.Header.Set("Content-Type", "application/json")
+	resp, err = http.DefaultClient.Do(req)
 	if err = test_check_http_expected(resp, http.StatusUnauthorized); err != nil {
-		t.Fatal(err.Error())
+		t.Fatalf(err.Error())
 	}
 }
