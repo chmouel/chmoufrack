@@ -1,4 +1,4 @@
-ChmouFrack [![Build Status][travis-badge]][travis]
+ChmouFrack [![Build Status][travis-badge]][travis] [![Coverage Status][coveralls-badge]][coveralls]
 ==========
 
 A running interval training generated for different vVO2max (or MAS).
@@ -12,6 +12,8 @@ https://frack.chmouel.com
 
 [travis]: <https://travis-ci.org/chmouel/chmoufrack>
 [travis-badge]: <https://travis-ci.org/chmouel/chmoufrack.svg?branch=master>
+[coveralls]: <https://coveralls.io/r/chmouel/chmoufrack?branch=master>
+[coveralls-badge]: <https://coveralls.io/repos/chmouel/chmoufrack/badge.svg?branch=master>
 
 ## REST Server
 
