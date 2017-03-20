@@ -3,17 +3,16 @@
 
     <h3 class="text-center">
       <strong><a href>{{p.name}}</a></strong></h3>
-      <div class="pull-right">
-        <i ng-if="!p.public" class="glyphicon glyphicon-lock"></i>
+    <div class="pull-right">
+      <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
+        <a href="#!/edit/{{p.name | escape }}"><i class="glyphicon glyphicon-pencil"></i></a>
+      </span>
+      <i ng-if="!p.public" class="glyphicon glyphicon-lock" style="color:royalblue"></i>
       </div>
   </div>
   <div class="tableComment">
     <div class="tableCommentheader">
       <strong>Exercices</strong>: {{p.steps.length}}
-      <span ng-if="facebook.loggedIn && facebook.info.id == p.fb.id">
-        &nbsp;|&nbsp;
-        <a href="#!/edit/{{p.name | escape }}"><i class="glyphicon glyphicon-pencil"></i></a>
-      </span>
       &nbsp;|&nbsp;
       <b>Auteur:</b>&nbsp;
       <a href="{{p.fb.link}}">
