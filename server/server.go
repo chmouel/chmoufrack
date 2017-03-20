@@ -6,18 +6,26 @@ import (
 	"net/http"
 	"strings"
 
-	fb "github.com/huandu/facebook"
+	"github.com/huandu/facebook"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
 type ACLCheck interface {
-	Check() gin.HandlerFunc
+	FBGet(url, token string) (fbc facebook.Result, err error)
 }
 
 type FBCheck struct{}
 
+func (fbcheck *FBCheck) FBGet(url, token string) (fbc facebook.Result, err error) {
+	fbc, err = facebook.Get(url, facebook.Params{
+		"access_token": token,
+		"fields":       "name,email,link",
+	})
+	return
+}
+
 // Really need to find a way how to test that,
-func (fbcheck *FBCheck) Check() gin.HandlerFunc {
+func Check(aclcheck ACLCheck) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if len(c.Request.Header["Authorization"]) == 0 {
 			c.Next()
@@ -35,11 +43,7 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 			return
 		}
 
-		_fb, err := fb.Get("/me", fb.Params{
-			"access_token": token,
-			"fields":       "name,email,link",
-		})
-
+		fb, err := aclcheck.FBGet("/me", token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -47,14 +51,20 @@ func (fbcheck *FBCheck) Check() gin.HandlerFunc {
 		}
 
 		var fbInfo FBinfo
-		err = _fb.Decode(&fbInfo)
+		err = fb.Decode(&fbInfo)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error while decoding: " + err.Error()})
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		fbInfo.ID = _fb.Get("id").(string)
+		if fb.Get("id") == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Could not get fields from facebookInfo"})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		fbInfo.ID = fb.Get("id").(string)
 
 		c.Set("FBInfo", fbInfo)
 		c.Next()
@@ -71,7 +81,7 @@ func setupRoutes(staticDir string, acl ACLCheck) *gin.Engine {
 		c.Redirect(http.StatusMovedPermanently, "/html")
 	})
 
-	v1 := router.Group("/v1", acl.Check())
+	v1 := router.Group("/v1", Check(acl))
 	{
 		v1.POST("/fbinfo", POSTFbinfo)
 		v1.POST("/exercise", POSTExercise)

@@ -11,35 +11,7 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
-
-	"gopkg.in/gin-gonic/gin.v1"
 )
-
-type fakeFBCheck struct {
-	ID   string
-	Name string
-	Link string
-}
-
-func (f *fakeFBCheck) Check() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if f.ID == "" {
-			f.ID = "1234"
-		}
-		if f.Name == "" {
-			f.Name = "Chmou EL"
-		}
-		if f.Link == "" {
-			f.Link = "http://facebook.com/testtest"
-		}
-		c.Set("FBInfo", FBinfo{
-			ID:   f.ID,
-			Name: f.Name,
-			Link: f.Link,
-		})
-		c.Next()
-	}
-}
 
 func test_check_http_expected(resp *http.Response, expected int) (err error) {
 	if status := resp.StatusCode; status != expected {
@@ -49,6 +21,19 @@ func test_check_http_expected(resp *http.Response, expected int) (err error) {
 			fmt.Sprintf("handler returned wrong status code: expected %v received %v, error: %s",
 				expected, status, buf))
 	}
+	return
+}
+
+// test_do_request ...
+func test_do_request(method, url string, data io.Reader) (resp *http.Response, err error) {
+	req, err := http.NewRequest(method, url, data)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Authorization", "Bearer bearer-token")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err = http.DefaultClient.Do(req)
 	return
 }
 
@@ -140,12 +125,7 @@ func TestRestDELETExerciseNotFound(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/1200", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("DELETE", server.URL+"/v1/exercise", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -169,11 +149,7 @@ func TestRestDeleteExercise(t *testing.T) {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
 
-	req, err := http.NewRequest("DELETE", server.URL+"/v1/exercise/Test1", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("DELETE", server.URL+"/v1/exercise/Test1", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,12 +164,9 @@ func TestRestDeleteExercise(t *testing.T) {
 	if err != nil {
 		t.Fatalf("addExercise() failed: %s", err)
 	}
+
 	url := fmt.Sprintf("%s/v1/exercise/%d", server.URL, lastid)
-	req, err = http.NewRequest("DELETE", url, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("DELETE", url, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -283,13 +256,7 @@ func TestRestCreateExcercise(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_public))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_public))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -298,13 +265,7 @@ func TestRestCreateExcercise(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	req, err = http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_private))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_private))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -327,12 +288,7 @@ func TestRestCreateExcercise(t *testing.T) {
 		t.Fatalf("we did not get our private exercise: %d != 2", len(exercises))
 	}
 
-	req, err = http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_updated))
-	req.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise_updated))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -351,19 +307,25 @@ func TestRestCreateExcercise(t *testing.T) {
 	}
 }
 
+func TestRestPostNoFBInfo(t *testing.T) {
+	fbcheck := &emptyFBCheck{}
+	server := httptest.NewServer(
+		setupRoutes("./", fbcheck),
+	)
+	resp, err := test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(""))
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(resp)
+}
+
 func TestRestPostBadJSON(t *testing.T) {
 	fbcheck := &fakeFBCheck{}
 	server := httptest.NewServer(
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString("HALLLLO!!!"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString("HALLO"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -379,12 +341,7 @@ func TestRestPostNoting(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("POST", server.URL+"/v1/exercise", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -401,26 +358,13 @@ func TestRestPostBadContent(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := test_do_request("POST", server.URL+"/v1/exercise", bytes.NewBufferString(exercise))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if err = test_check_http_expected(resp, http.StatusBadRequest); err != nil {
 		t.Fatalf(err.Error())
-	}
-}
-
-type emptyFBCheck struct{}
-
-func (f *emptyFBCheck) Check() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
 	}
 }
 
@@ -526,14 +470,8 @@ func TestRestCreateFBInfo(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err := http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(
+	resp, err := test_do_request("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(
 		fmt.Sprintf(fbinfo_rest, fbid)))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -547,13 +485,7 @@ func TestRestCreateFBInfo(t *testing.T) {
 		setupRoutes("./", fbcheck),
 	)
 
-	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -568,13 +500,7 @@ func TestRestCreateFBInfo(t *testing.T) {
 	)
 
 	// Bad content no string
-	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString("FAKENEWS"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString("FAKENEWS"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -589,13 +515,7 @@ func TestRestCreateFBInfo(t *testing.T) {
 	)
 
 	// Bad content no string
-	req, err = http.NewRequest("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
-	if err != nil {
-		t.Fatal(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = test_do_request("POST", server.URL+"/v1/fbinfo", bytes.NewBufferString(fbinfo_rest))
 	if err != nil {
 		t.Fatal(err)
 	}

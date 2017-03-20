@@ -39,9 +39,9 @@ type Step struct {
 
 type FBinfo struct {
 	ID    string `json:"id" facebook:"-"`
-	Name  string `json:"name"`
-	Link  string `json:"link"`
-	Email string `json:"email,omitempty"`
+	Name  string `json:"name" facebook:"name"`
+	Link  string `json:"link" facebook:"link"`
+	Email string `json:"email,omitempty" facebook:"email"`
 }
 
 type Exercise struct {
