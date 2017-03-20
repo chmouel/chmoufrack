@@ -9,10 +9,8 @@ go:
 sudo: false
 
 env:
-  - GIN_MODE=release
-
-env:
   - FRACK_TEST_DB=travis@/fracktest
+  -
 
 before_install:
   - cd server
@@ -24,6 +22,7 @@ install:
   - mysql -utravis -h127.0.0.1 -e "CREATE DATABASE fracktest"
 
 script:
+  - export GIN_MODE=release
   - glide up
   - go build
   - go test
