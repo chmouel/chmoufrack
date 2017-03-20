@@ -1,4 +1,4 @@
-ChmouFrack [![Build Status][travis-badge]][travis]]
+ChmouFrack [![Build Status][travis-badge]][travis]
 ==========
 
 A running interval training generated for different vVO2max (or MAS).
