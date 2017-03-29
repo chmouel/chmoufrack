@@ -59,7 +59,7 @@ func TestSQLAddExerciseAndID(t *testing.T) {
 	}
 
 	if newid == oldid || oldid > newid {
-		t.Fatalf("the new exercices id should not have been the old one: NEW:%d, OLD:%d", newid, oldid)
+		t.Fatalf("the new exercises id should not have been the old one: NEW:%d, OLD:%d", newid, oldid)
 	}
 }
 

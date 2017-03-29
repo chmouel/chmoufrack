@@ -217,7 +217,7 @@ func TestRestGETExercises(t *testing.T) {
 
 }
 
-func TestRestCreateExcercise(t *testing.T) {
+func TestRestCreateExcercice(t *testing.T) {
 	_, err := DB.Exec(SQLresetDB)
 	if err != nil {
 		t.Fatal(err)
@@ -304,7 +304,7 @@ func TestRestCreateExcercise(t *testing.T) {
 	}
 
 	if len(exercises) != 1 {
-		t.Fatal("We should have only one excercise since it was an update")
+		t.Fatal("We should have only one excercice since it was an update")
 	}
 }
 
@@ -339,7 +339,7 @@ func TestRestGetPrivateExercise(t *testing.T) {
 		t.Fatalf("TestRestGetPrivateExercise failed %s != Test1.", exercise.Name)
 	}
 
-	// Get all excercises
+	// Get all excercices
 	resp, err = test_do_request("GET", server.URL+"/v1/exercises", nil)
 	if err != nil {
 		t.Fatal(err)
