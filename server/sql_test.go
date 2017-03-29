@@ -29,7 +29,7 @@ func TestSQLAddExercise(t *testing.T) {
 		t.Fatalf("%s != easy warmup todoo", e.Steps[0].Effort)
 	}
 	if e.Steps[1].Length != 1000 {
-		t.Fatalf("%s != 1000", int(e.Steps[1].Length))
+		t.Fatalf("%d != 1000", int(e.Steps[1].Length))
 	}
 	if e.Steps[2].Effort != "finish strong" {
 		t.Fatalf("%s != finish strong", e.Steps[2].Effort)
@@ -169,7 +169,7 @@ func TestSQLAddGetRepeat(t *testing.T) {
 	}
 
 	if e.Steps[3].Repeat.Steps[0].Laps != 6 {
-		t.Fatalf("failing to get step field %s != 6",
+		t.Fatalf("failing to get step field %d != 6",
 			e.Steps[3].Repeat.Steps[0].Laps)
 	}
 
@@ -256,7 +256,7 @@ func TestSQLAddGetRepeatDoublonMixedUP(t *testing.T) {
 
 	e, err = getExercise(i, "")
 	if len(e.Steps) != 5 {
-		t.Fatalf("addExercise() when adding second repeat %s!=5", len(e.Steps))
+		t.Fatalf("addExercise() when adding second repeat %d!=5", len(e.Steps))
 	}
 
 	e.Steps[3].Repeat.Steps[0].Length = 999
@@ -436,7 +436,7 @@ func TestSQLAddGetRepeatDoublon(t *testing.T) {
 
 	e, err = getExercise(i, "")
 	if len(e.Steps) != 5 {
-		t.Fatalf("addExercise() when adding second repeat %s!=5", len(e.Steps))
+		t.Fatalf("addExercise() when adding second repeat %d!=5", len(e.Steps))
 	}
 
 	e.Steps = removeFromArray(e.Steps, 4)
