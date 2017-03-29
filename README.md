@@ -1,5 +1,6 @@
-ChmouFrack [![Build Status][travis-badge]][travis] [![Coverage Status][coveralls-badge]][coveralls] [![Go Report][goreport-badge]][goreport]
+ChmouFrack
 ==========
+[![Build Status][travis-badge]][travis] [![Coverage Status][coveralls-badge]][coveralls] [![Go Report][goreport-badge]][goreport]
 
 A running interval training generated for different vVO2max (or MAS).
 
