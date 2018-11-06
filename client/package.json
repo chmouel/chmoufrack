@@ -17,7 +17,7 @@
     "angular-route": "^1.6.2",
     "angular-sanitize": "^1.6.2",
     "angularjs-facebook": "^0.2.3",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "4.1.2",
     "font-awesome": "^4.7.0",
     "jquery": "^3.1.1",
     "js-yaml": "^3.8.2"
